@@ -13,7 +13,12 @@ helper = z_require("my_helper")
 -- since i don't have any rtanslations yet i use the global "wesnoth"
 _ = wesnoth.textdomain 'wesnoth'
 T = helper.set_wml_tag_metatable {}
-
+globals = {}
+setmetatable(globals, {
+	["__index"] = function(t, k)
+		return rawget(_G, k)
+	end
+})
 constants = z_require("constants")
 stats = z_require("stats")
 wml_codes = z_require("wml_codes")

@@ -37,7 +37,7 @@ Gui_test.new = function(pages)
 				 } } } },
 			T.row { T.column { T.grid (menu_grid_content) } } } }
 	self.show_dialog = function()
-		local selected_index = startimagekey
+		local selected_index = globals.startimagekey
 		local function preshow()
 			local goto_page_handler = function()
 				local p_index = tonumber(wesnoth.get_dialog_value("textbox_page"))
