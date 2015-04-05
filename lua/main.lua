@@ -18,6 +18,9 @@ setmetatable(globals, {
 	["__index"] = function(t, k)
 		return rawget(_G, k)
 	end
+	["__newindex"] = function(t, k, v)
+		_G[k] = v
+	end
 })
 constants = z_require("constants")
 stats = z_require("stats")

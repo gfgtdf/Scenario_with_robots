@@ -85,7 +85,7 @@ end
 
 global_events.on_exit_hex = function(event_context)
 	--local stamp = wesnoth.get_time_stamp()
-	if(current_moving_info == nil) then
+	if(globals.current_moving_info == nil) then
 		local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 		current_moving_info = { id = unit.id, ref = unit, start_x = unit.x, start_y = unit.y, is_first_move = true}
 	else
