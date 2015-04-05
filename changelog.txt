@@ -1,12 +1,14 @@
-version 1:
+1.0.1:
+- added some images/animations
+- fixed a little bug with the spear booster component
+- added 2 difficulcies
+- added the trap dropper + booster comonents
+- removed the "give random items (debug)" option and added an component shop.
 
-added some images/animations
-fixed a little bug with the spear booster component
-added 2 difficulcies
-added the trap dropper + booster comonents
-removed the "give random items (debug)" option and added an component shop.
-
-
+1.0.2
+- removed some unused code
+- fixed paths on linux
+- fixed strict lua related problems in 1.13
 
 
 
