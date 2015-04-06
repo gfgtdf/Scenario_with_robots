@@ -429,8 +429,6 @@ function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 		underlying_id=unit_cnf.underlying_id,
 		unrenamable=unit_cnf.unrenamable,
 		overlays=unit_cnf.overlays,
-		animate="no",
-		to_variable="advanced_temp_2",
 		{"status", unit_status},
 		{"modifications", unit_modifications},
 		{"variables", unit_variables}}
