@@ -12,6 +12,7 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 	startimagekey = startimagekey or 1
 	local images = {}
 	local is_dialog_showing = false
+	local current_description_image = ""
 	for  ix = 1, sizeX do
 		images[ix] = {}
 	end
@@ -28,14 +29,16 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 	local grid_bottom = create_dialog_grid(toolbox_size_x, toolbox_size_y)
 	local index_grid_bottom = 0
 	
-	for iX = 1, toolbox_size_x do
-		for iY = 1, toolbox_size_y do
+	for iY = 1, toolbox_size_y do
+		for iX = 1, toolbox_size_x do
 			if index_grid_bottom < #imagelist  then
 				index_grid_bottom = index_grid_bottom + 1
 				table.insert(grid_bottom.get_cell(iX, iY), create_tooltip_field(tostring(index_grid_bottom), tooltiplist[index_grid_bottom]))
 			else
 				table.insert(grid_bottom.get_cell(iX, iY), create_unused_tooltip_field(imagelist[startimagekey]))			
 			end
+			grid_bottom.get_cell(iX, iY).vertical_grow = true
+			grid_bottom.get_cell(iX, iY).horizontal_grow = true
 		end	
 	end
 	-- creating the upper area 'field'
@@ -76,6 +79,7 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 					wesnoth.set_dialog_callback(f_sel, "cell_panel" .. tostring(iX) .. tostring(iY))
 				end
 			end
+			wesnoth.set_dialog_value(current_description_image, "image_selected_item")
 		end
 		local function postshow()
 		end
@@ -95,6 +99,13 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 		down_strings[index] = text
 		if is_dialog_showing then
 			wesnoth.set_dialog_value(text, "down_label"  .. tostring(index))
+		end
+	end
+	self.set_selected_item_image = function(text)
+		--i want make set_image work before and afer show_dialog is called.
+		current_description_image = text
+		if is_dialog_showing then
+			wesnoth.set_dialog_value(current_description_image, "image_selected_item")
 		end
 	end
 	return self

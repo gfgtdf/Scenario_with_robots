@@ -30,26 +30,80 @@ function create_edit_robot_dialog(grid_field, grid_toolbox)
 		T.grid { 
 			T.row {
 				T.column {
-					grid_field,
-				},
-			},
-			T.row {
-				T.column {
-					T.grid {
+					T.grid { 
 						T.row {
 							T.column {
-								T.button {
-									id = "ok" ,
-									label = "OK",
-								},	
+								T.label {
+									definition = "title",
+									label = "Edit Robot",
+								},
+							},
+						}, 
+						T.row {
+							T.column {
+								grid_field,
+							},
+						},
+						T.row {
+							T.column {
+								T.label {
+									definition = "title",
+									label = "Toolbox",
+								},
+							},
+						}, 
+						T.row {
+							T.column {
+								grid_toolbox,
 							},
 						},
 					},
 				},
-			}, 
-			T.row {
 				T.column {
-					grid_toolbox,
+					vertical_grow = true,
+					T.grid {
+						T.row {
+							T.column {
+								vertical_alignment = "top",
+								border = "all",
+								border_size = 5,
+								T.grid {
+									T.row {
+										T.column {
+											border = "all",
+											border_size = 5,
+											T.label {
+												-- definition = "title",
+												label = "Selected item",
+											},
+										},
+									}, 
+									T.row {
+										T.column {
+											T.image {
+												id = "image_selected_item",
+											},	
+										},
+									},
+								},
+							},
+						}, 
+						T.row {
+							T.column {
+								vertical_alignment = "bottom",
+								T.grid {
+									T.row {
+										T.column {
+											T.button {
+												id = "ok" ,
+												label = "OK",
+											},	
+										},
+									},
+								},
+							},
+						}, 
+					},
 				},
 			},
 		},
@@ -88,7 +142,7 @@ function create_unused_tooltip_field(imagename)
 				vertical_grow = true, 
 				T.column {
 					T.image {
-						name = imagename,
+						label = imagename,
 					},
 				},
 			},

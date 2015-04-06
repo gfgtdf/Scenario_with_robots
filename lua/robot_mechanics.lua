@@ -5,9 +5,64 @@ local robot_mechanics = {}
 --local component_list = z_require("component_list")
 --local wml_codes = z_require("wml_codes")
 --local helper = z_require("my_helper")
---TODO: does this work when a is 0 ?
-max = function(a,b ) return a > b and a or b end
-min = function(a,b ) return a < b and a or b end
+max = function(a, b) return a > b and a or b end
+min = function(a, b) return a < b and a or b end
+
+
+
+local function create_component_image(comp)
+	local min_x = 2
+	local max_x = 4
+	local min_y = 2
+	local max_y = 4
+	
+	--caclualte teh size for the image but make it at lest 3x3.
+	for i_x = 1, 5 do
+		for i_y = 1, 5 do
+			if (comp.field[i_x] or {})[i_y] or (comp.field_images[i_x] or {})[i_y] then
+				min_x = min(min_x, i_x)
+				max_x = max(max_x, i_x)
+				min_y = min(min_y, i_y)
+				max_y = max(max_y, i_y)
+			end
+		end
+	end
+	local res = { "misc/tpixel.png~SCALE(" , 40 * (max_x - min_x + 1) , "," , 40 * (max_y - min_y + 1), ")" }
+	for i_x = 1, 5 do
+		for i_y = 1, 5 do
+			local is_field = (comp.field[i_x] or {})[i_y]
+			local image = (comp.field_images[i_x] or {})[i_y]
+			local pos_x = (i_x  - min_x) * 40
+			local pos_y = (i_y  - min_y) * 40
+			if is_field then
+				table.insert(res, "~BLIT(misc/twhitesqare40.png,")
+				table.insert(res, tostring(pos_x))
+				table.insert(res, ",")
+				table.insert(res, tostring(pos_y))
+				table.insert(res, ")")
+			end
+			if image then
+				table.insert(res, "~BLIT(")
+				table.insert(res, image)
+				table.insert(res, ",")
+				table.insert(res, tostring(pos_x))
+				table.insert(res, ",")
+				table.insert(res, tostring(pos_y))
+				table.insert(res, ")")
+			end
+		end
+	end
+	table.insert(res, "~BLIT(cursors/normal.png,")
+	table.insert(res, tostring(16 + 40 * (3 - min_x)))
+	table.insert(res, ",")
+	table.insert(res, tostring(16 + 40 * (3 - min_y)))
+	table.insert(res, ")")
+	if min_x ~= 2 or  max_x ~= 4 or  min_y ~= 2 or  max_x ~= 4 then
+		table.insert(res, "~SCALE(120,120)")
+	end
+	return table.concat(res)
+end
+
 robot_mechanics.edit_robot_at_xy = function(x, y)
 	local unit_cfg = wesnoth.get_unit(x, y).__cfg
 	local variables = helper.get_child(unit_cfg, "variables")
@@ -134,7 +189,7 @@ robot_mechanics.edit_robot = function(robot)
 		end
 	end
 	table.insert(imagelist, "c/empty.png")
-	table.insert(down_labels, "remove")
+	table.insert(down_labels, "del")
 	table.insert(tooltiplist, "removes a component")
 	for k,v in pairs(accessible_components) do
 		table.insert(imagelist, v.component.image)
@@ -195,6 +250,11 @@ robot_mechanics.edit_robot = function(robot)
 	end
 	-- if we pass imageid to on_field_clicked this is not needed
 	function on_image_chosen(imageid)
+		if imageid == 1 then
+			dialog.set_selected_item_image("misc/tpixel.png~SCALE(120,120)")
+		else
+			dialog.set_selected_item_image(create_component_image(accessible_components[imageid - 1].component))
+		end
 	end
 	function on_field_clicked(pos, imageid)
 		-- the imageid is also the coresponding comonent index in that array
@@ -236,6 +296,8 @@ robot_mechanics.edit_robot = function(robot)
 			end
 		end
 	end
+	--initilize the image
+	on_image_chosen(1)
 	dialog.on_image_chosen = on_image_chosen
 	dialog.on_field_clicked = on_field_clicked
 	dialog.show_dialog()
