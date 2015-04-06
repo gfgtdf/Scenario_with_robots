@@ -146,7 +146,7 @@ local details_panel_pages = T.multi_page {
 							border = "left, right, top",
 							border_size = 10,
 							T.label {
-							vertical_alignment = "bottom",
+								vertical_alignment = "bottom",
 								id = "details_price",
 								label = _ "Price: 0g   "
 							}

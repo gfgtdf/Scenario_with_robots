@@ -148,7 +148,6 @@ Gui_test.new = function(pages)
 				name = v.name
 			})
 		end
-		a = (a or 0) + 5
 		wesnoth.set_dialog_canvas(1, drawing,"right_page_drwaing")
 		-- a workaround to update the canvas
 		wesnoth.set_dialog_value(self.get_changing_string(), "left_page_drwaing")
