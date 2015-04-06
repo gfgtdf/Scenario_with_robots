@@ -1,13 +1,7 @@
--- this file need some tidy up
 
--- local helper = z_require("my_helper")
 z_require("dialogs/edit_robot")
 local gui = {}
 
--- it is not very pretty, with MyGrig and Dialog1,2,3 
--- especialy becaus erthe line between MyGrig and Dialog is not as clear as i wanted
--- and because im still not sure wich method to use for classes.
--- since gui code isnot  easy especialy because it crashes the game instead of giving an error in most times, i always create another function when i change something here.
 Dialog3 = {}
 Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last_row_width, down_labels)
 	local self = {}
@@ -21,15 +15,13 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 	for  ix = 1, sizeX do
 		images[ix] = {}
 	end
-	--self.down_count = {}
 	local down_strings= down_labels or {}
 	local grid_top = create_dialog_grid(sizeX, sizeY)
 	local last_row_content = {}
 	local last_grid_content = {}
 	local menu_grid_content = {}
 	local menu_row_content = {}
-	-- sonce i dont forece the keys of imagelist to be ints i need this, bottom
-	
+
 	-- creating the downer area  "toolbox"
 	local toolbox_size_x = last_row_width
 	local toolbox_size_y = math.ceil(#down_labels / last_row_width)
