@@ -42,7 +42,7 @@ global_events.toplevel_start()
 -- there are some other global variables:
 --   serialize, serialize_oneline, deseralize, Set, cwo, - importent global functions exported by my_helper
 --   min, max - global functions 
---   MyGrig, Dialog1, Dialog2, Dialog3
+--   Dialog3
 --   inventory - stores the inventory object
 --   traps - stores the traps object
 --   current_event_name - the name of the event we are in
