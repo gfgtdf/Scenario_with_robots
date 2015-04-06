@@ -102,7 +102,7 @@ Gui_test.new = function(pages)
 				w = 500 * self.factor, 
 				h = 600 * self.factor, 
 				resize_mode = "scale",
-				name= "misc/Page1.png" },
+				name= "misc/page1.png" },
 			T.text { 
 				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
 				-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
@@ -129,7 +129,7 @@ Gui_test.new = function(pages)
 				w = 500 * self.factor, 
 				h = 600 * self.factor, 
 				resize_mode = "scale",
-				name= "misc/Page2.png" },
+				name= "misc/page2.png" },
 			T.text { 
 				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
 				-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
