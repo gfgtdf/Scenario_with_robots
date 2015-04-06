@@ -10,6 +10,11 @@
 - fixed paths on linux
 - fixed strict lua related problems in 1.13
 
+1.0.3
+- more pathfixes on linux
+- Add image for selected item in the edit robot dialog
+- code cleanups
+- give starting unit full moves in the scenario.
 
 
 
