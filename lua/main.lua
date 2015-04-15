@@ -43,7 +43,6 @@ global_events.toplevel_start()
 --   serialize, serialize_oneline, deseralize, Set, cwo, - importent global functions exported by my_helper
 --   min, max - global functions 
 --   Dialog3
---   inventory - stores the inventory object
 --   traps - stores the traps object
 --   current_event_name - the name of the event we are in
 --   has_juts_been_recruited_not - a funciton

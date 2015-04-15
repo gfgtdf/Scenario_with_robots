@@ -60,9 +60,17 @@ global_events.toplevel_start = function()
 	enter_hex_is_really_there = true
 	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
 	global_events.add_event_handler("prestart", global_events.on_prestart)
-	
-	 
-	inventory = Inventory.new("component_inventory")
+
+	if wesnoth.get_variable("component_inventory") ~= nil and wesnoth.get_variable("component_inventory_1") == nil then
+		--	compability code
+		wesnoth.set_variable("component_inventory_1", wesnoth.get_variable("component_inventory"))
+		wesnoth.set_variable("component_inventory")
+	end
+	inventories = {}
+	for i,side in ipairs(wesnoth.sides) do
+		inventories[side.side] = Inventory.new("component_inventory_" .. tostring(side.side))
+	end
+	inventory = inventories[1]
 	traps = Traps.new("")
 	traps.init()
 	current_event_name = ""
@@ -284,13 +292,14 @@ global_events.on_recruit = function(event_context)
 	--cwo(unit.race)
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
 	if unit_cfg.race == "zt_robots" then
-		inventory.open()
-		inventory.add_amount("simplewheel", 1)
-		inventory.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
-		inventory.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
-		inventory.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
-		inventory.add_random_items(2)
-		inventory.close()
+		local inv = inventories[wesnoth.current.side]
+		inv.open()
+		inv.add_amount("simplewheel", 1)
+		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
+		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
+		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
+		inv.add_random_items(2)
+		inv.close()
 	end
 end
 -- i think the unit CAN be brought back to life with in an die event from wml, or from lua.

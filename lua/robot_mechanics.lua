@@ -94,10 +94,11 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	end
 	--
 	local has_inventory_fierd = false
-	inventory.open()
+	local inv = inventories[wesnoth.current.side]
+	inv.open()
 	local edit_result = wesnoth.synchronize_choice(function ()
 		
-		local inv_delta = robot_mechanics.edit_robot(robot)
+		local inv_delta = robot_mechanics.edit_robot(robot, inv)
 		
 		local robot_to_seralize = {}
 		-- copy only on first level
@@ -124,9 +125,9 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	end)
 	
 	for k, v in pairs(edit_result[1][2]) do
-		inventory.add_amount(k, v)
+		inv.add_amount(k, v)
 	end
-	inventory.close()
+	inv.close()
 	
 	if not has_inventory_fierd then
 		robot = loadstring("return " .. edit_result.robotstring )()
@@ -168,7 +169,7 @@ end
 -- shows the robot edit dialog and writes the canges into the robot variable
 -- this function changes the robot variable, and returns wich items are taken from the inventory
 -- this function assumes that the inventory is open but doesn't change it(because this is called in a sync_context).
-robot_mechanics.edit_robot = function(robot)
+robot_mechanics.edit_robot = function(robot, inv)
 	local invenory_delta = {}
 	local sizeX = robot.size.x
 	local sizeY = robot.size.y
@@ -180,7 +181,7 @@ robot_mechanics.edit_robot = function(robot)
 	local components_reference_field = {}
 	-- later the won't be all components accessible.
 	-- saving the max number of alowed comonents of 1 type in this list seems also useful to me.
-	local accessible_components = robot_mechanics.get_accesible_components(inventory ,robot)
+	local accessible_components = robot_mechanics.get_accesible_components(inv ,robot)
 	for ix = 1, sizeX do 
 		field [ix] = {} 
 		components_reference_field[ix] = {} 
@@ -267,7 +268,6 @@ robot_mechanics.edit_robot = function(robot)
 					if old_name == v.component.name then
 						v.number = v.number + 1
 						if old_name ~= "core" then
-							--inventory.add_amount(old_name, 1)
 							invenory_delta[old_name] = (invenory_delta[old_name] or 0) + 1
 							
 						end
@@ -289,7 +289,6 @@ robot_mechanics.edit_robot = function(robot)
 				dialog.set_down_label(imageid, tostring(accessible_components[imageid - 1].number))
 				--cores cannot be put in inventory
 				if(imageid ~= 2) then
-					--inventory.add_amount(accessible_components[imageid - 1].component.name, - 1)
 					local compname = accessible_components[imageid - 1].component.name
 					invenory_delta[compname] = (invenory_delta[compname] or 0) - 1
 				end
@@ -322,7 +321,6 @@ robot_mechanics.edit_robot = function(robot)
 			if(v1.component.name == "core") then
 				error("a core is not connected to the core :S")
 			end
-			--inventory.add_amount(v1.component.name, 1)
 			invenory_delta[v1.component.name] = (invenory_delta[v1.component.name] or 0) + 1
 		end
 	end
