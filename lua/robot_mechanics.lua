@@ -450,20 +450,18 @@ robot_mechanics.calcualte_bonuses = function(field, robot)
 	local rings_count = robot.rings_count
 	
 	open_ends_count = max (1, open_ends_count ) - 1
-	open_ends_count = 3 * open_ends_count
-	
 	local aggregator = {}
 	local apply_functions = {}
 	aggregator.movement = 0
 	aggregator.movement_costs = {}
 	aggregator.terrain_defenses_delta = {}
 	aggregator.resitances_delta = {}
-	aggregator.resitances_delta.arcane = open_ends_count - rings_count
-	aggregator.resitances_delta.cold = open_ends_count - rings_count
-	aggregator.resitances_delta.fire = open_ends_count - rings_count 
-	aggregator.resitances_delta.blade = open_ends_count - rings_count * 4
-	aggregator.resitances_delta.pierce = open_ends_count - rings_count * 2
-	aggregator.resitances_delta.impact = open_ends_count - rings_count * 3
+	aggregator.resitances_delta.arcane = (open_ends_count - rings_count) * 4
+	aggregator.resitances_delta.cold = (open_ends_count - rings_count) * 4
+	aggregator.resitances_delta.fire = (open_ends_count - rings_count) * 4
+	aggregator.resitances_delta.blade = (open_ends_count - rings_count) * 4
+	aggregator.resitances_delta.pierce = (open_ends_count - rings_count) * 4
+	aggregator.resitances_delta.impact = (open_ends_count - rings_count) * 4
 	for k, v in pairs(robot.components) do
 		if v.component.check_function(field, robot, v.pos) then
 		
