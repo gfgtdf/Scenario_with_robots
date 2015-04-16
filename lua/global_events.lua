@@ -296,16 +296,14 @@ global_events.on_recruit = function(event_context)
 	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
 	--cwo(unit.race)
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
-	if unit_cfg.race == "zt_robots" then
+	if unit_cfg.race == "zt_robots" and not globals.is_mp then
 		local inv = inventories[wesnoth.current.side]
 		inv.open()
 		inv.add_amount("simplewheel", 1)
-		if not globals.is_mp then
-			inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
-			inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
-			inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
-			inv.add_random_items(2)
-		end
+		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
+		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
+		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
+		inv.add_random_items(2)
 		inv.close()
 	end
 end
