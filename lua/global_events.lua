@@ -55,11 +55,16 @@ global_events.toplevel_start = function()
 	global_events.add_event_handler("turn refresh", global_events.on_side_turn)
 	global_events.add_event_handler("moveto", global_events.on_moveto)
 	global_events.add_event_handler("exit_hex", global_events.on_exit_hex)
-	global_events.add_event_handler("enter_hex", global_events.on_enter_hex) 
+	global_events.add_event_handler("enter_hex", global_events.on_enter_hex)
+	global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
+		robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
+		stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
+	end)
 	-- see global_events.on_enter_hex
 	enter_hex_is_really_there = true
 	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
 	global_events.add_event_handler("prestart", global_events.on_prestart)
+	global_events.add_event_handler("start", global_events.on_start)
 
 	if wesnoth.get_variable("component_inventory") ~= nil and wesnoth.get_variable("component_inventory_1") == nil then
 		--	compability code
@@ -295,10 +300,12 @@ global_events.on_recruit = function(event_context)
 		local inv = inventories[wesnoth.current.side]
 		inv.open()
 		inv.add_amount("simplewheel", 1)
-		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
-		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
-		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
-		inv.add_random_items(2)
+		if not globals.is_mp then
+			inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
+			inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
+			inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
+			inv.add_random_items(2)
+		end
 		inv.close()
 	end
 end
@@ -333,6 +340,33 @@ global_events.on_prestart = function(event_context)
 		recruited_list[v.id] = 1
 	end
 	wesnoth.set_variable("recruited_list", serialize_oneline(recruited_list))
+end
+
+-- why not treating prestart just like all the other events?
+global_events.on_start = function(event_context)
+	wesnoth.wml_actions.set_menu_item {
+		description = "edit robot",
+		id = "menu_edit_robot",
+		T.show_if {
+			T.have_unit {
+				x = "$x1",
+				y = "$y1",
+				side = "$side_number",
+				ability = "robot_ability",
+				T["not"] {
+					T.filter_wml {
+						attacks_left = 0,
+					},
+					T["and"] {
+						lua_function = "has_just_been_recruited_not"
+					},
+				},
+			},
+		},
+		T.filter_location {
+			terrain = "C*,C*^*,*^C*,K*,K*^*,*^K*",
+		},
+	}
 end
 
 global_events.register_wml_event = function(eventname, eventfilter_wml, event_id, func)
