@@ -39,9 +39,9 @@ function sync_choice.version1_11_13(func_human, func_ai, sides)
 	local r = {}
 	local local_sides = {}
 	for k,v in pairs(sides) do
-		local ir = math.random(1000000000)
+		local ir = tostring(math.random(1000000000)) .. "_" .. tostring(os.time()) .. "_" .. tostring(os.clock()) .. "_" .. tostring(wesnoth.get_time_stamp())
 		sync_choice.set_global_variable("pyr_npt_1_12", "side_local_test" .. tostring(v), v, ir)
-		local ircheck = tonumber(sync_choice.get_global_variable("pyr_npt_1_12", "side_local_test" .. tostring(v), v))
+		local ircheck = tostring(sync_choice.get_global_variable("pyr_npt_1_12", "side_local_test" .. tostring(v), v))
 		if ir == ircheck then
 			table.insert(local_sides, v)
 		end
