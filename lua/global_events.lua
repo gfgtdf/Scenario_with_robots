@@ -211,7 +211,6 @@ global_events.create_disallow_undo_workaround = function(event_name)
 end
 --
 global_events.on_advance = function(event_context)
-	g_advances = (g_advances or 0) + 1
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	local advancing_type = wesnoth.unit_types["advancing" .. unit.type]
 	if(advancing_type ~= nil) then
