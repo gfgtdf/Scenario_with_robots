@@ -17,14 +17,14 @@ Traps.new = function(storage_variable)
 	self.load_traps = function (cfg)
 		for i = 1, #cfg do
 			if cfg[i][1] == "traps"  then
-				self.traplist = deseralize(cfg[i][2].value)
+				self.traplist = swr_h.deseralize(cfg[i][2].value)
 				table.remove(cfg, i)
 				break
 			end
 		end
 	end
 	self.save_traps = function (cfg)
-		table.insert(cfg, T.traps {value = serialize_oneline( self.traplist ) } )
+		table.insert(cfg, T.traps {value = swr_h.serialize_oneline( self.traplist ) } )
 		return cfg
 	end
 	self.on_prestart = function ()
@@ -146,7 +146,7 @@ Traps.new = function(storage_variable)
 		unit = wesnoth.get_unit(event_context.x1,event_context.y1)
 		if wesnoth.unit_ability(unit, "ab_trapper") then
 			unit_cfg = unit.__cfg
-			local unit_abilities = helper.get_or_create_child(unit_cfg, "abilities")
+			local unit_abilities = swr_h.get_or_create_child(unit_cfg, "abilities")
 			for ab_trapper in helper.child_range(unit_abilities, "ab_trapper") do
 				self.set_trap({
 					x = event_context.x1, 

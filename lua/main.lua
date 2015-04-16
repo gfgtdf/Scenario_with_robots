@@ -9,7 +9,8 @@ function z_require(script)
 	return wesnoth.dofile('~add-ons/Scenario_with_robots/lua/' .. script .. '.lua')
 end
 
-helper = z_require("my_helper")
+helper = wesnoth.require("lua/helper.lua")
+swr_h = z_require("my_helper")
 -- since i don't have any rtanslations yet i use the global "wesnoth"
 _ = wesnoth.textdomain 'wesnoth'
 T = helper.set_wml_tag_metatable {}

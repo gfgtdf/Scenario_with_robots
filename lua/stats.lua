@@ -37,7 +37,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	
 	time2 = wesnoth.get_time_stamp()
 	
-	local unit_modifications = helper.get_or_create_child(unit_cnf, "modifications")
+	local unit_modifications = swr_h.get_or_create_child(unit_cnf, "modifications")
 	
 	local weapons_extras = {}
 	-- used to add animations.
@@ -47,7 +47,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	end
 	
 	--remove temporary attacks
-	helper.remove_from_array(unit_cnf, function(e) return (e[1] == "attack" and (e[2].temporary == "yes" or e[2].temporary == true)) end)
+	swr_h.remove_from_array(unit_cnf, function(e) return (e[1] == "attack" and (e[2].temporary == "yes" or e[2].temporary == true)) end)
 	
 	-- collect information from advancements.
 	for advance in helper.child_range(helper.get_child(unit_cnf, "modifications"), "advance") do
@@ -141,7 +141,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	-- LotI uses this only for advancements but i tant to enable this for [object] ss too.
 	-- for advance in helper.child_range(unit_modifications, "advance") do
 	-- i want change_ablitity to takew effect before bonus_attack.
-	for modification in helper.child_range_multiple_tags(unit_modifications, Set{"advance", "object", "trait"}) do
+	for modification in swr_h.child_range_multiple_tags(unit_modifications, Set{"advance", "object", "trait"}) do
 		for effect in helper.child_range(modification, "effect") do
 			-- a new tag that allows changes of abilies
 			-- since we change something we might have to deepcopy somthing here.
@@ -187,7 +187,7 @@ function stats.calculate_weapons_only(unit_cnf)
 		end
 	end
 	
-	for advance in helper.child_range_multiple_tags(unit_modifications, Set{"advance", "object", "trait"}) do
+	for advance in swr_h.child_range_multiple_tags(unit_modifications, Set{"advance", "object", "trait"}) do
 		for effect in helper.child_range(advance, "effect") do
 			if(effect.apply_to == "bonus_attack") then
 				local stongest_attack -- note that unline in the wml code this is NOT the index of the attack
@@ -211,7 +211,7 @@ function stats.calculate_weapons_only(unit_cnf)
 				if (has_this_attack ~= true) then
 					--TODO: case that no attack found
 					--TODO: WE NEED A DEEP COPY OF THAT ATTACK!!!
-					new_attack  = helper.deepcopy(stongest_attack)
+					new_attack  = swr_h.deepcopy(stongest_attack)
 					table.insert(unit_cnf, {"attack",new_attack}) -- i can still acess it though local variable attack
 					--what happens when has_this_attack==true? 
 					--i think about it later i just copied it from the wml code
@@ -231,7 +231,7 @@ function stats.calculate_weapons_only(unit_cnf)
 						end
 					end
 					if(animation ~= nil) then --nil <=> we coudn't found the animation because the weaopn was already renamed by an object, TOD fix this EDIT: is was my fault i canged the weaons name insteady of desription
-						local new_anim = helper.deepcopy(animation)
+						local new_anim = swr_h.deepcopy(animation)
 						local new_anim_filter = helper.get_child(new_anim, "filter_attack")
 						new_anim_filter.name = effect.name
 						local anim_object = { sort = "temporary", silent = "yes",
@@ -260,7 +260,7 @@ function stats.calculate_weapons_only(unit_cnf)
 				if (effect.number ~= nil) then 
 					attacks = effect.number 
 				end
-				for other_advance in helper.child_range_multiple_tags(unit_modifications, Set {"advance", "object", "trait"}) do
+				for other_advance in swr_h.child_range_multiple_tags(unit_modifications, Set {"advance", "object", "trait"}) do
 					for other_effect in helper.child_range(other_advance, "effect") do
 						if other_effect.apply_to == "improve_bonus_attack" and other_effect.name == effect.name  then 
 							damage = damage + (other_effect.increase_damage or 0)
@@ -276,7 +276,7 @@ function stats.calculate_weapons_only(unit_cnf)
 					new_attack.damage = new_attack.damage * new_attack.number
 					new_attack.number = 1
 				end
-				local new_attack_specials = helper.get_or_create_child(new_attack, "specials")
+				local new_attack_specials = swr_h.get_or_create_child(new_attack, "specials")
 				local effect_specials = helper.get_child(effect, "specials") or {}
 				for special_index,special in pairs(effect_specials)do
 					-- deepcopy??
@@ -314,7 +314,7 @@ function stats.calculate_weapons_only(unit_cnf)
 end
 
 function stats.calculate_attack(attack, weapons_extras_t)
-	local specials = helper.get_or_create_child(attack, "specials")
+	local specials = swr_h.get_or_create_child(attack, "specials")
 	weapons_extras_t.specials = weapons_extras_t.specials or {}
 	
 	attack.damage = (attack.damage * weapons_extras_t.damage / 100)
@@ -329,9 +329,9 @@ function stats.calculate_attack(attack, weapons_extras_t)
 		attack.description = weapons_extras_t.name
 	end
 	for k,v in pairs(weapons_extras_t.specials) do
-		table.insert(specials, helper.deepcopy(v))
+		table.insert(specials, swr_h.deepcopy(v))
 	end
-	local specials_2 = helper.get_or_create_child(attack, "specials")
+	local specials_2 = swr_h.get_or_create_child(attack, "specials")
 end
 
 function stats.add_damages(object, wep_extra_aggregator)

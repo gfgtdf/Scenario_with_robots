@@ -117,7 +117,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 		end
 		-- by doing that we dont need to unseralize the robot unnessesarily.
 		has_inventory_fierd = true
-		robotstring = helper.serialize_oneline(robot_to_seralize)
+		robotstring = swr_h.serialize_oneline(robot_to_seralize)
 		return { robotstring = robotstring, T.inv_delta (inv_delta)}
 	end,
 	function()
@@ -243,7 +243,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		end 
 		components_reference_field[pos.x][pos.y] = nil
 		if not graphic_only then
-			helper.remove_from_array(robot.components, function(rcomp) return rcomp.pos.x == pos.x and rcomp.pos.y == pos.y end)
+			swr_h.remove_from_array(robot.components, function(rcomp) return rcomp.pos.x == pos.x and rcomp.pos.y == pos.y end)
 		end
 	end
 	for k,v in pairs(robot.components) do
@@ -553,9 +553,9 @@ end
 
 robot_mechanics.replace_robot_advancements = function(unit_cfg, effects, new_advancements)
 	local modifications_cfg = helper.get_child(unit_cfg, "modifications")
-	helper.remove_from_array(modifications_cfg, function(a) 
+	swr_h.remove_from_array(modifications_cfg, function(a) 
 		--remove the old new_advancements
-		if(a[2].id ~= nil and helper.string_starts(a[2].id, "robot_imp_")) then
+		if(a[2].id ~= nil and swr_h.string_starts(a[2].id, "robot_imp_")) then
 			return true
 		end
 		-- remove the robot_improvements

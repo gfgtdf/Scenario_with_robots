@@ -238,7 +238,7 @@ end
 global_events.on_post_advance = function(event_context)
 	-- cwo("on_post_advance")
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
-	if helper.string_starts(unit.type, "advancing") then
+	if swr_h.string_starts(unit.type, "advancing") then
 		local original_name = string.sub(unit.type, string.len("advancing") + 1)
 		local un_advancing_type = wesnoth.unit_types[original_name]
 		if un_advancing_type ~= nil then
@@ -246,7 +246,7 @@ global_events.on_post_advance = function(event_context)
 			unit_cfg.type = original_name
 			local do_not_continue = true
 			--repeat
-			--	do_not_continue = not helper.remove_subtag(unit_cfg, "advancement")
+			--	do_not_continue = not swr_h.remove_subtag(unit_cfg, "advancement")
 			--until do_not_continue
 			--i want to use "put_unit" but idk weatehr thats triggers unit advancing. why doesn't "put_unit" have parameters "advance", "fire_event" .. like unstore unit.
 			wesnoth.set_variable("advanced_temp_4", unit_cfg)
@@ -339,7 +339,7 @@ global_events.on_prestart = function(event_context)
 	for k, v in pairs(wesnoth.get_units()) do
 		recruited_list[v.id] = 1
 	end
-	wesnoth.set_variable("recruited_list", serialize_oneline(recruited_list))
+	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
 end
 
 -- why not treating prestart just like all the other events?
@@ -389,10 +389,10 @@ global_events.register_wml_event_funcname = function(eventname, eventfilter_wml,
 end
 -- i use this, to know when wich unit was recruited
 global_events.on_recruit_log_time = function(event_context)
-	local recruited_list = deseralize(wesnoth.get_variable("recruited_list") or "{}")
+	local recruited_list = swr_h.deseralize(wesnoth.get_variable("recruited_list") or "{}")
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	recruited_list[unit.id] = wesnoth.current.turn
-	wesnoth.set_variable("recruited_list", serialize_oneline(recruited_list))
+	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
 end
 
 global_events.add_on_load = function(f)

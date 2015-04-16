@@ -24,7 +24,7 @@ Inventory.new = function(inventory_variable)
 		if not self.is_open then
 			error("Inventory cannot be closed because it is not open")
 		else
-			local inv_string = helper.serialize_oneline(self.inv_set)
+			local inv_string = swr_h.serialize_oneline(self.inv_set)
 			wesnoth.set_variable(self.variable_name, inv_string)
 			self.inv_set = nil
 			self.is_open = false

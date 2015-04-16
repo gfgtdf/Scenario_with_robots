@@ -2,7 +2,7 @@
 -- right now im not very convinced that this was the right approach
 -- it also defines some global functions wich are very important (set, cwo, serialize_oneline)
 local helper = wesnoth.require("lua/helper.lua")
-
+local my_helper = {}
 
 --i want this to be like an extension of lua so i want it to be abele to call without the "helper." prefix
 function Set (list)
@@ -74,21 +74,24 @@ function deseralize(str)
 	return loadstring("return " .. str)()
 end
 
-helper.cwo = cwo
-helper.serialize = serialize
-helper.serialize_oneline = serialize_oneline
-helper.Set = Set
+my_helper.cwo = cwo
+my_helper.serialize = serialize
+my_helper.serialize_oneline = serialize_oneline
+my_helper.deseralize = function(str)
+	return loadstring("return " .. str)()
+end
+my_helper.Set = Set
 
 --not much to say
-helper.deepcopy = function (orig)
+my_helper.deepcopy = function (orig)
 	local orig_type = type(orig)
 	local copy
 	if orig_type == 'table' then
 		copy = {}
 		for orig_key, orig_value in next, orig, nil do
-			copy[helper.deepcopy(orig_key)] = helper.deepcopy(orig_value)
+			copy[my_helper.deepcopy(orig_key)] = my_helper.deepcopy(orig_value)
 		end
-		setmetatable(copy, helper.deepcopy(getmetatable(orig)))
+		setmetatable(copy, my_helper.deepcopy(getmetatable(orig)))
 	else -- number, string, boolean, etc
 		copy = orig
 	end
@@ -96,7 +99,7 @@ helper.deepcopy = function (orig)
 end
 
 --unlike get_child this creates a child if it cannot find it.
-helper.get_or_create_child = function(cfg, name)
+my_helper.get_or_create_child = function(cfg, name)
 	local r = helper.get_child(cfg, name)
 	if r ~= nil then
 		return r
@@ -107,7 +110,7 @@ helper.get_or_create_child = function(cfg, name)
 	end
 end
 --unlike child_range this give also the index of the tag
-helper.child_range_ex = function (cfg, tag)
+my_helper.child_range_ex = function (cfg, tag)
 	local function f(d, i)
 		local c
 		repeat
@@ -120,7 +123,7 @@ helper.child_range_ex = function (cfg, tag)
 	return f, 0
 end
 
-function helper.child_range_multiple_tags(cfg, tag_set)
+function my_helper.child_range_multiple_tags(cfg, tag_set)
 	local function f(s)
 		local c
 		repeat
@@ -136,7 +139,7 @@ end
 
 -- i think this was the hardest part, this method is for iterating over 2 enumerations syncroinous, 
 -- it is like Enumerabe.Zip in C#, use it like "for k,v in  merge_iterators({pairs(..)},{pairs(..)}) do" then k,v are arrays of len 2 containing the original k v
-helper.merge_iterators = function(it1, it2)
+my_helper.merge_iterators = function(it1, it2)
 	local function f(d, i)
 		i1 ,v1 = it1[1](d[1], i[1])
 		i2 ,v2 = it2[1](d[2], i[2])
@@ -148,7 +151,7 @@ helper.merge_iterators = function(it1, it2)
 end
 
 --
-helper.remove_from_array = function(arr, f_filter)
+my_helper.remove_from_array = function(arr, f_filter)
 	local index = 1
 	while index <= #arr do
 		if(f_filter(arr[index])) then
@@ -159,7 +162,7 @@ helper.remove_from_array = function(arr, f_filter)
 	end
 end
 -- removes ONE subtag with the given tagname of the wml object returns weather somthing was removed,
-helper.remove_subtag = function(cfg, name)
+my_helper.remove_subtag = function(cfg, name)
 	for k,v in pairs(cfg) do
 		if(type(k) == "number") and (v[1] == name) then
 			table.remove(cfg, k)
@@ -169,14 +172,14 @@ helper.remove_subtag = function(cfg, name)
 	return false
 end
 -- min, max are keyword according to notepad++ syntax highlighting-
-helper.random_number = function(mi, ma)
+my_helper.random_number = function(mi, ma)
 	if not ma then mi, ma = 1, mi end
 	wesnoth.fire("set_variable", { name = "LUA_random", rand = string.format("%d..%d", mi, ma) })
 	local res = wesnoth.get_variable "LUA_random"
 	wesnoth.set_variable "LUA_random"
 	return res
 end
-helper.string_starts = function(String, Start)
+my_helper.string_starts = function(String, Start)
    return string.sub(String,1,string.len(Start))==Start
 end
-return helper
+return my_helper

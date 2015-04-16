@@ -16,7 +16,7 @@ trader.buy_items = function(item_list, max_gold)
 			reet = {}
 			price = 0
 		end
-		return { s = helper.serialize_oneline(reet), p = price}
+		return { s = swr_h.serialize_oneline(reet), p = price}
 	end,
 	function()
 		error("buy_items called by ai.")
