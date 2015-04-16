@@ -35,7 +35,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	-- alhtough this is the greatest of the 4 methods it is alos the fastest (13 milliseconds on efraim with 80 advancements), 
 	-- so i think the main time is needet fo the [unit] tag in backuo_unit_stats and and unstore_unit in calculations_end
 	
-	time2 = helper.get_time_stamp()
+	time2 = wesnoth.get_time_stamp()
 	
 	local unit_modifications = helper.get_or_create_child(unit_cnf, "modifications")
 	
@@ -310,7 +310,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	end
 	
 	
-	time2 = helper.get_time_stamp () - time2
+	time2 = wesnoth.get_time_stamp () - time2
 end
 
 function stats.calculate_attack(attack, weapons_extras_t)
@@ -399,7 +399,7 @@ end
 
 function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 	-- this method takes 60 millisecons on efraim with 80 advancements and full equip.
-	time1 = helper.get_time_stamp()
+	time1 = wesnoth.get_time_stamp()
 	heal = status_heal or heal
 	unit_cnf.hitpoints = heal and unit_cnf.max_hitpoints or unit_cnf.hitpoints
 	unit_cnf.moves = status_heal and unit_cnf.max_moves or unit_cnf.moves
@@ -444,7 +444,7 @@ function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 	unit_cnf_new.moves = unit_cnf.moves
 	unit_cnf_new.attacks_left = unit_cnf.attacks_left
 	
-	time1 = helper.get_time_stamp() - time1
+	time1 = wesnoth.get_time_stamp() - time1
 	return unit_cnf_new
 	
 end

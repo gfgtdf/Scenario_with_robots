@@ -168,13 +168,6 @@ helper.remove_subtag = function(cfg, name)
 	end
 	return false
 end
--- since my scenario wont work under 11.2 anyway this is not needed
-helper.get_time_stamp = wesnoth.get_time_stamp or function()
-	wesnoth.fire("set_variable",{ name="LUA_get_time_stamp", time="stamp"})
-	local r = wesnoth.get_variable("LUA_get_time_stamp")
-	--clear left out for deug purposes
-	return r
-end
 -- min, max are keyword according to notepad++ syntax highlighting-
 helper.random_number = function(mi, ma)
 	if not ma then mi, ma = 1, mi end
