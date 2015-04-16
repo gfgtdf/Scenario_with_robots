@@ -47,3 +47,21 @@ global_events.add_event_handler("menu_item menu_read_book", function (event_cont
 	--this doesn't change the game so no synchronize_choice is needed
 	book_dialog.show_dialog()
 end)
+
+-- use this to give the player a certain amount of components whenever he recruits a robot.
+global_events.add_event_handler("recruit", function (event_context)
+	-- why is the "race" property not accessible though the proxy?
+	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
+	--cwo(unit.race)
+	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
+	if unit_cfg.race == "zt_robots" then
+		local inv = inventories[wesnoth.current.side]
+		inv.open()
+		inv.add_amount("simplewheel", 1)
+		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
+		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
+		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
+		inv.add_random_items(2)
+		inv.close()
+	end
+end)

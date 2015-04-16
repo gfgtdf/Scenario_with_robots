@@ -50,7 +50,6 @@ global_events.toplevel_start = function()
 	global_events.add_event_handler("advance", global_events.on_advance)
 	global_events.add_event_handler("post_advance", global_events.on_post_advance)
 	global_events.add_event_handler("die", global_events.on_die)
-	global_events.add_event_handler("recruit", global_events.on_recruit)
 	global_events.add_event_handler("recruit", global_events.on_recruit_log_time)
 	global_events.add_event_handler("turn refresh", global_events.on_side_turn)
 	global_events.add_event_handler("moveto", global_events.on_moveto)
@@ -289,23 +288,6 @@ global_events.on_side_turn = function(event_context)
 		end
 	end
 end
--- use this to give the player a certain amount of components whenever he recruits a robot.
-global_events.on_recruit = function(event_context)
-	-- why is the "race" property not accessible though the proxy?
-	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
-	--cwo(unit.race)
-	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
-	if unit_cfg.race == "zt_robots" and not globals.is_mp then
-		local inv = inventories[wesnoth.current.side]
-		inv.open()
-		inv.add_amount("simplewheel", 1)
-		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
-		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
-		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
-		inv.add_random_items(2)
-		inv.close()
-	end
-end
 -- i think the unit CAN be brought back to life with in an die event from wml, or from lua.
 -- so we have to watch out here, since we cant be 100% sure that the unit is dead.
 -- i tihnk it is good peractise to put all "ressurects" in the last_breath event.
@@ -382,7 +364,7 @@ global_events.register_wml_event_funcname = function(eventname, eventfilter_wml,
 		T.filter(eventfilter_wml),
 		id = event_id,
 		T.lua { code = funcname .. "()"}
-		})
+	})
 end
 -- i use this, to know when wich unit was recruited
 global_events.on_recruit_log_time = function(event_context)
