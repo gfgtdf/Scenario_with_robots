@@ -1,6 +1,7 @@
 local trader_list_mp = z_require("trader_list_mp")
 
 global_events.add_event_handler("start", function (event_context)
+	wesnoth.dofile("~add-ons/Scenario_with_robots/lua/version_check.lua")()
 	wesnoth.wml_actions.set_menu_item {
 		description = "Buy components",
 		id = "robot_trader_mp",

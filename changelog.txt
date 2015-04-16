@@ -16,7 +16,10 @@
 - code cleanups
 - give starting unit full moves in the scenario.
 
-
+1.1
+- Add 'Era with Robots' for 1.13 and later
+- Added version checks in mp
+- code cleanups
 
 
 
