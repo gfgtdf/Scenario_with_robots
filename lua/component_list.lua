@@ -194,7 +194,7 @@ table.insert(the_list, {
 		return true 
 	end,
 	aggregate_function = function (robot, comp, aggregator) 
-		aggregator.movement = (aggregator.movement < 10) and (aggregator.movement + 3) or (aggregator.movement + 2)
+		aggregator.movement = (aggregator.movement < 7) and (aggregator.movement + 3) or (aggregator.movement + 2)
 	end,
 	image = "c/wheel.png",
 	field_images = { [3] = { [3] = "c/wheel.png" } }
