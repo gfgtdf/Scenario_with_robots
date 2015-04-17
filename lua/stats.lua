@@ -1,7 +1,7 @@
 -- this is (was) simply LotI's stats.cfg in lua (i don't like those things in wml)
 -- i wrote thsi while playing LotI hoping to make some parts faster, but i canged it to fit my campaing, still it has a lot of stuff i dont't need.
 -- this file "exports":
---   new effects "bonus_attack", "improve_bonus_attack", "change_ablitity", "change_special", ob objects, advancements and traits. (in use)
+--   new effects "bonus_attack", "improve_bonus_attack", "change_ablitity", "change_special", fb objects, advancements and traits. (in use)
 --   add teleport anim (not used)
 --   damage, icon, merge, damage_type, name, specials on "object" with a weapon type (not used)
 --   damage, damage_type, specials on "object" with another or without type. (not used)
@@ -10,12 +10,6 @@
 --   the difference between using change_ablitity and removing the old and adding a new ability is that change_ablitity wnont have any effect if the is no ablity.
 --   the other differnece is, that change_ablitity allows you to change int values relavively with replace=no
 
-
---i disables caching by using dofile for debug reasons, 
---helper = wesnoth.require("~add-ons/Legend_of_the_Invincibles/lua/my_helper.lua")
---constants = wesnoth.require("~add-ons/Legend_of_the_Invincibles/lua/constants.lua")
---local helper = z_require("my_helper")
---local constants = z_require("constants")
 
 local all_sorts = constants.all_sorts
 local weapon_sorts = constants.weapon_sorts
