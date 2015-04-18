@@ -350,7 +350,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { n = true } } },
 	name = "heating_addon",
-	tooltip = "gives resitance to cold damage, better effect if places near the core",
+	tooltip = "gives resitance to cold damage, better effect if placed near the core",
 	check_function = function(r_field, robot, objpos)
 		return true
 	end,
@@ -371,7 +371,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { n = true } } },
 	name = "cooling_addon",
-	tooltip = "gives resitance to fire damage, better effect if places near the core",
+	tooltip = "gives resitance to fire damage, better effect if placed near the core",
 	check_function = function(r_field, robot, objpos)
 		return true
 	end,
