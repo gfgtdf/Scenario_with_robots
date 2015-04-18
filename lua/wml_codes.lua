@@ -58,13 +58,16 @@ wml_codes.get_attack_bigbow_code = function(attack_number, attack_damage)
 		name = "bigbow",
 		range = "ranged",
 		type = "pierce",
-		T.specials { T.chance_to_hit {
-			cumulative = true,
-			description = _ "This attack always has at least a 80% chance to hit.",
-			id = "focused",
-			name = _ "focused",
-			value = 80
-	}}})
+		T.specials {
+			T.chance_to_hit {
+				cumulative = true,
+				description = _ "This attack always has at least a 80% chance to hit.",
+				id = "focused",
+				name = _ "focused",
+				value = 80
+			}
+		}
+	})
 	-- to ad something the makes this useful, for axample a distant attack
 	--TODO: add animations.
 	return effects
@@ -98,39 +101,46 @@ wml_codes.get_ad_resistances_code = function(res_arcane, res_cold, res_fire, res
 			blade = res_blade, 
 			pierce = res_pierce, 
 			impact = res_impact
-	}})
+		}
+	})
 	return effects
- end
+end
 wml_codes.get_healing_ability_code = function(strength)
  	local effects = {}
 	table.insert(effects, T.effect { 
 		apply_to = "new_ability",
-		T.abilities { T.heals {
-			affect_allies = true,
-			affect_self = false,
-			description = _ ("heals " .. tostring(strength) .. " hp per turn or removes poison"),
-			female_name = _ ("female^heals +" .. tostring(strength)),
-			id = "robot_heals_with_4parts",
-			name = _ ("heals +" .. tostring(strength)),
-			poison = "cured",
-			value = strength,
-			T.affect_adjacent { adjacent = "n,ne,se,s,sw,nw" }
-	}}})
+		T.abilities { 
+			T.heals {
+				affect_allies = true,
+				affect_self = false,
+				description = _ ("heals " .. tostring(strength) .. " hp per turn or removes poison"),
+				female_name = _ ("female^heals +" .. tostring(strength)),
+				id = "robot_heals_with_4parts",
+				name = _ ("heals +" .. tostring(strength)),
+				poison = "cured",
+				value = strength,
+				T.affect_adjacent { adjacent = "n,ne,se,s,sw,nw" }
+			}
+		}
+	})
 	return effects
 end
 wml_codes.get_regenerate_ability_code = function(strength)
  	local effects = {}
 	table.insert(effects, T.effect { 
 		apply_to = "new_ability",
-		T.abilities { T.regenerate {
-			affect_self = true,
-			description = _ ("The unit will heal itself " .. tostring(strength) .. " HP per turn. If it is poisoned, these two effects will negate themselves."),
-			female_name = _ "female^regenerates slightly",
-			id = "robot_regenerate_with_4parts",
-			name = _ ("regenerates (" .. tostring(strength) .. ")"),
-			poison = "slowed",
-			value = strength
-	}}})
+		T.abilities {
+			T.regenerate {
+				affect_self = true,
+				description = _ ("The unit will heal itself " .. tostring(strength) .. " HP per turn. If it is poisoned, these two effects will negate themselves."),
+				female_name = _ "female^regenerates slightly",
+				id = "robot_regenerate_with_4parts",
+				name = _ ("regenerates (" .. tostring(strength) .. ")"),
+				poison = "slowed",
+				value = strength
+			}
+		}
+	})
 	return effects
 end
 -- originaly i wanted to change the attack type, but since the bonuis_attack effects was already coded i choose this one.
@@ -146,7 +156,7 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 		--description = _"fury",
 		force_original_attack = attack_name,
 		name = attack_name .. "_with_type_" .. attack_type
-		})
+	})
 	return effects
 end
 wml_codes.get_imp_advancement = function(name)
@@ -161,8 +171,8 @@ wml_codes.get_robot_object = function(effects)
 	-- this MUST be "advance" instead of "object" because advance is always applied before object, and we want the advancement to overwrite this, 
 	-- if this was an object this would overwrite our advaements
 	return T.advance(obj_wml)
- end
- wml_codes.get_trapper_ability_code = function(damage, traptype, maxtraps)
+end
+wml_codes.get_trapper_ability_code = function(damage, traptype, maxtraps)
 	local effects = {}
 	table.insert(effects, T.effect {
 		apply_to = "new_ability",
@@ -179,8 +189,8 @@ wml_codes.get_robot_object = function(effects)
 		}
 	})
 	return effects
- end
- wml_codes.get_change_trapper_type_code = function(traptype) 
+end
+wml_codes.get_change_trapper_type_code = function(traptype) 
 	local effects = {}
 	table.insert(effects, T.effect {
 		apply_to = "change_ablitity",
@@ -189,8 +199,29 @@ wml_codes.get_robot_object = function(effects)
 	})
 	return effects
 end
- 
 
- 
- 
- return wml_codes
+wml_codes.get_antenna_leadership_code = function(percent)
+	local effects = {}
+	table.insert(effects, T.effect {
+		apply_to = "new_ability",
+		T.abilities {
+			T.leadership {
+				id = "antenna_leadership",
+				name = _ "Antanna",
+				description = _ "Adjacent robots deal " .. percent .. "% more damage",
+				value = percent,
+				affect_self = false,
+				affect_allies = true,
+				T.affect_adjacent {
+					adjacent = "n,ne,se,s,sw,nw",
+					T.filter {
+						race = "zt_robots",
+					},
+				},
+			},
+		}
+	})
+	return effects
+end
+
+return wml_codes
