@@ -248,9 +248,6 @@ global_events.on_post_advance = function(event_context)
 			local unit_cfg = unit.__cfg
 			unit_cfg.type = original_name
 			local do_not_continue = true
-			--repeat
-			--	do_not_continue = not swr_h.remove_subtag(unit_cfg, "advancement")
-			--until do_not_continue
 			--i want to use "put_unit" but idk weatehr thats triggers unit advancing. why doesn't "put_unit" have parameters "advance", "fire_event" .. like unstore unit.
 			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
 			wesnoth.set_variable("advanced_temp_4", unit_cfg)
