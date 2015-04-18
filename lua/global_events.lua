@@ -190,14 +190,16 @@ global_events.create_disallow_undo_workaround = function(event_name)
 	else
 		global_events.disallow_undo_effected_events = global_events.disallow_undo_effected_events .. "," ..event_name
 	end
-	wesnoth.wml_actions.event({ 
+	wesnoth.wml_actions.event { 
 		id = "lua_disallow_undo", 
-		remove = true })
-	wesnoth.wml_actions.event({ 
+		remove = true
+	}
+	wesnoth.wml_actions.event { 
 		id = "lua_disallow_undo", 
 		first_time_only = false,
 		name = global_events.disallow_undo_effected_events, 
-		T.lua { code = "global_events.f_workaroubd_event()"} })
+		T.lua { code = "global_events.f_workaroubd_event()"} 
+	}
 	local f_workaroubd_event = function()
 		if(global_events.disallow_undo_flag == nil) then
 			--cwo("global_events.disallow_undo_flag == nil")
@@ -212,14 +214,17 @@ end
 global_events.on_advance = function(event_context)
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	local advancing_type = wesnoth.unit_types["advancing" .. unit.type]
+	cwo("checking for advancing type")
 	if(advancing_type ~= nil) then
+		cwo("found advancing type")
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg
 			-- from heree we cannot use the local "unit" because we deleted it with the put_unit function (do i need the put_unit here?)
 			wesnoth.put_unit(event_context.x1, event_context.y1)
-			--cwo(unit_cfg.type)
+			cwo(unit_cfg.type)
+			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
 			unit_cfg.type = "advancing" .. unit_cfg.type
-			--i want to use "put_unit" but idk weatehr thats triggers unit advancing
+			--"put_unit" doesnt trigger the advancement.
 			wesnoth.set_variable("advanced_temp_3", unit_cfg)
 			--this aborts the ongoing advancement event (but the "advance" event is still fired) and raises a new advancement event itselft
 			-- the advance event is 
@@ -247,6 +252,7 @@ global_events.on_post_advance = function(event_context)
 			--	do_not_continue = not swr_h.remove_subtag(unit_cfg, "advancement")
 			--until do_not_continue
 			--i want to use "put_unit" but idk weatehr thats triggers unit advancing. why doesn't "put_unit" have parameters "advance", "fire_event" .. like unstore unit.
+			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
 			wesnoth.set_variable("advanced_temp_4", unit_cfg)
 			-- strangely if i use "advance = false, fire_event = false" here the unit will will andavance anyway but WITHOUT fireing advance and post_advance.
 			-- EDIT is was my fault i wrote "no" instead of "false" took me ~4hours to find it, works fine now...
