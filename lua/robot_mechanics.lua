@@ -164,6 +164,18 @@ robot_mechanics.get_accesible_components = function(inventory ,robot)
 			table.insert(ac, { component = v.component, number = 0 })
 		end
 	end
+	local sorter = function(comp1, comp2)
+		comp1 = comp1.component
+		comp2 = comp2.component
+		local order_1 = comp1.toolbox_order or 0
+		local order_2 = comp2.toolbox_order or 0
+		if order_1 == order_2 then
+			return comp1.name < comp2.name
+		else
+			return order_1 < order_2
+		end
+	end
+	table.sort(ac, sorter)
 	return ac
 end
 -- shows the robot edit dialog and writes the canges into the robot variable
