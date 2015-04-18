@@ -454,8 +454,8 @@ robot_mechanics.find_connected_items = function(field, robot, startpos)
 end
 -- this function applys the bonusses
 -- returns: 
---   effects the effects that shoudl be applied
---   advanced advances that should be applied this is to mak eth ecomonents reqwuirements for advances.
+--   effects: the effects that shoudl be applied
+--   advanced: advances that should be applied this is to mak eth ecomonents reqwuirements for advances.
 robot_mechanics.calcualte_bonuses = function(field, robot)
 
 	local open_ends_count = robot.open_ends_count

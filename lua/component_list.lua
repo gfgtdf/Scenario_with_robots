@@ -100,7 +100,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [2] = { [3] = { e = true } }, [3] = { [3] = { e = true, w = true } } },
 	name = "simplepike",
-	tooltip  = "Pike: the Farther away from the core, the better is the effect, there shouldn't be any items left to it to wirk properly",
+	tooltip  = "Pike: the Farther away from the core, the better is the effect, there shouldn't be any items left to it to work properly",
 	check_function = function(r_field, robot, objpos) 
 		for i = 1 , objpos.x - 2 do
 			if(r_field[i][objpos.y] ~= "empty") then return false end
@@ -224,7 +224,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [2] = { s = true }, [3] = { n = true, s = true, e = true }, [4] = { n = true } } },
 	name = "bigbow",
-	tooltip = "gives abow attack.",
+	tooltip = "gives a bow attack.",
 	check_function = function(r_field, robot, objpos)
 		for i = 1 , objpos.x - 1 do
 			if(r_field[i][objpos.y] ~= "empty") then return false end
@@ -248,7 +248,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { e = true } } },
 	name = "four_parted_healing_es_e",
-	tooltip = "all partes together provide a powerful healing and regenerateion ability",
+	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
 	check_function = function(r_field, robot, objpos)
 		local heigbours_count = 0
 		for k,v in pairs(robot.components) do
@@ -277,7 +277,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { e = true } } },
 	name = "four_parted_healing_ne_e",
-	tooltip = "all partes together provide a powerful healing and regenerateion ability",
+	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
 	check_function = function(r_field, robot, objpos)
 		-- the logics are all in four_parted_healing_es_e
 		return  true
@@ -289,7 +289,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { w = true } } },
 	name = "four_parted_healing_nw_w",
-	tooltip = "all partes together provide a powerful healing and regenerateion ability",
+	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
 	check_function = function(r_field, robot, objpos)
 		-- the logics are all in four_parted_healing_es_e
 		return  true
@@ -301,7 +301,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { w = true } } },
 	name = "four_parted_healing_sw_w",
-	tooltip = "all partes together provide a powerful healing and regenerateion ability",
+	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
 	check_function = function(r_field, robot, objpos)
 		-- the logics are all in four_parted_healing_es_e
 		return  true
@@ -313,7 +313,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { n = true, w = true } } },
 	name = "spear_fire_modier",
-	tooltip = "sets spear damage to fire, has to be places near a spear",
+	tooltip = "sets spear damage to fire, has to be placed near a spear",
 	check_function = function(r_field, robot, objpos)
 		-- the chach is in the aggregate_function
 		return true
@@ -350,20 +350,16 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { n = true } } },
 	name = "heating_addon",
-	tooltip = "gives resitance to cold damage, has to be placed next to the core",
+	tooltip = "gives resitance to cold damage, better effect if places near the core",
 	check_function = function(r_field, robot, objpos)
-		for k,v in pairs(robot.components) do
-			if v.pos.x == objpos.x and v.pos.y == objpos.y - 1 and v.component.name == "core" then
-				return true
-			end
-		end
-		return false
+		return true
 	end,
 	aggregate_function = function (robot, comp, aggregator)
-		-- nothing here. since it have to ple places next to the core can can onyl be one of this item anyay
+		local distance = comp.distance - 1 --comp.distance == 0 has only the core itself
+		local effect = math.max(20 - (3*distance), 0)
+		aggregator.resitances_delta.cold = aggregator.resitances_delta.cold - effect
 	end,
 	apply_function = function(robot, aggregator)
-		aggregator.resitances_delta.cold = aggregator.resitances_delta.cold - 20
 		return {}
 	end,
 	--no dependencies
@@ -375,20 +371,16 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { n = true } } },
 	name = "cooling_addon",
-	tooltip = "gives resitance to fire damage, has to be placed next to the core",
+	tooltip = "gives resitance to fire damage, better effect if places near the core",
 	check_function = function(r_field, robot, objpos)
-		for k,v in pairs(robot.components) do
-			if v.pos.x == objpos.x  and v.pos.y == objpos.y - 1 and v.component.name == "core" then
-				return true
-			end
-		end
-		return false
+		return true
 	end,
 	aggregate_function = function (robot, comp, aggregator)
-		-- nothing here. since it have to ple places next to the core can can onyl be one of this item anyay
+		local distance = comp.distance - 1 --comp.distance == 0 has only the core itself
+		local effect = math.max(20 - (3*distance), 0)
+		aggregator.resitances_delta.fire = aggregator.resitances_delta.fire - effect
 	end,
 	apply_function = function(robot, aggregator)
-		aggregator.resitances_delta.fire = aggregator.resitances_delta.fire - 20
 		return {}
 	end,
 	--no dependencies
@@ -401,8 +393,9 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { w = true, s = true }, [4] = { n = true} } },
 	name = "bombdropper",
-	tooltip = "this component gives the robot the ability to drop bombs",
+	tooltip = "this component gives the robot the ability to drop bombs, this component will not work if there is another component below it",
 	check_function = function(r_field, robot, objpos)
+		-- There canne by any other item under this item.
 		for i = objpos.y + 2 , robot.size.y do
 			if(r_field[objpos.x][i] ~= "empty") then return false end
 		end
@@ -411,7 +404,6 @@ table.insert(the_list, {
 	aggregate_function = function (robot, comp, aggregator)
 		aggregator.bombdropper = aggregator.bombdropper  or { count = 0}
 		aggregator.bombdropper.count = aggregator.bombdropper.count  + 1
-		-- nothing here. since it have to ple places next to the core can can onyl be one of this item anyay
 	end,
 	apply_function = function(robot, aggregator)
 		local effects = {}
@@ -457,6 +449,25 @@ table.insert(the_list, {
 	field_images = { [3] = { [3] = "c/trapper_poison.png" } }
 })
 
+table.insert(the_list, {
+	field = { [3] = { [3] = { n = true, s = true },  [2] = { s = true } } },
+	name = "antenna",
+	tooltip = "Antenna, makes near robots fight better",
+	check_function = function(r_field, robot, objpos) 
+	--	for i = 1 , objpos.y - 2 do
+	--		if(r_field[objpos.x][i] ~= "empty") then return false end
+	--	end
+		return true 
+	end,
+	aggregate_function = function (robot, comp, aggregator) 
+		aggregator.antenna = (aggregator.antenna or 0) + 5
+	end,
+	apply_function = function(robot, aggregator)
+		return wml_codes.get_antenna_leadership_code(aggregator.antenna)  , wml_codes.get_imp_advancement("antenna")
+	end,
+	image = "c/antenne_unten.png",
+	field_images = { [3] = { [2] = "c/antenne_oben.png", [3] = "c/antenne_unten.png" } }
+})
 
 
 

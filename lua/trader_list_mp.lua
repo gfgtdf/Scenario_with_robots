@@ -78,6 +78,7 @@ table.insert(trader_list, {
 	apply_func = function(inv)
 		inv.add_random_items_from_comma_seperated_list("bombdropper,trapper_modifier,cooling_addon,heating_addon,spear_fire_modier", 1)
 		inv.add_random_items_from_comma_seperated_list("four_parted_healing_sw_w,four_parted_healing_nw_w,four_parted_healing_ne_e,four_parted_healing_es_e", 1)
+		inv.add_amount("antenna",10)
 	end
 })
 return trader_list
