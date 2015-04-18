@@ -57,9 +57,9 @@ function sync_choice.version1_11_13(func_human, func_ai, sides)
 		sync_choice.set_global_variable("pyr_npt_1_12", "side_recruits" .. tostring(v), v, r_side)
 	end
 	for k,v in pairs(sides) do
-		wesnoth.message("Waiting for input from side " ..  tostring(v))
+		-- wesnoth.message("Waiting for input from side " ..  tostring(v))
 		r[v] = sync_choice.get_global_variable("pyr_npt_1_12", "side_recruits" .. tostring(v), v)
-		wesnoth.message("Received for input from side " ..  tostring(v))
+		-- wesnoth.message("Received for input from side " ..  tostring(v))
 	end
 	return r
 end
