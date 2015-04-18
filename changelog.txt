@@ -21,6 +21,10 @@
 - Added version checks in mp
 - code cleanups
 
-
+1.1.1
+- Fix robots amlas on 1.13.x
+- Orders Toolbox items in this order: Core, pipes, wheels, weapons, rest, secondary sortign criteria is internal item id
+- Fix version checks
+- 
 
 
