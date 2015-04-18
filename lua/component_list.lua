@@ -13,6 +13,7 @@ table.insert(the_list, {
 	--maybe i should change the function to default bo since pipes don't do anything.
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/core.png",
+	toolbox_order = -100,
 	field_images = { [3] = { [3] = "c/core.png" } }
 })
 table.insert(the_list, {
@@ -21,6 +22,7 @@ table.insert(the_list, {
 	tooltip = "too many open ends wil cause a serious drop in the robots defense",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_ns.png",
+	toolbox_order = -91,
 	field_images = { [3] = { [3] = "c/pipe_ns.png" } }
 })
 table.insert(the_list, {
@@ -28,6 +30,7 @@ table.insert(the_list, {
 	name = "pipe_ew",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_ew.png",
+	toolbox_order = -91,
 	field_images = { [3] = { [3] = "c/pipe_ew.png" } }
 })
 table.insert(the_list, {
@@ -35,6 +38,7 @@ table.insert(the_list, {
 	name = "pipe_es",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_es.png",
+	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_es.png" } }
 })
 table.insert(the_list, {
@@ -42,6 +46,7 @@ table.insert(the_list, {
 	name = "pipe_ne",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_ne.png",
+	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_ne.png" } }
 })
 table.insert(the_list, {
@@ -49,6 +54,7 @@ table.insert(the_list, {
 	name = "pipe_sw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_sw.png",
+	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_sw.png" } }
 })
 table.insert(the_list, {
@@ -56,6 +62,7 @@ table.insert(the_list, {
 	name = "pipe_nw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_nw.png",
+	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_nw.png" } }
 })
 table.insert(the_list, {
@@ -63,6 +70,7 @@ table.insert(the_list, {
 	name = "pipe_nes",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_nes.png",
+	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_nes.png" } }
 })
 table.insert(the_list, {
@@ -70,6 +78,7 @@ table.insert(the_list, {
 	name = "pipe_esw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_esw.png",
+	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_esw.png" } }
 })
 table.insert(the_list, {
@@ -77,6 +86,7 @@ table.insert(the_list, {
 	name = "pipe_nsw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_nsw.png",
+	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_nsw.png" } }
 })
 table.insert(the_list, {
@@ -84,6 +94,7 @@ table.insert(the_list, {
 	name = "pipe_new",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_new.png",
+	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_new.png" } }
 })
 table.insert(the_list, {
@@ -106,6 +117,7 @@ table.insert(the_list, {
 		return wml_codes.get_attack_spear_code(aggregator.simplepike.number, aggregator.simplepike.damage)  , wml_codes.get_imp_advancement("pike")
 	end,
 	image = "c/simplespear_c.png",
+	toolbox_order = -70,
 	-- some components (bootsers of other components) are dependant on other components 
 	-- so i have to force the order the apply functions are called,
 	-- for example an increase damage effect will have no effect if before the new attack effect.
@@ -133,6 +145,7 @@ table.insert(the_list, {
 		return wml_codes.get_attack_laser_code(aggregator.simplelaser.number, aggregator.simplelaser.damage) , wml_codes.get_imp_advancement("laser")
 	end,
 	image = "c/simplelaser.png",
+	toolbox_order = -70,
 	order_apply = 1,
 	field_images = { [3] = { [3] = "c/simplelaser.png" } }
 })
@@ -193,10 +206,19 @@ table.insert(the_list, {
 		end
 		return true 
 	end,
-	aggregate_function = function (robot, comp, aggregator) 
-		aggregator.movement = (aggregator.movement < 7) and (aggregator.movement + 3) or (aggregator.movement + 2)
+	aggregate_function = function (robot, comp, aggregator)
+		--aggregator.movement is movement increase
+		aggregator.wheel_count = (aggregator.wheel_count or 0) + 1
+		if aggregator.wheel_count <= 1 then
+			aggregator.movement = aggregator.movement + 3
+		elseif aggregator.wheel_count <= 4 then
+			aggregator.movement = aggregator.movement + 2
+		else
+			aggregator.movement = aggregator.movement + 1
+		end
 	end,
 	image = "c/wheel.png",
+	toolbox_order = -75,
 	field_images = { [3] = { [3] = "c/wheel.png" } }
 })
 table.insert(the_list, {
@@ -220,6 +242,7 @@ table.insert(the_list, {
 		return effects, advancements
 	end,
 	image = "c/bigbow_c.png",
+	toolbox_order = -70,
 	field_images = { [3] = { [2] = "c/bigbow_1.png", [3] = "c/bigbow_c.png", [4] = "c/bigbow_2.png" } }
 })
 table.insert(the_list, {
@@ -321,6 +344,7 @@ table.insert(the_list, {
 	-- since this uses "bonus_attack" wich is alwasy appied last by stats.lua it is not needed right now.
 	order_apply = 2,
 	image = "c/attack_modifier_2_nw.png",
+	toolbox_order = -60,
 	field_images = { [3] = { [3] = "c/attack_modifier_2_nw.png" } }
 })
 table.insert(the_list, {
@@ -345,6 +369,7 @@ table.insert(the_list, {
 	--no dependencies
 	order_apply = 1,
 	image = "c/addon_n.png",
+	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_n.png" } }
 })
 table.insert(the_list, {
@@ -369,6 +394,7 @@ table.insert(the_list, {
 	--no dependencies
 	order_apply = 1,
 	image = "c/addon_2_n.png",
+	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_2_n.png" } }
 })
 
@@ -378,7 +404,7 @@ table.insert(the_list, {
 	tooltip = "this component gives the robot the ability to drop bombs",
 	check_function = function(r_field, robot, objpos)
 		for i = objpos.y + 2 , robot.size.y do
-			if(r_field[objpos.y][i] ~= "empty") then return false end
+			if(r_field[objpos.x][i] ~= "empty") then return false end
 		end
 		return true 
 	end,

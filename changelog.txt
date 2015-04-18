@@ -25,6 +25,7 @@
 - Fix robots amlas on 1.13.x
 - Orders Toolbox items in this order: Core, pipes, wheels, weapons, rest, secondary sortign criteria is internal item id
 - Fix version checks
+- Reduced wheels mp bonus to +3,+2,+2,+2,+1,+1,+1,+1,+1,+1, ...
 - 
 
 
