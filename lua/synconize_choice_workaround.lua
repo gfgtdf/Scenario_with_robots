@@ -49,7 +49,7 @@ function sync_choice.version1_11_13(func_human, func_ai, sides)
 	for k, v in pairs(local_sides) do
 		local sideobj = wesnoth.sides[v]
 		local r_side
-		if sideobj.controller == "human" then
+		if sideobj.controller == "human" or func_ai == nil then
 			r_side = func_human(v)
 		else
 			r_side = func_ai(v)
