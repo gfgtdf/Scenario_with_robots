@@ -48,7 +48,7 @@ Traps.new = function(storage_variable)
 			end
 		end
 		table.insert(self.traplist, trap)
-		wesnoth.wml_actions["item"]({x = trap.x, y = trap.y, image = "misc/red_border.png"})
+		wesnoth.wml_actions["item"]({x = trap.x, y = trap.y, image = "misc/red_border.png", visible_in_fog = false})
 	end
 	self.on_hex_enter = function(event_context)
 
