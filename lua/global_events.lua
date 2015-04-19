@@ -240,14 +240,11 @@ end
 global_events.on_advance = function(event_context)
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	local advancing_type = wesnoth.unit_types["advancing" .. unit.type]
-	cwo("checking for advancing type")
 	if(advancing_type ~= nil) then
-		cwo("found advancing type")
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg
 			-- from heree we cannot use the local "unit" because we deleted it with the put_unit function (do i need the put_unit here?)
 			wesnoth.put_unit(event_context.x1, event_context.y1)
-			cwo(unit_cfg.type)
 			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
 			unit_cfg.type = "advancing" .. unit_cfg.type
 			--"put_unit" doesnt trigger the advancement.
