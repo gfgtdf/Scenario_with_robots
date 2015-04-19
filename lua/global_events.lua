@@ -8,12 +8,9 @@
 -- TODO since some events don't fire under cirumastances we need a workarounf for that(for examle the attack_end event wich is not fired if thre attaack is aborted.(at least thats what i think))
 local global_events = {}
 global_events.event_handlers = {}
--- this is the main function that is called everytime a new scenario is started or loadet.
--- TODO: check wich parte would be better places in some king of prestart or start event.
-global_events.toplevel_start = function()
-	-- this is te only situation where lua codeis not raised ba an event
-	-- (are the "menu items" events?)
-	current_event_name = "toplevel_start"
+global_events.init = function()
+	-- this is the main function that is called everytime a new scenario is started or loadet.
+	current_event_name = "lua_init"
 	-- wesnoth.game_events.on_event might be nil
 	local old_on_event = wesnoth.game_events.on_event or function(eventname) end
 	wesnoth.game_events.on_event = function(eventname)
@@ -29,24 +26,7 @@ global_events.toplevel_start = function()
 		old_on_event(eventname)
 		current_event_name = ""
 	end
-	-- there are 4 "preload" events that are fired in the following order: (this code mormaly executes in 1 or 2)
-	-- 1) toplevel [lua] tags	
-	-- 2) other type of toplevel [lua] tags	(i think on is insie the [scenrio] tag and the other outside)
-	-- 3) the wesnoth.game_events.on_load event
-	-- 4) the preload wml event
-	-- 5) the prestart wml event (if !gameload)
-	-- 6) the start wml event (if !gameload)
-	
-	-- note that in a lot of times using wml events is still better because of the especialy because of the "filter" tags
-	-- also note that registrating those types of events (wml based), need to be done only at the beginnign of the scenario, but this is done every time the game loads
-	
-	
-	-- these can provide a LotI like advancing system.
-	-- it is not tested neigher. EDIT: tested and works EDIT2: seems like crusade advancing also causes no problems. EDIT3: now also work if unit advances in enemys turn.
-	-- is the 1-scenario this is not needet ocf, because it is not even sure that a unit will reach level3.
-	-- still, why are there advantages saved in the units file if they take it from teh unit_type file anyway?
-	-- i think i'll put more in here because writing sth. in lua is nearly always faster than wml 
-	-- especialy since alot if stuff (store_unit) run in lua anyway, as soon as a wml code contains an [if] i think lua is the better option.
+	-- registering general events, implemented via wesnoth.game_events.on_event, in some rare cases i still might need to use [event] because of the filters though
 	global_events.add_event_handler("advance", global_events.on_advance)
 	global_events.add_event_handler("post_advance", global_events.on_post_advance)
 	global_events.add_event_handler("die", global_events.on_die)
@@ -64,7 +44,7 @@ global_events.toplevel_start = function()
 	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
 	global_events.add_event_handler("prestart", global_events.on_prestart)
 	global_events.add_event_handler("start", global_events.on_start)
-
+	
 	if wesnoth.get_variable("component_inventory") ~= nil and wesnoth.get_variable("component_inventory_1") == nil then
 		--	compability code
 		wesnoth.set_variable("component_inventory_1", wesnoth.get_variable("component_inventory"))
@@ -78,6 +58,52 @@ global_events.toplevel_start = function()
 	traps = Traps.new("")
 	traps.init()
 	current_event_name = ""
+end
+global_events.toplevel_start = function()
+	-- there are 4 "preload" events that are fired in the following order: (this code mormaly executes in 1 or 2)
+	-- 1) toplevel [lua] tags	
+	-- 2) other type of toplevel [lua] tags	(i think on is insie the [scenrio] tag and the other outside)
+	-- 3) the wesnoth.game_events.on_load event
+	-- 4) the preload wml event
+	-- 5) the prestart wml event (if !gameload)
+	-- 6) the start wml event (if !gameload)
+	global_events.init()
+	
+end
+
+global_events.preload_start = function()
+	if(not globals.no_toplevel_lua_workaround) then
+		error("preload start called when it is not needed, please report this bug")
+	end
+	-- there are 4 "preload" events that are fired in the following order: (this code mormaly executes in 1 or 2)
+	-- 1) toplevel [lua] tags	
+	-- 2) other type of toplevel [lua] tags	(i think on is insie the [scenrio] tag and the other outside)
+	-- 3) the wesnoth.game_events.on_load event
+	-- 4) the preload wml event
+	-- 5) the prestart wml event (if !gameload)
+	-- 6) the start wml event (if !gameload)
+	
+	-- Usually our lus code gets initlized at (2) and our variables are initlized at (3)
+	-- However in 1.12.x (not in 1.13.x) [lua] tags inside era are not supported so we need to inilize our lua code in (4)
+	-- In that case global_events.init() runs in (4) and we need this function to emulate (3) and (4)
+	
+	-- Emulate the varaible loading process
+	local old_event_name = current_event_name
+	local funcs = global_events.event_handlers["luavars_init"] or {}
+	for k,v in pairs(funcs) do
+		current_event_name = "luavars_init"
+		v()
+	end
+	current_event_name = old_event_name
+
+	-- Since preload handlers were aded after preload was fired we need to explicitly execute the preload  handlers again.
+	local old_event_name = current_event_name
+	local funcs = global_events.event_handlers["preload"] or {}
+	for k,v in pairs(funcs) do
+		current_event_name = "preload"
+		v()
+	end
+	current_event_name = old_event_name
 end
 
 -- in a move from hex a to hex b the "exit_hex" (exit from a) it fired and then the "enter_hex" (enter b) is fired
@@ -147,13 +173,13 @@ global_events.on_enter_hex_workaround = function()
 			return retcfg
 			
 		end
-	elseif (current_event_name == "enter_hex") then
-			retcfg.from_x = global_events.last_on_enter_hex.x2
-			retcfg.from_y = global_events.last_on_enter_hex.y2
-			retcfg.to_x = global_events.last_on_exit_hex.x2
-			retcfg.to_y = global_events.last_on_exit_hex.y2
-			retcfg.info = current_moving_info
-			return retcfg
+		elseif (current_event_name == "enter_hex") then
+		retcfg.from_x = global_events.last_on_enter_hex.x2
+		retcfg.from_y = global_events.last_on_enter_hex.y2
+		retcfg.to_x = global_events.last_on_exit_hex.x2
+		retcfg.to_y = global_events.last_on_exit_hex.y2
+		retcfg.info = current_moving_info
+		return retcfg
 	else
 		error ("on_enter_hex_workaround not called from within right event.")
 	end
@@ -259,7 +285,7 @@ global_events.on_post_advance = function(event_context)
 		end
 	end
 end
--- part of th advacement-hack
+-- part of the advacement-hack
 global_events.on_side_turn = function(event_context)
 	-- this functions asks the advacement question in case a unit advances during the enmy turn.
 	-- i think wesnoth.get_units() gives just all units
@@ -361,7 +387,7 @@ global_events.register_wml_event_funcname = function(eventname, eventfilter_wml,
 	-- this should be used in the prestart event, but because of the "id" key i suppose it won't cause troulbe if used anywhere else
 	
 	-- at first i thought that wml fits better for most places anyway, but on the other hand most useful funciuns like "harm unit" run through lua anyway, 
-
+	
 	wesnoth.fire("event", {
 		name = eventname,
 		T.filter(eventfilter_wml),
@@ -376,26 +402,66 @@ global_events.on_recruit_log_time = function(event_context)
 	recruited_list[unit.id] = wesnoth.current.turn
 	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
 end
-
-global_events.add_on_load = function(f)
+--[[
+	global_events.add_on_load = function(f)
 	local old_on_load = wesnoth.game_events.on_load
 	wesnoth.game_events.on_load = function(cfg)
-		f(cfg)
-		old_on_load(cfg)
+	f(cfg)
+	old_on_load(cfg)
 	end
-end
-
-global_events.add_on_save = function(f)
+	end
+	
+	global_events.add_on_save = function(f)
 	local old_on_save = wesnoth.game_events.on_save
 	wesnoth.game_events.on_save = function()
-		local cfg = old_on_save()
-		f(cfg)
-		return cfg
+	local cfg = old_on_save()
+	f(cfg)
+	return cfg
+	end
+	end
+]]
+if globals.no_toplevel_lua_workaround then
+	global_events.register_on_load_reader = function(tagname, f)
+		global_events.add_event_handler("luavars_init", function()
+			local var = wesnoth.get_variable("srw_lua." .. tagname)	
+			if (var) then
+				f(var)
+			end
+		end)
+	end
+	
+	global_events.register_on_save_writer = function(tagname, f)
+		local old_on_save = wesnoth.game_events.on_save
+		wesnoth.game_events.on_save = function()
+			local cfg = old_on_save()
+			wesnoth.set_variable("srw_lua." .. tagname, f())
+			return cfg
+		end
+	end
+else
+	global_events.register_on_load_reader = function(tagname, f)
+		local old_on_load = wesnoth.game_events.on_load
+		wesnoth.game_events.on_load = function(cfg)
+			for i = 1, #cfg do
+				if cfg[i][1] == tagname then
+					f(cfg[i][2])
+					table.remove(cfg, i)
+					break
+				end
+			end
+			old_on_load(cfg)
+		end
+	end
+	
+	global_events.register_on_save_writer = function(tagname, f)
+		local old_on_save = wesnoth.game_events.on_save
+		wesnoth.game_events.on_save = function()
+			local cfg = old_on_save()
+			table.insert(cfg, {tagname, f()})
+			return cfg
+		end
 	end
 end
-
-
-
 
 
 
