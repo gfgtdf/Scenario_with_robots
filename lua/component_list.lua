@@ -356,7 +356,7 @@ table.insert(the_list, {
 	end,
 	aggregate_function = function (robot, comp, aggregator)
 		local distance = comp.distance - 1 --comp.distance == 0 has only the core itself
-		local effect = math.max(20 - (2*distance), 0)
+		local effect = math.max(20 - (2.5*distance), 0)
 		aggregator.resitances_delta.cold = aggregator.resitances_delta.cold - effect
 	end,
 	apply_function = function(robot, aggregator)
@@ -377,7 +377,7 @@ table.insert(the_list, {
 	end,
 	aggregate_function = function (robot, comp, aggregator)
 		local distance = comp.distance - 1 --comp.distance == 0 has only the core itself
-		local effect = math.max(20 - (2*distance), 0)
+		local effect = math.max(20 - (2.5*distance), 0)
 		aggregator.resitances_delta.fire = aggregator.resitances_delta.fire - effect
 	end,
 	apply_function = function(robot, aggregator)

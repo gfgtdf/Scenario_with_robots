@@ -28,4 +28,4 @@
 - Reduced wheels mp bonus to +3,+2,+2,+2,+1,+1,+1,+1,+1,+1, ...
 - Fixed trapper component placing check.
 - Added antanna components
-
+- Allow defensive modules to add
