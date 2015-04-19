@@ -11,21 +11,14 @@ Traps.new = function(storage_variable)
 		global_events.add_event_handler("moveto", self.on_move_to)
 		global_events.create_disallow_undo_workaround("enter_hex")
 		global_events.create_disallow_undo_workaround("moveto")
-		global_events.add_on_save(self.save_traps)
-		global_events.add_on_load(self.load_traps)
+		global_events.register_on_save_writer("traps", self.save_traps)
+		global_events.register_on_load_reader("traps", self.load_traps)
 	end
 	self.load_traps = function (cfg)
-		for i = 1, #cfg do
-			if cfg[i][1] == "traps"  then
-				self.traplist = swr_h.deseralize(cfg[i][2].value)
-				table.remove(cfg, i)
-				break
-			end
-		end
+		self.traplist = swr_h.deseralize(cfg.value)
 	end
 	self.save_traps = function (cfg)
-		table.insert(cfg, T.traps {value = swr_h.serialize_oneline( self.traplist ) } )
-		return cfg
+		return {value = swr_h.serialize_oneline( self.traplist ) }
 	end
 	self.on_prestart = function ()
 	end
