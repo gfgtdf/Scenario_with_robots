@@ -10,7 +10,9 @@ end)
 global_events.add_event_handler("preload", function (event_context)
 	z_require("version_check").do_reload_version_check()
 end)
+global_events.create_disallow_undo_workaround("menu_item robot_trader_mp")
 global_events.add_event_handler("menu_item robot_trader_mp", function (event_context)
+	global_events.disallow_undo_flag = true
 	local side = wesnoth.sides[wesnoth.current.side] 
 	local bought_items, price = trader.buy_items(trader_list_mp, side.gold)
 	local inv = inventories[wesnoth.current.side]
@@ -33,7 +35,9 @@ global_events.add_event_handler("start", function (event_context)
 		v.moves = v.max_moves
 	end
 end)
+global_events.create_disallow_undo_workaround("recruit")
 global_events.add_event_handler("recruit", function (event_context)
+	global_events.disallow_undo_flag = true
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
 	-- why is the "race" property not accessible though the proxy?

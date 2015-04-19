@@ -38,7 +38,9 @@ global_events.init = function()
 	global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
 		robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
 		stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
+		global_events.disallow_undo_flag = true
 	end)
+	global_events.create_disallow_undo_workaround("menu_item menu_edit_robot")
 	-- see global_events.on_enter_hex
 	enter_hex_is_really_there = true
 	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
@@ -212,7 +214,6 @@ global_events.create_disallow_undo_workaround = function(event_name)
 	--maybe using one event with a very long comma,sperated list at name paramerter ist the best option.
 	if global_events.disallow_undo_effected_events == nil then
 		global_events.disallow_undo_effected_events = event_name
-		wesnoth.wml_actions.event({ id = "lua_disallow_undo", remove = true})
 	else
 		global_events.disallow_undo_effected_events = global_events.disallow_undo_effected_events .. "," ..event_name
 	end
