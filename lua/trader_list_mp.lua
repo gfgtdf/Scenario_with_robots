@@ -93,7 +93,7 @@ table.insert(trader_list, {
 	name = "Weapon modifer", 
 	description = "Contains weapon modifer that adds fire damage to spears\n",  
 	price = 5, 
-	image = "c/addon_n.png",
+	image = "c/attack_modifier_2_nw.png",
 	apply_func = function(inv)
 		inv.add_amount("spear_fire_modier",1)
 	end
