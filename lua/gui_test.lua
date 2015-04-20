@@ -94,7 +94,6 @@ Gui_test.new = function(pages)
 		
 		local page1 = self.pages[page_number]
 		local page2 = self.pages[page_number + 1] or {text = ""}
-		--cwo(page1)
 		local drawing = { 
 			T.image { 
 				x = 0, 

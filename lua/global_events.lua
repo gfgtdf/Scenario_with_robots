@@ -217,10 +217,8 @@ global_events.create_disallow_undo_workaround = function(event_name)
 	}
 	local f_workaroubd_event = function()
 		if(global_events.disallow_undo_flag == nil) then
-			--cwo("global_events.disallow_undo_flag == nil")
 			wesnoth.wml_actions.allow_undo({})
 		end
-		--cwo("global_events.disallow_undo_flag")
 		global_events.disallow_undo_flag = nil
 	end
 	global_events.f_workaroubd_event = f_workaroubd_event

@@ -58,7 +58,6 @@ global_events.add_event_handler("recruit", function (event_context)
 	global_events.disallow_undo_flag = true
 	-- why is the "race" property not accessible though the proxy?
 	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
-	--cwo(unit.race)
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
 	if unit_cfg.race == "zt_robots" then
 		local inv = inventories[wesnoth.current.side]

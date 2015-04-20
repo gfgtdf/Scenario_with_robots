@@ -258,7 +258,6 @@ table.insert(the_list, {
 				heigbours_count = heigbours_count + 1
 			end
 		end
-		--cwo(heigbours_count)
 		return  heigbours_count == 3
 	end,
 	aggregate_function = function (robot, comp, aggregator)

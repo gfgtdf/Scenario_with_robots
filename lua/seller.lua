@@ -15,7 +15,6 @@ Seller.new = function()
 			if ((self.items[self.selected_row].quantity or 9999) > (self.items_bought[self.selected_row] or 0)) then
 				self.items_bought[self.selected_row] = (self.items_bought[self.selected_row] or 0) + 1
 				--self.update_all_basket_rows()
-				--cwo("order_i")
 				self.update_buy_button()
 				self.update_all_rows()
 			end
@@ -24,7 +23,6 @@ Seller.new = function()
 			if ( (self.items_bought[self.selected_row] or 0) > 0) then
 				self.items_bought[self.selected_row] = self.items_bought[self.selected_row]  - 1
 				--self.update_all_basket_rows()
-				--cwo("order_i")
 				self.update_buy_button()
 				self.update_all_rows()
 			end
