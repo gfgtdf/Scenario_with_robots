@@ -51,15 +51,12 @@ Traps.new = function(storage_variable)
 		wesnoth.wml_actions["item"]({x = trap.x, y = trap.y, image = "misc/red_border.png", visible_in_fog = false})
 	end
 	self.on_hex_enter = function(event_context)
-
-		last_on_exit_hex = global_events.last_on_exit_hex
-		local unit_wml = wesnoth.get_variable("unit")
 		local remove_traps = {}
 		-- i dont want to event to fire if there is another unit on that hex.
-		if last_on_exit_hex.x2 == event_context.x1 and last_on_exit_hex.y2 == event_context.y1 then
+		if moving_unit.enters_normal() then
 			for k, trap in pairs(self.traplist) do
 				-- i caould also check weather the units are allied here
-				if trap.x == last_on_exit_hex.x2 and trap.y == last_on_exit_hex.y2 then
+				if trap.x == event_context.x1 and trap.y == event_context.y1 then
 					local unit_ref = wesnoth.get_unit(trap.x,trap.y)
 					self.execute_trap(trap, trap.x, trap.y, unit_ref)
 					if traptypes[trap.type].permanent ~= true then

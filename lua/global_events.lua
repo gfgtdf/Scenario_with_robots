@@ -29,9 +29,6 @@ global_events.init = function()
 	-- registering general events, implemented via wesnoth.game_events.on_event, in some rare cases i still might need to use [event] because of the filters though
 	global_events.add_event_handler("die", global_events.on_die)
 	global_events.add_event_handler("recruit", global_events.on_recruit_log_time)
-	global_events.add_event_handler("moveto", global_events.on_moveto)
-	global_events.add_event_handler("exit_hex", global_events.on_exit_hex)
-	global_events.add_event_handler("enter_hex", global_events.on_enter_hex)
 	global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
 		robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
 		stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
@@ -97,90 +94,6 @@ global_events.preload_start = function()
 	current_event_name = old_event_name
 end
 
--- in a move from hex a to hex b the "exit_hex" (exit from a) it fired and then the "enter_hex" (enter b) is fired
--- in version <= 11.4 it is like this:
--- x1, y1 always contain the location of the unit.
--- in the "exit_hex" x2, y2 is the location to where the unit goes.
--- in the "enter_hex" x2,y2 is the location from where the unit comes.
--- vesion > 11.4:
--- in the "exit_hex" x2, y2 is the location to where the unit goes, x1,y1 is the location from where the unit comes.
--- in the "enter_hex" x2,y2 is the location from where the unit comes, x1,y1 is the location to where the unit goes.
--- so we dont have any information about the current location of the unit
--- 
--- the "on_exit_hex"/"on_enter_hex" workaround for the new version:
--- in the first "on_exit_hex" of the move we can x1,y1 is the location of the unit, and remember the id if the unit then
--- to know weather we are in the first part of a move we need the  current_moving_info variable, wich is set to nil in the "move_to" event.
--- the problem is, im still not 100% sure weather the "move_to" event is ALWAYS fired after the end of a move.
-
-global_events.on_exit_hex = function(event_context)
-	--local stamp = wesnoth.get_time_stamp()
-	if(globals.current_moving_info == nil) then
-		local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
-		current_moving_info = { id = unit.id, ref = unit, start_x = unit.x, start_y = unit.y, is_first_move = true}
-	else
-		current_moving_info.is_first_move = false
-	end
-	global_events.last_on_exit_hex_2 = global_events.last_on_exit_hex
-	global_events.last_on_exit_hex = event_context
-end
--- the "on_exit_hex" workaround for the "old" version:
---
--- note that you cannot simply use last_on_enter_hex to check the position of the on_exit_hex event.
--- you have to watch out: if it is al least the second movepart_you can do it
--- in the first movepart you an take it as gauenteed thatwhere the unit actualy stats is also tghe location of the event
--- leaves only to find out wather it is the first part of a move.
--- and that is when enter_hex_is_really_there becomes useful another time.
--- not enter_hex_is_really_there => we can assume turn > 2, because every turn ends with enter_hex_is_really_there == true
--- to ensure that is always right ew initalize enter_hex_is_really_there = true
--- enter_hex_is_really_there => unit exits the field it is really on
-global_events.on_enter_hex = function(event_context)
-	global_events.last_on_enter_hex = event_context
-	enter_hex_is_really_there = (event_context.x1 == global_events.last_on_exit_hex.x2 and event_context.y1 == global_events.last_on_exit_hex.y2) 
-	--	or (event_context.x1 == event_context.x2 and event_context.y2 == event_context.y2) 
-end
-
--- there is a new way for firering the enter_hex, exit_hex events in lua, because of a "bugfix" by Jamit
--- see (http://forums.wesnoth.org/viewtopic.php?f=58&t=38930)
--- the "fix", gives the user accces to the place where the event is fired but, it removes the access to the unit wich caused the event.
--- i suppose the workaround for the new version is a bit easerer if you want to use the "exit_hex" too, but, a workaroung for "enter_hex" was easier with the old version.
--- this new workaroung works with both version (before and after the "fix".) since it doesnt use event.context.x1/y1 at all.
--- (exept one i the first part of the move when we can assume the units standing hex it the hex he leaves)
-global_events.on_enter_hex_workaround = function()
-	local retcfg = {}
-	if(current_event_name == "exit_hex") then
-		if (current_moving_info.is_first_move) then
-			retcfg.from_x = current_moving_info.start_x
-			retcfg.from_y = current_moving_info.start_y
-			retcfg.to_x = global_events.last_on_exit_hex.x2
-			retcfg.to_y = global_events.last_on_exit_hex.y2
-			retcfg.info = current_moving_info
-			return retcfg
-		else
-			retcfg.from_x = global_events.last_on_exit_hex_2.x2
-			retcfg.from_y = global_events.last_on_exit_hex_2.y2
-			retcfg.to_x = global_events.last_on_exit_hex.x2
-			retcfg.to_y = global_events.last_on_exit_hex.y2
-			retcfg.info = current_moving_info
-			return retcfg
-			
-		end
-	elseif (current_event_name == "enter_hex") then
-		retcfg.from_x = global_events.last_on_enter_hex.x2
-		retcfg.from_y = global_events.last_on_enter_hex.y2
-		retcfg.to_x = global_events.last_on_exit_hex.x2
-		retcfg.to_y = global_events.last_on_exit_hex.y2
-		retcfg.info = current_moving_info
-		return retcfg
-	else
-		error ("on_enter_hex_workaround not called from within right event.")
-	end
-end
-
--- used for testing right now
--- and as part of the on_enter_hex workaround
-global_events.on_moveto = function(event_context)
-	current_moving_info = nil
-end
 --quiet obvious
 global_events.add_event_handler = function(eventname, func)
 	global_events.event_handlers[eventname] = global_events.event_handlers[eventname] or {}
@@ -349,59 +262,6 @@ else
 		end
 	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
