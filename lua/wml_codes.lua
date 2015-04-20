@@ -212,6 +212,7 @@ wml_codes.get_antenna_leadership_code = function(percent)
 				value = percent,
 				affect_self = false,
 				affect_allies = true,
+				cumulative = true,
 				T.affect_adjacent {
 					adjacent = "n,ne,se,s,sw,nw",
 					T.filter {
