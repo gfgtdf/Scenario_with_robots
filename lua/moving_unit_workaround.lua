@@ -31,16 +31,16 @@ globals.currently_moving_unit_info = {}
 
 -- This must be executd before other "exit_hex" handlers, becasue other exit_hex events need this data.
 global_events.add_event_handler("exit_hex", function (event_context)
-	if moving_unit.move_info.id = nil then
+	if moving_unit.move_info.id == nil then
 		-- no moving info yet => it is teh first step of teh move and we can assume that the unit is standing on (x1,y1)
 		local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 		-- Start of teh move: hbehave liek ew preovious succesfully moved to x1, y1 
 		moving_unit.move_info = {
 			id = unit.id,
 			start_x = event_context.x1,
-			start_y = event_context.x1,
+			start_y = event_context.y1,
 			enter_x = event_context.x1,
-			enter_y = event_context.x1,
+			enter_y = event_context.y1,
 		}
 	end
 	-- the hex where we come from teh teh hex where we previoisly succesfully stepped on.
@@ -49,8 +49,8 @@ global_events.add_event_handler("exit_hex", function (event_context)
 	moving_unit.move_info.exit_normal = moving_unit.move_info.enter_normal
 	if(not wesnoth.get_unit(event_context.x2, event_context.y2)) then
 		-- the next hex is no occupied succesfully entered that location
-		moving_unit.move_info.enter_y = y2
-		moving_unit.move_info.enter_x = x2
+		moving_unit.move_info.enter_y = event_context.y2
+		moving_unit.move_info.enter_x = event_context.x2
 		moving_unit.move_info.enter_normal = true
 	else
 		moving_unit.move_info.enter_normal = false	
@@ -65,13 +65,13 @@ end)
 
 moving_unit.assert_correct_calculations = function(eventname)
 	local currently_moving_unit = wesnoth.get_units({ id = moving_unit.move_info.id })[1]
-	if eventname = "enter_hex" then
+	if eventname == "enter_hex" then
 		if currently_moving_unit.x ~= moving_unit.move_info.enter_x or currently_moving_unit.y ~= moving_unit.move_info.enter_y then
-			error("wrong calculations about enter_hex events")
+			error("wrong calculations about enter_hex events: by id =  (" ..  currently_moving_unit.x .. "," .. currently_moving_unit.y .. ") our calculation = (" .. moving_unit.move_info.enter_x .. "," .. moving_unit.move_info.enter_y ..")" )
 		end
-	elseif eventname = "exit_hex" then
+	elseif eventname == "exit_hex" then
 		if currently_moving_unit.x ~= moving_unit.move_info.exit_x or currently_moving_unit.y ~= moving_unit.move_info.exit_y then
-			error("wrong calculations about enter_hex events")
+			error("wrong calculations about exit_hex events")
 		end
 	else
 		error("wrong eventname: " .. tostring(eventname))
