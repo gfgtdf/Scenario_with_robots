@@ -30,3 +30,10 @@
 - Added antanna components
 - Allow defensive modules to add
 - 'Era with robots' now works with 1.12.x
+
+1.1.2
+- removed some debug messsages
+- fix menu items beeing undoable
+- make robot components cheaper in mp
+- make traps not visible in fog
+- code cleanups
