@@ -11,7 +11,7 @@ end
 
 helper = wesnoth.require("lua/helper.lua")
 swr_h = z_require("my_helper")
--- since i don't have any rtanslations yet i use the global "wesnoth"
+-- since i don't have any translations yet i use the global "wesnoth"
 _ = wesnoth.textdomain 'wesnoth'
 T = helper.set_wml_tag_metatable {}
 globals = {}
@@ -26,12 +26,12 @@ setmetatable(globals, {
 constants = z_require("constants")
 stats = z_require("stats")
 wml_codes = z_require("wml_codes")
--- the big letter at the beginning is intendet as part of my coding convention
 Inventory = z_require("inventory")
 gui = z_require("gui")
 component_list = z_require("component_list")
 robot_mechanics = z_require("robot_mechanics")
 global_events = z_require("global_events")
+z_require("advancements")
 Gui_test = z_require("gui_test")
 Traps = z_require("traps")
 trader = z_require("trader")

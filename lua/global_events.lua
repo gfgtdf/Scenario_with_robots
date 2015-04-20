@@ -27,11 +27,8 @@ global_events.init = function()
 		current_event_name = ""
 	end
 	-- registering general events, implemented via wesnoth.game_events.on_event, in some rare cases i still might need to use [event] because of the filters though
-	global_events.add_event_handler("advance", global_events.on_advance)
-	global_events.add_event_handler("post_advance", global_events.on_post_advance)
 	global_events.add_event_handler("die", global_events.on_die)
 	global_events.add_event_handler("recruit", global_events.on_recruit_log_time)
-	global_events.add_event_handler("turn refresh", global_events.on_side_turn)
 	global_events.add_event_handler("moveto", global_events.on_moveto)
 	global_events.add_event_handler("exit_hex", global_events.on_exit_hex)
 	global_events.add_event_handler("enter_hex", global_events.on_enter_hex)
@@ -62,15 +59,7 @@ global_events.init = function()
 	current_event_name = ""
 end
 global_events.toplevel_start = function()
-	-- there are 4 "preload" events that are fired in the following order: (this code mormaly executes in 1 or 2)
-	-- 1) toplevel [lua] tags	
-	-- 2) other type of toplevel [lua] tags	(i think on is insie the [scenrio] tag and the other outside)
-	-- 3) the wesnoth.game_events.on_load event
-	-- 4) the preload wml event
-	-- 5) the prestart wml event (if !gameload)
-	-- 6) the start wml event (if !gameload)
-	global_events.init()
-	
+	global_events.init()	
 end
 
 global_events.preload_start = function()
@@ -175,7 +164,7 @@ global_events.on_enter_hex_workaround = function()
 			return retcfg
 			
 		end
-		elseif (current_event_name == "enter_hex") then
+	elseif (current_event_name == "enter_hex") then
 		retcfg.from_x = global_events.last_on_enter_hex.x2
 		retcfg.from_y = global_events.last_on_enter_hex.y2
 		retcfg.to_x = global_events.last_on_exit_hex.x2
@@ -185,7 +174,6 @@ global_events.on_enter_hex_workaround = function()
 	else
 		error ("on_enter_hex_workaround not called from within right event.")
 	end
-	error ("strange bug in on_enter_hex_workaround")
 end
 
 -- used for testing right now
@@ -237,84 +225,7 @@ global_events.create_disallow_undo_workaround = function(event_name)
 	end
 	global_events.f_workaroubd_event = f_workaroubd_event
 end
---
-global_events.on_advance = function(event_context)
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
-	local advancing_type = wesnoth.unit_types["advancing" .. unit.type]
-	if(advancing_type ~= nil) then
-		if unit.side == wesnoth.current.side then
-			local unit_cfg = unit.__cfg
-			-- from heree we cannot use the local "unit" because we deleted it with the put_unit function (do i need the put_unit here?)
-			wesnoth.put_unit(event_context.x1, event_context.y1)
-			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
-			unit_cfg.type = "advancing" .. unit_cfg.type
-			--"put_unit" doesnt trigger the advancement.
-			wesnoth.set_variable("advanced_temp_3", unit_cfg)
-			--this aborts the ongoing advancement event (but the "advance" event is still fired) and raises a new advancement event itselft
-			-- the advance event is 
-			wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_3", find_vacant = "no", advance = true, fire_event = true, animate = false}
-			--wesnoth.put_unit(unit_cfg)
-		else
-			cwo("on advance other side")
-			-- the advacement fired by unstore_unit will choose a radnom advancement, so that wont wokk in this case.
-			-- we could save wich units have advances here, so we don't have to loop though all units later in the on_side_turn event.
-		end
-	end
-end
---note, that due to the things we do in on_advance, the post_advance event is fired once, while the advance event is fired twice
-global_events.on_post_advance = function(event_context)
-	-- cwo("on_post_advance")
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
-	if swr_h.string_starts(unit.type, "advancing") then
-		local original_name = string.sub(unit.type, string.len("advancing") + 1)
-		local un_advancing_type = wesnoth.unit_types[original_name]
-		if un_advancing_type ~= nil then
-			local unit_cfg = unit.__cfg
-			unit_cfg.type = original_name
-			local do_not_continue = true
-			--i want to use "put_unit" but idk weatehr thats triggers unit advancing. why doesn't "put_unit" have parameters "advance", "fire_event" .. like unstore unit.
-			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
-			wesnoth.set_variable("advanced_temp_4", unit_cfg)
-			-- strangely if i use "advance = false, fire_event = false" here the unit will will andavance anyway but WITHOUT fireing advance and post_advance.
-			-- EDIT is was my fault i wrote "no" instead of "false" took me ~4hours to find it, works fine now...
-			wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_4", find_vacant = "no", advance = false, fire_event = false, animate = false}
-			-- TODO: should i remove charge/poison/.. _leadership in stats.lua ? i think it uses some place in the savefiles, and i dont use it EDIT: i diabled it
-			stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
-		end
-	end
-end
--- part of the advacement-hack
-global_events.on_side_turn = function(event_context)
-	-- this functions asks the advacement question in case a unit advances during the enmy turn.
-	-- i think wesnoth.get_units() gives just all units
-	for k,unit in pairs(wesnoth.get_units()) do
-		if unit.side == wesnoth.current.side then
-			local unit_cfg = unit.__cfg
-			local modifications_cfg = helper.get_child(unit_cfg, "modifications")
-			
-			local index = 1
-			local untore_needed = false
-			-- we remove all the "Ooops" advacements and give the unit his exp back.
-			while index <= #modifications_cfg do
-				if(modifications_cfg[index][2].id == "Oooops") then
-					table.remove(modifications_cfg, index)
-					-- unit_cfg.max_experience  because the Ooops advancement doesn't increase the units max_experience
-					unit_cfg.experience = unit_cfg.experience  + unit_cfg.max_experience 
-					untore_needed = true
-				else
-					index = index + 1
-				end
-			end
-			if untore_needed then
-				--i want to use "put_unit" but idk weatehr thats triggers unit advancing
-				wesnoth.set_variable("advanced_temp_6", unit_cfg)
-				--this start the normal advancing process i handle in on_advance
-				wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_6", find_vacant = "no", advance = true, fire_event = true, animate = false}
-				-- i could add a loop here for the case there ar multiple advancements. shouldn't be too hard
-			end
-		end
-	end
-end
+
 -- i think the unit CAN be brought back to life with in an die event from wml, or from lua.
 -- so we have to watch out here, since we cant be 100% sure that the unit is dead.
 -- i tihnk it is good peractise to put all "ressurects" in the last_breath event.
@@ -383,9 +294,6 @@ end
 global_events.register_wml_event_funcname = function(eventname, eventfilter_wml, event_id, funcname)
 	-- the intention is to make use of the useful "filter" tag in wml events, 
 	-- this should be used in the prestart event, but because of the "id" key i suppose it won't cause troulbe if used anywhere else
-	
-	-- at first i thought that wml fits better for most places anyway, but on the other hand most useful funciuns like "harm unit" run through lua anyway, 
-	
 	wesnoth.fire("event", {
 		name = eventname,
 		T.filter(eventfilter_wml),
@@ -400,24 +308,7 @@ global_events.on_recruit_log_time = function(event_context)
 	recruited_list[unit.id] = wesnoth.current.turn
 	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
 end
---[[
-	global_events.add_on_load = function(f)
-	local old_on_load = wesnoth.game_events.on_load
-	wesnoth.game_events.on_load = function(cfg)
-	f(cfg)
-	old_on_load(cfg)
-	end
-	end
-	
-	global_events.add_on_save = function(f)
-	local old_on_save = wesnoth.game_events.on_save
-	wesnoth.game_events.on_save = function()
-	local cfg = old_on_save()
-	f(cfg)
-	return cfg
-	end
-	end
-]]
+
 if globals.no_toplevel_lua_workaround then
 	global_events.register_on_load_reader = function(tagname, f)
 		global_events.add_event_handler("luavars_init", function()
