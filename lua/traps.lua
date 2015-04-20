@@ -110,7 +110,8 @@ Traps.new = function(storage_variable)
 				T.delay { time = 50 },
 				T.item { x = x, y = y, halo="animation/spikes.png" },
 				T.delay { time = 50 },
-				T.remove_item { x= x, y = y} }
+				T.remove_item { x= x, y = y},
+			}
 		end
 		for k,v in pairs(anim) do 
 			wesnoth.wml_actions[v[1]](v[2])
@@ -124,7 +125,7 @@ Traps.new = function(storage_variable)
 			kill = false,
 			poisoned = traptype.poisoned,
 			slowed = traptype.slowed,
-			})
+		})
 		local trapcount = 0
 		for k, other_trap in pairs(self.traplist) do
 			if trap.x == other_trap.x and trap.y == other_trap.y then 
