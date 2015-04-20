@@ -37,3 +37,4 @@
 - make robot components cheaper in mp
 - make traps not visible in fog
 - code cleanups
+- Fixup enter/exit_hex workaround.
