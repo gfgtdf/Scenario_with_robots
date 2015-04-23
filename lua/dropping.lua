@@ -49,13 +49,6 @@ dropping.on_preload = function()
 	end
 end
 
-dropping.on_preload = function()
-	for k,v in pairs(dropping.field_data) do
-		local x,y = dropping.index_to_loc(k)
-		wesnoth.add_tile_overlay(x, y, cfg)
-	end
-end
-
 dropping.add_item = function(x, y, cfg)
 	table.insert(dropping.get_entries_at_readwrite(x,y),cfg)
 	wesnoth.add_tile_overlay(x, y, cfg)
@@ -80,14 +73,15 @@ dropping.on_moveto = function(event_context)
 	while i < #entries do
 		local v = entries[i]
 		dropping.current_item = v
+		dropping.item_taken = nil
 		wesnoth.fire_event("drop_pickup", x, y)
-		if dropping.remove_item then
+		if dropping.item_taken then
 			table.remove(entries, i)
 		else
 			i = i + 1
 		end
 		dropping.current_item = nil
-		dropping.remove_item = nil
+		dropping.item_taken = nil
 	end
 end
 
