@@ -7,10 +7,21 @@ dropping.loc_to_index = function(x,y)
 end
 
 dropping.index_to_loc = function(index)
-	local y_m1 = math.floor(y / 1000)
+	local y_m1 = math.floor(index / 1000)
 	return index - y_m1 * 1000, y_m1 + 1
 end
 
+local test_convert = function()
+	local x,y = dropping.index_to_loc(dropping.loc_to_index(20,40))
+	if x ~= 20 or y ~= 40 then
+		error("index_to_loc/loc_to_index bugged")
+	end
+	local x,y = dropping.index_to_loc(12345)
+	if dropping.loc_to_index(x,y) ~= 12345 then
+		error("index_to_loc/loc_to_index bugged")
+	end
+end
+test_convert()
 dropping.decorate_imagename = function(imagename, id)
 	return imagename .. "~BLIT(misc/tpixel.png~O(" .. id .."))"
 end
@@ -65,7 +76,9 @@ dropping.on_preload = function()
 	dropping.next_id = dropping.next_id or 0
 	for k,v in pairs(dropping.field_data) do
 		local x,y = dropping.index_to_loc(k)
-		dropping.place_image(x, y, cfg)
+		for i, cfg in ipairs(v) do
+			dropping.place_image(x, y, cfg)
+		end
 	end
 end
 
