@@ -5,7 +5,6 @@
 -- local Inventory = z_require("inventory")
 
 
--- TODO since some events don't fire under cirumastances we need a workarounf for that(for examle the attack_end event wich is not fired if thre attaack is aborted.(at least thats what i think))
 local global_events = {}
 global_events.event_handlers = {}
 global_events.init = function()
