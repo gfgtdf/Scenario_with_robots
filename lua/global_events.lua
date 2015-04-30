@@ -263,12 +263,41 @@ else
 	end
 end
 
+local endlevel_eventname = "victory"
+local function version_is_sufficient(required)
+ if not wesnoth.compare_versions then return false end
+ return wesnoth.compare_versions(wesnoth.game_config.version, ">=", required)
+end
+
+if version_is_sufficient("1.13.0") then
+	endlevel_eventname = "endlevel"
+end
 
 
+global_events.add_event_handler(endlevel_eventname, function(event_context)
+	-- fix carryover for teams in case side numbers change between scenarios.
+	for i, v in ipairs(wesnoth.sides) do
+		local save_id = v.__cfg.save_id
+		local side_inventory_key = "component_inventory_" .. tostring(v.side)
+		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
+		local inventory_data = wesnoth.get_variable(side_inventory_key)
+		wesnoth.set_variable(side_inventory_key)
+		wesnoth.set_variable(carryover_side_inventory_key, inventory_data)
+	end
+end)
 
-
-
-
+global_events.add_event_handler("prestart", function(event_context)
+	for i, v in ipairs(wesnoth.sides) do
+		local save_id = v.__cfg.save_id
+		local side_inventory_key = "component_inventory_" .. tostring(v.side)
+		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
+		local inventory_data = wesnoth.get_variable(carryover_side_inventory_key)
+		if inventory_data then
+			wesnoth.set_variable(carryover_side_inventory_key)
+			wesnoth.set_variable(carryover_side_inventory_key, side_inventory_key)
+		end
+	end
+end)
 
 
 
