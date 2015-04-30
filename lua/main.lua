@@ -48,4 +48,3 @@ global_events.toplevel_start()
 --   traps - stores the traps object
 --   current_event_name - the name of the event we are in
 --   has_juts_been_recruited_not - a funciton
---   enter_hex_is_really_there - a varialbe that notives weather the unit (not implmented yet) EDIT: removed, use global_events.last_on_exit_hex to find out the actual location of the event.

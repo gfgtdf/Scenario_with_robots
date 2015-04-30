@@ -35,8 +35,6 @@ global_events.init = function()
 		global_events.disallow_undo_flag = true
 	end)
 	global_events.create_disallow_undo_workaround("menu_item menu_edit_robot")
-	-- see global_events.on_enter_hex
-	enter_hex_is_really_there = true
 	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
 	global_events.add_event_handler("prestart", global_events.on_prestart)
 	global_events.add_event_handler("start", global_events.on_start)
