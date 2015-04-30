@@ -63,7 +63,6 @@ global_events.add_event_handler("drop_pickup", function(event_context)
 	if dropped_items == nil then
 		return
 	end
-	-- FIXME: disallow undo
 	local inventory = inventories[wesnoth.current.side]
 	inventory.open()
 	for k,v in pairs(dropped_items) do

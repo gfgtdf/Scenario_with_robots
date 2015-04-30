@@ -100,6 +100,9 @@ dropping.on_moveto = function(event_context)
 		if dropping.item_taken then
 			table.remove(entries, i)
 			wesnoth.remove_tile_overlay(x, y, dropping.decorate_imagename(v.image, v.id))
+			-- Create an event to disallow undo
+			-- note: it is not possible to do this in the "drop_pickup" event handler because of http://gna.org/bugs/?23556
+			wesnoth.wml_actions.event { name = wesnoth.current.event_context.name }
 		else
 			i = i + 1
 		end
