@@ -27,7 +27,6 @@ global_events.init = function()
 	end
 	-- registering general events, implemented via wesnoth.game_events.on_event, in some rare cases i still might need to use [event] because of the filters though
 	global_events.add_event_handler("die", global_events.on_die)
-	global_events.add_event_handler("recruit", global_events.on_recruit_log_time)
 	global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
 		robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
 		stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
@@ -35,7 +34,6 @@ global_events.init = function()
 	end)
 	global_events.create_disallow_undo_workaround("menu_item menu_edit_robot")
 	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
-	global_events.add_event_handler("prestart", global_events.on_prestart)
 	global_events.add_event_handler("start", global_events.on_start)
 	
 	if wesnoth.get_variable("component_inventory") ~= nil and wesnoth.get_variable("component_inventory_1") == nil then
@@ -157,17 +155,6 @@ global_events.on_die = function(event_context)
 	end
 end
 
--- why not treating prestart just like all the other events?
-global_events.on_prestart = function(event_context)
-	-- put thinkgs that only have to be initailzed here (register_wml_event_funcname)
-	local recruited_list = {}
-	for k, v in pairs(wesnoth.get_units()) do
-		recruited_list[v.id] = 1
-	end
-	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
-end
-
--- why not treating prestart just like all the other events?
 global_events.on_start = function(event_context)
 	wesnoth.wml_actions.set_menu_item {
 		description = "edit robot",
@@ -208,13 +195,6 @@ global_events.register_wml_event_funcname = function(eventname, eventfilter_wml,
 		id = event_id,
 		T.lua { code = funcname .. "()"}
 	})
-end
--- i use this, to know when wich unit was recruited
-global_events.on_recruit_log_time = function(event_context)
-	local recruited_list = swr_h.deseralize(wesnoth.get_variable("recruited_list") or "{}")
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
-	recruited_list[unit.id] = wesnoth.current.turn
-	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
 end
 
 if globals.no_toplevel_lua_workaround then
