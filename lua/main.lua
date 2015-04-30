@@ -38,7 +38,10 @@ Traps = z_require("traps")
 trader = z_require("trader")
 Seller = z_require("seller")
 
+dropping = z_require("dropping")
 z_require("has_just_been_recruited_not")
+z_require("robot_event_handlers")
+
 global_events.toplevel_start()
 
 -- there are some other global variables:

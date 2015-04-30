@@ -25,16 +25,6 @@ global_events.init = function()
 		old_on_event(eventname)
 		current_event_name = ""
 	end
-	-- registering general events, implemented via wesnoth.game_events.on_event, in some rare cases i still might need to use [event] because of the filters though
-	global_events.add_event_handler("die", global_events.on_die)
-	global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
-		robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
-		stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
-		global_events.disallow_undo_flag = true
-	end)
-	global_events.create_disallow_undo_workaround("menu_item menu_edit_robot")
-	-- things that only have to initalized one every game, mosty because the save their data in wml are there.
-	global_events.add_event_handler("start", global_events.on_start)
 	
 	if wesnoth.get_variable("component_inventory") ~= nil and wesnoth.get_variable("component_inventory_1") == nil then
 		--	compability code
@@ -132,55 +122,6 @@ global_events.create_disallow_undo_workaround = function(event_name)
 	global_events.f_workaroubd_event = f_workaroubd_event
 end
 
--- i think the unit CAN be brought back to life with in an die event from wml, or from lua.
--- so we have to watch out here, since we cant be 100% sure that the unit is dead.
--- i tihnk it is good peractise to put all "ressurects" in the last_breath event.
-global_events.on_die = function(event_context)
-	-- i want to maka an option give retrun components from dead robots, ecseialy since i thought about of making some components nescesary id i'w make a real campaign
-	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
-	local variables = helper.get_child(unit_cfg, "variables")
-	local little_inventory = {}
-	if(variables.robot ~= nil and global_events.restore_components_after_unit_death == true) then
-		local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
-		local robot = loadstring("return " .. robot_string )()
-		for k,v in robot.components do
-			if v.component.name ~= "core" then
-				little_inventory[v.component.name] = (little_inventory[v.component.name] or 0) + 1
-			end
-		end
-		global_events.components_of_the_dead = global_events.components_of_the_dead or {}
-		global_events.components_of_the_dead[unit.id] = little_inventory
-		-- we check lster in the next new turn event if the unit is still alive and if not give then items to the players inventory.
-		-- todo: to make this work in multiplayer we should also store ple units side.
-	end
-end
-
-global_events.on_start = function(event_context)
-	wesnoth.wml_actions.set_menu_item {
-		description = "edit robot",
-		id = "menu_edit_robot",
-		T.show_if {
-			T.have_unit {
-				x = "$x1",
-				y = "$y1",
-				side = "$side_number",
-				ability = "robot_ability",
-				T["not"] {
-					T.filter_wml {
-						attacks_left = 0,
-					},
-					T["and"] {
-						lua_function = "has_just_been_recruited_not"
-					},
-				},
-			},
-		},
-		T.filter_location {
-			terrain = "C*,C*^*,*^C*,K*,K*^*,*^K*",
-		},
-	}
-end
-
 global_events.register_wml_event = function(eventname, eventfilter_wml, event_id, func)
 	-- the problem is that the fucntion have to be created every time the game is loaded but the wml event only once.
 	local funcname = "wml_event_" .. eventname .. event_id
@@ -239,43 +180,6 @@ else
 		end
 	end
 end
-
-local endlevel_eventname = "victory"
-local function version_is_sufficient(required)
- if not wesnoth.compare_versions then return false end
- return wesnoth.compare_versions(wesnoth.game_config.version, ">=", required)
-end
-
-if version_is_sufficient("1.13.0") then
-	endlevel_eventname = "endlevel"
-end
-
-
-global_events.add_event_handler(endlevel_eventname, function(event_context)
-	-- fix carryover for teams in case side numbers change between scenarios.
-	for i, v in ipairs(wesnoth.sides) do
-		local save_id = v.__cfg.save_id
-		local side_inventory_key = "component_inventory_" .. tostring(v.side)
-		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
-		local inventory_data = wesnoth.get_variable(side_inventory_key)
-		wesnoth.set_variable(side_inventory_key)
-		wesnoth.set_variable(carryover_side_inventory_key, inventory_data)
-	end
-end)
-
-global_events.add_event_handler("prestart", function(event_context)
-	for i, v in ipairs(wesnoth.sides) do
-		local save_id = v.__cfg.save_id
-		local side_inventory_key = "component_inventory_" .. tostring(v.side)
-		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
-		local inventory_data = wesnoth.get_variable(carryover_side_inventory_key)
-		if inventory_data then
-			wesnoth.set_variable(carryover_side_inventory_key)
-			wesnoth.set_variable(carryover_side_inventory_key, side_inventory_key)
-		end
-	end
-end)
-
 
 
 
