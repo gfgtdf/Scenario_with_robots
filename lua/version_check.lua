@@ -12,8 +12,9 @@ return {
 		end, nil, all_sides)
 		
 		for k,v in pairs(results) do
-			if local_version ~= tostring(v.version) then
-				wesnoth.message("Detected different versions of Scenario With robots: " .. v.version .. " and "  .. local_version .. " OOS are likeley")
+			-- v.version might be nil for a null controlled sides.
+			if v.version ~= nil and local_version ~= tostring(v.version) then
+				wesnoth.message("Detected different versions of Scenario With robots at scenario start: " .. v.version .. " and "  .. local_version .. " OOS are likeley")
 			end
 		end
 		wesnoth.set_variable("swr_version", local_version)

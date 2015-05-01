@@ -36,9 +36,19 @@ function sync_choice.clear_global_variable(namespace, name, side)
 end
 
 function sync_choice.version1_11_13(func_human, func_ai, sides)
+	-- FIXME: handle null controlled sides correcntly.
 	local r = {}
+	local non_null_sides = {}
 	local local_sides = {}
 	for k,v in pairs(sides) do
+		if wesnoth.sides[v].controller == "null" then
+			-- return an empty table for null controlled sides.
+			r[v] = {}
+		else
+			table.insert(non_null_sides, v)
+		end
+	end
+	for k,v in pairs(non_null_sides) do
 		local ir = tostring(math.random(1000000000)) .. "_" .. tostring(os.time()) .. "_" .. tostring(os.clock()) .. "_" .. tostring(wesnoth.get_time_stamp())
 		sync_choice.set_global_variable("pyr_npt_1_12", "side_local_test" .. tostring(v), v, ir)
 		local ircheck = tostring(sync_choice.get_global_variable("pyr_npt_1_12", "side_local_test" .. tostring(v), v))
@@ -56,7 +66,7 @@ function sync_choice.version1_11_13(func_human, func_ai, sides)
 		end
 		sync_choice.set_global_variable("pyr_npt_1_12", "side_recruits" .. tostring(v), v, r_side)
 	end
-	for k,v in pairs(sides) do
+	for k,v in pairs(non_null_sides) do
 		-- wesnoth.message("Waiting for input from side " ..  tostring(v))
 		r[v] = sync_choice.get_global_variable("pyr_npt_1_12", "side_recruits" .. tostring(v), v)
 		-- wesnoth.message("Received for input from side " ..  tostring(v))
