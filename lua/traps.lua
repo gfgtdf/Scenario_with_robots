@@ -1,10 +1,9 @@
 local Traps = {}
 local traptypes = {}
-Traps.new = function(storage_variable)
+Traps.new = function()
 	local self = {}
 	-- each entry contains the following keys: x, y, sender_side, sender_unit_id, type, power
 	self.traplist = {}
-	self.storage_variable = storage_variable
 	self.init = function ()
 		global_events.add_event_handler("enter_hex", self.on_hex_enter)
 		global_events.add_event_handler("prestart", self.on_prestart)
