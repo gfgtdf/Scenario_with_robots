@@ -101,22 +101,6 @@ global_events.disallow_undo = function(current_event_name)
 	global_events.disallow_undo_flag = true
 end
 
-global_events.register_wml_event = function(eventname, eventfilter_wml, event_id, func)
-	-- the problem is that the fucntion have to be created every time the game is loaded but the wml event only once.
-	local funcname = "wml_event_" .. eventname .. event_id
-end
--- not implemented/tested/used yet
-global_events.register_wml_event_funcname = function(eventname, eventfilter_wml, event_id, funcname)
-	-- the intention is to make use of the useful "filter" tag in wml events, 
-	-- this should be used in the prestart event, but because of the "id" key i suppose it won't cause troulbe if used anywhere else
-	wesnoth.fire("event", {
-		name = eventname,
-		T.filter(eventfilter_wml),
-		id = event_id,
-		T.lua { code = funcname .. "()"}
-	})
-end
-
 if globals.no_toplevel_lua_workaround then
 	global_events.register_on_load_reader = function(tagname, f)
 		global_events.add_event_handler("luavars_init", function()
