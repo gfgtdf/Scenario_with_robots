@@ -59,7 +59,7 @@ global_events.preload_start = function()
 	if(not globals.no_toplevel_lua_workaround) then
 		error("preload start called when it is not needed, please report this bug")
 	end
-	-- there are 4 "preload" events that are fired in the following order: (this code mormaly executes in 1 or 2)
+	-- there are 4 "preload" events that are fired in the following order:
 	-- 1) toplevel [lua] tags	
 	-- 2) other type of toplevel [lua] tags	(i think on is insie the [scenrio] tag and the other outside)
 	-- 3) the wesnoth.game_events.on_load event
@@ -67,7 +67,7 @@ global_events.preload_start = function()
 	-- 5) the prestart wml event (if !gameload)
 	-- 6) the start wml event (if !gameload)
 	
-	-- Usually our lus code gets initlized at (2) and our variables are initlized at (3)
+	-- Usually our lua code gets initlized at (2) and our variables are initlized at (3)
 	-- However in 1.12.x (not in 1.13.x) [lua] tags inside era are not supported so we need to inilize our lua code in (4)
 	-- In that case global_events.init() runs in (4) and we need this function to emulate (3) and (4)
 	
@@ -96,8 +96,7 @@ global_events.add_event_handler = function(eventname, func)
 	table.insert(global_events.event_handlers[eventname], func)
 end
 --a workaround, using a wml event, since there is no lua equivalent to that
---not implemented yet. (or at least not tested), edit tested, bot only once
-global_events.disallow_undo = function(current_event_name)
+global_events.disallow_undo = function()
 	global_events.disallow_undo_flag = true
 end
 
@@ -143,7 +142,5 @@ else
 		end
 	end
 end
-
-
 
 return global_events
