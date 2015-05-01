@@ -38,3 +38,12 @@
 - make traps not visible in fog
 - code cleanups
 - Fixup enter/exit_hex workaround.
+ 
+ 1.1.3
+ - Added an option in "Era with robots" to let robots drop their component if they die
+ - Code clenaups
+ - Fix player beeing able to undo after running into a trap.
+ 
+ 
+ 
+ 
