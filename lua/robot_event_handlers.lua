@@ -61,6 +61,10 @@ global_events.add_event_handler("drop_pickup", function(event_context)
 	if dropped_items == nil then
 		return
 	end
+	if #wesnoth.get_units ({ side = wesnoth.current.side, ability = "robot_ability"}) == 0 then
+		-- robot components can only be picked up from sides that own robots.
+		return
+	end
 	local inventory = inventories[wesnoth.current.side]
 	inventory.open()
 	for k,v in pairs(dropped_items) do
