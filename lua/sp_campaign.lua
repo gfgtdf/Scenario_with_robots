@@ -9,9 +9,8 @@ global_events.add_event_handler("start", function (event_context)
 	}
 end)
 
-global_events.create_disallow_undo_workaround("menu_item menu_open_trader")
 global_events.add_event_handler("menu_item menu_open_trader", function (event_context)
-	global_events.disallow_undo_flag = true
+	global_events.disallow_undo()
 	-- i want to save the save the items that are alredy bought so i use an "inventory" object for that
 	trader_inv_minus = globals.trader_inv_minus or Inventory.new("trader_inv")
 	trader_inv_minus.open()
@@ -43,9 +42,8 @@ global_events.add_event_handler("menu_item menu_open_trader", function (event_co
 	side.gold = side.gold - price
 end)
 
-global_events.create_disallow_undo_workaround("menu_item menu_read_book")
 global_events.add_event_handler("menu_item menu_read_book", function (event_context)
-	global_events.disallow_undo_flag = true
+	global_events.disallow_undo()
 	local book_manual = z_require("book_maual")
 	local book_dialog = Gui_test.new(book_manual.pages)
 	--this doesn't change the game so no synchronize_choice is needed
@@ -53,9 +51,8 @@ global_events.add_event_handler("menu_item menu_read_book", function (event_cont
 end)
 
 -- use this to give the player a certain amount of components whenever he recruits a robot.
-global_events.create_disallow_undo_workaround("recruit")
 global_events.add_event_handler("recruit", function (event_context)
-	global_events.disallow_undo_flag = true
+	global_events.disallow_undo()
 	-- why is the "race" property not accessible though the proxy?
 	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit

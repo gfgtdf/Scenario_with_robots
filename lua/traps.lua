@@ -9,8 +9,6 @@ Traps.new = function(storage_variable)
 		global_events.add_event_handler("enter_hex", self.on_hex_enter)
 		global_events.add_event_handler("prestart", self.on_prestart)
 		global_events.add_event_handler("moveto", self.on_move_to)
-		global_events.create_disallow_undo_workaround("enter_hex")
-		global_events.create_disallow_undo_workaround("moveto")
 		global_events.register_on_save_writer("traps", self.save_traps)
 		global_events.register_on_load_reader("traps", self.load_traps)
 	end
@@ -62,9 +60,12 @@ Traps.new = function(storage_variable)
 					if traptypes[trap.type].permanent ~= true then
 						table.insert(remove_traps, k)
 					end
-					global_events.disallow_undo_flag = true
-					-- allowing units to move on if i want would be cool, but forcing htem to move on would be unfair i think
-					-- TODO: "undo" is still allowed after this, fix this
+					-- NOTE: just like for wml events this actually means "stop the move"
+					global_events.disallow_undo()
+					-- forcing htem to move on would be unfair i think
+					-- Create a moveto event to disallow undoing.
+					wesnoth.wml_actions.event { name = "moveto" }
+					
 				end
 			end
 			while #remove_traps > 0 do
@@ -147,7 +148,7 @@ Traps.new = function(storage_variable)
 					sender_side = unit.side, 
 					sender_unit_id = unit.id
 					}, ab_trapper.maxtraps) 
-				global_events.disallow_undo_flag = true
+				global_events.disallow_undo()
 				break
 			end
 		end

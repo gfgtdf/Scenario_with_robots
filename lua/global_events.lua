@@ -15,6 +15,7 @@ global_events.init = function()
 	wesnoth.game_events.on_event = function(eventname)
 		-- a global variable to know in what type of ewvent we are in everywhere.
 		-- the intention was to check in some functions for example that should be used in preload event or in a toplevel event.
+		local old_event_name = current_event_name
 		local event_context = wesnoth.current.event_context
 		local funcs = global_events.event_handlers[eventname] or {}
 		for k,v in pairs(funcs) do
@@ -22,8 +23,13 @@ global_events.init = function()
 			-- although we could always get the event context with wesnoth.current we still pass it th the calee
 			v(event_context)
 		end
+		if global_events.is_toplevel_event and global_events.disallow_undo_flag then
+			global_events.disallow_undo_flag = false
+			-- note: it is not possible to do this in the nested event handlers because of http://gna.org/bugs/?23556
+			wesnoth.wml_actions.event { name = wesnoth.current.event_context.name }
+		end
+		current_event_name = old_event_name
 		old_on_event(eventname)
-		current_event_name = ""
 	end
 	
 	if wesnoth.get_variable("component_inventory") ~= nil and wesnoth.get_variable("component_inventory_1") == nil then
@@ -40,8 +46,13 @@ global_events.init = function()
 	traps.init()
 	current_event_name = ""
 end
+
 global_events.toplevel_start = function()
 	global_events.init()	
+end
+
+global_events.is_toplevel_event = function()
+	return string.find(debug.traceback(), "[C]: in function 'fire_event'", 0, true) ~= nil
 end
 
 global_events.preload_start = function()
@@ -88,38 +99,6 @@ end
 --not implemented yet. (or at least not tested), edit tested, bot only once
 global_events.disallow_undo = function(current_event_name)
 	global_events.disallow_undo_flag = true
-end
--- a workaround, using a wml event, since there is no lua equivalent to that
--- not implemented yet/not tested yet
--- event_name may be a comma seperated list.
--- note that the wml event doesnt need to be created everytime the game is loadet. but the f_workaroubd_event function does,
--- to this needs to be called on toplevel.
-global_events.create_disallow_undo_workaround = function(event_name) 
-	--create event with lua code that calls f_workaroubd_event
-	--note, that since this is a local fun tion have to make it accesible somehow to the caller.
-	--maybe using one event with a very long comma,sperated list at name paramerter ist the best option.
-	if global_events.disallow_undo_effected_events == nil then
-		global_events.disallow_undo_effected_events = event_name
-	else
-		global_events.disallow_undo_effected_events = global_events.disallow_undo_effected_events .. "," ..event_name
-	end
-	wesnoth.wml_actions.event { 
-		id = "lua_disallow_undo", 
-		remove = true
-	}
-	wesnoth.wml_actions.event { 
-		id = "lua_disallow_undo", 
-		first_time_only = false,
-		name = global_events.disallow_undo_effected_events, 
-		T.lua { code = "global_events.f_workaroubd_event()"} 
-	}
-	local f_workaroubd_event = function()
-		if(global_events.disallow_undo_flag == nil) then
-			wesnoth.wml_actions.allow_undo({})
-		end
-		global_events.disallow_undo_flag = nil
-	end
-	global_events.f_workaroubd_event = f_workaroubd_event
 end
 
 global_events.register_wml_event = function(eventname, eventfilter_wml, event_id, func)

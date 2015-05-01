@@ -2,10 +2,8 @@
 global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
 	robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
 	stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
-	global_events.disallow_undo_flag = true
+	global_events.disallow_undo()
 end)
-
-global_events.create_disallow_undo_workaround("menu_item menu_edit_robot")
 
 global_events.add_event_handler("start", function(event_context)
 	wesnoth.wml_actions.set_menu_item {
