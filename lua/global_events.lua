@@ -1,9 +1,9 @@
--- here are all the event handers for side_turn, post_advance etc, it also contains the main routine "toplevel_start"
--- there is also a workaaround for disallow_undo but it is not implmented yet.
--- local helper = z_require("my_helper")
--- local stats = z_require("stats")
--- local Inventory = z_require("inventory")
-
+-- this file contains the base of my lua event handler logic
+-- specially it provides the functions 
+--   global_events.init()/global_events.preload_start() which initilize the event handler code
+--   global_events.add_event_handler() to register a lua event handler, unfortulateley it does not support filters.
+--   global_events.disallow_undo() to make undoing of teh current event impossible (which is not the default for lua event handlers)
+--   global_events.register_on_load_reader()/global_events.register_on_save_writer() to manage persistant lua variables
 
 local global_events = {}
 global_events.event_handlers = {}
