@@ -179,7 +179,38 @@ my_helper.random_number = function(mi, ma)
 	wesnoth.set_variable "LUA_random"
 	return res
 end
+
 my_helper.string_starts = function(String, Start)
    return string.sub(String,1,string.len(Start))==Start
 end
+
+local function create_image_path_function(funcname)
+	local funcname_u = "~" .. string.upper(funcname)
+	return function (...)
+		local args = table.pack(...)
+		local r = {}
+		table.insert(r, "~")
+		table.insert(r, funcname_u)
+		table.insert(r, "(")
+		if args.n > 0 then
+			table.insert(r, args[1])
+			for i = 2, args.n do
+				table.insert(r, ",")
+				table.insert(r, args[i])
+			end
+		end
+		table.insert(r, ")")
+		return table.concat(r)
+	end
+end
+
+my_helper.ipf = {}
+setmetatable(my_helper.ipf, {
+	__index = function (t, k)
+		local f = create_image_path_function(k)
+		t[k] = f
+		return f
+	end
+})
+
 return my_helper

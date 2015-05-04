@@ -114,6 +114,7 @@ table.insert(the_list, {
 		aggregator.simplepike.number = (aggregator.simplepike.number or 1) + 1
 	end,
 	apply_function = function(robot, aggregator)
+		aggregator.component_images.spear = (aggregator.component_images.spear or 0) + aggregator.simplepike.number - 1
 		return wml_codes.get_attack_spear_code(aggregator.simplepike.number, aggregator.simplepike.damage)  , wml_codes.get_imp_advancement("pike")
 	end,
 	image = "c/simplespear_c.png",
@@ -142,6 +143,7 @@ table.insert(the_list, {
 		aggregator.simplelaser.number = (aggregator.simplelaser.number or 0) + 1
 	end,
 	apply_function = function(robot, aggregator)
+		aggregator.component_images.laser = (aggregator.component_images.laser or 0) + aggregator.simplelaser.number
 		return wml_codes.get_attack_laser_code(aggregator.simplelaser.number, aggregator.simplelaser.damage) , wml_codes.get_imp_advancement("laser")
 	end,
 	image = "c/simplelaser.png",
@@ -164,6 +166,7 @@ table.insert(the_list, {
 		aggregator.propeller.count = (aggregator.propeller.count or 0) + 1
 	end,
 	apply_function = function(robot, aggregator)
+		aggregator.component_images.propeller = (aggregator.component_images.propeller or 0) + aggregator.propeller.count
 		local effects = {}
 		if aggregator.propeller.count > 2 then
 			aggregator.movement_costs.mountains = 2
@@ -217,6 +220,9 @@ table.insert(the_list, {
 			aggregator.movement = aggregator.movement + 1
 		end
 	end,
+	apply_function = function(robot, aggregator)
+		aggregator.component_images.wheel = (aggregator.component_images.wheel or 0) + aggregator.wheel_count
+	end,
 	image = "c/wheel.png",
 	toolbox_order = -75,
 	field_images = { [3] = { [3] = "c/wheel.png" } }
@@ -236,6 +242,7 @@ table.insert(the_list, {
 		aggregator.bigbow.count = (aggregator.bigbow.count or 0) + 1
 	end,
 	apply_function = function(robot, aggregator)
+		aggregator.component_images.bow = (aggregator.component_images.bow or 0) + aggregator.bigbow.count
 		local effects = {}
 		effects[1] = wml_codes.get_attack_bigbow_code(aggregator.bigbow.count, 20)[1]
 		local advancements = wml_codes.get_imp_advancement("bigbow")

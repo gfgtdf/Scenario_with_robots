@@ -39,6 +39,7 @@ trader = z_require("trader")
 Seller = z_require("seller")
 
 dropping = z_require("dropping")
+unit_types_data = z_require("unit_data")
 z_require("has_just_been_recruited_not")
 z_require("robot_event_handlers")
 

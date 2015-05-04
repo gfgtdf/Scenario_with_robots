@@ -223,4 +223,13 @@ wml_codes.get_antenna_leadership_code = function(percent)
 	return effects
 end
 
+wml_codes.get_ipfs_code = function(ipfs)
+	local effects = {}
+	table.insert(effects, T.effect {
+		apply_to = "image_mod",
+		add = table.concat(ipfs),
+	})
+	return effects
+end
+
 return wml_codes

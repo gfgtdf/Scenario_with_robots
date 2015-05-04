@@ -456,7 +456,7 @@ end
 -- returns: 
 --   effects: the effects that shoudl be applied
 --   advanced: advances that should be applied this is to mak eth ecomonents reqwuirements for advances.
-robot_mechanics.calcualte_bonuses = function(field, robot)
+robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 
 	local open_ends_count = robot.open_ends_count
 	local rings_count = robot.rings_count
@@ -464,6 +464,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot)
 	open_ends_count = max (1, open_ends_count ) - 1
 	local aggregator = {}
 	local apply_functions = {}
+	aggregator.component_images = {}
 	aggregator.movement = 0
 	aggregator.movement_costs = {}
 	aggregator.terrain_defenses_delta = {}
@@ -489,7 +490,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot)
 	local all_advances = {}
 	for k, v in pairs(apply_functions) do
 		local new_effects, new_advances = k(robot, aggregator)
-		for k2, v2 in pairs(new_effects) do
+		for k2, v2 in pairs(new_effects or {}) do
 			table.insert(all_effects, v2)
 		end
 		for k2, v2 in pairs(new_advances or {}) do
@@ -499,12 +500,17 @@ robot_mechanics.calcualte_bonuses = function(field, robot)
 	table.insert(all_effects, wml_codes.get_ad_movement_code(aggregator.movement)[1])
 	table.insert(all_effects, wml_codes.get_ad_movement_costs_code(aggregator.movement_costs)[1])
 	table.insert(all_effects, wml_codes.get_ad_resistances_code(aggregator.resitances_delta.arcane, aggregator.resitances_delta.cold, aggregator.resitances_delta.fire, aggregator.resitances_delta.blade, aggregator.resitances_delta.pierce, aggregator.resitances_delta.impact)[1])
+	local ipfs = {}
+	local type_image_mods = (unit_types_data[unit_type] or {}).image_mods or {}
+	for k,v in pairs(aggregator.component_images) do
+		local f = type_image_mods[k]
+		if f ~= nil then
+			f(v, ipfs)
+		end
+	end
+	table.insert(all_effects, wml_codes.get_ipfs_code(ipfs)[1])
 	return all_effects, all_advances
 end
--- this is the list of all comonents, i suppose i'll put it into anoter file someday.
--- EDIT: they are alreadey in another file.
-
-
 
 robot_mechanics.reapply_bonuses_at_xy = function(x, y)
 	local unit_cfg = wesnoth.get_unit(x, y).__cfg
@@ -522,7 +528,7 @@ robot_mechanics.reapply_bonuses_at_xy = function(x, y)
 end
 
 
-robot_mechanics.apply_bonuses = function(unit_cfg, robot)
+robot_mechanics.apply_bonuses = function(unit_cfg, robot, unit_type)
 	local sizeX = robot.size.x
 	local sizeY = robot.size.y
 	local field = {}
@@ -559,7 +565,7 @@ robot_mechanics.apply_bonuses = function(unit_cfg, robot)
 		end
 		robot.components = found_objects
 	end	
-	local effects, new_advancements = robot_mechanics.calcualte_bonuses(field, robot)
+	local effects, new_advancements = robot_mechanics.calcualte_bonuses(field, robot, unit_cfg.type)
 	robot_mechanics.replace_robot_advancements(unit_cfg, effects, new_advancements)	
 end
 
