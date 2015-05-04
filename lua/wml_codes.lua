@@ -68,7 +68,6 @@ wml_codes.get_attack_bigbow_code = function(attack_number, attack_damage)
 			}
 		}
 	})
-	-- to ad something the makes this useful, for axample a distant attack
 	--TODO: add animations.
 	return effects
 end
@@ -113,10 +112,10 @@ wml_codes.get_healing_ability_code = function(strength)
 			T.heals {
 				affect_allies = true,
 				affect_self = false,
-				description = _ ("heals " .. tostring(strength) .. " hp per turn or removes poison"),
-				female_name = _ ("female^heals +" .. tostring(strength)),
+				description = _ "heals " .. tostring(strength) .. _ " hp per turn or removes poison",
+				female_name = _ "female^heals +" .. tostring(strength),
 				id = "robot_heals_with_4parts",
-				name = _ ("heals +" .. tostring(strength)),
+				name = _ "heals +" .. tostring(strength),
 				poison = "cured",
 				value = strength,
 				T.affect_adjacent { adjacent = "n,ne,se,s,sw,nw" }
@@ -132,10 +131,10 @@ wml_codes.get_regenerate_ability_code = function(strength)
 		T.abilities {
 			T.regenerate {
 				affect_self = true,
-				description = _ ("The unit will heal itself " .. tostring(strength) .. " HP per turn. If it is poisoned, these two effects will negate themselves."),
+				description = _ "The unit will heal itself " .. tostring(strength) .. _ " HP per turn. If it is poisoned, these two effects will negate themselves.",
 				female_name = _ "female^regenerates slightly",
 				id = "robot_regenerate_with_4parts",
-				name = _ ("regenerates (" .. tostring(strength) .. ")"),
+				name = _ "regenerates (" .. tostring(strength) .. _ ")",
 				poison = "slowed",
 				value = strength
 			}
@@ -153,7 +152,6 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 		damage = damage_change,
 		clone_anim = true,
 		type = attack_type,
-		--description = _"fury",
 		force_original_attack = attack_name,
 		name = attack_name .. "_with_type_" .. attack_type
 	})
