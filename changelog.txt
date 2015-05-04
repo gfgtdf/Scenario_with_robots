@@ -47,3 +47,6 @@
 1.1.4
 - Fixed bug with version checks which caused false positive warnings about version missmatch. 
 
+1.1.5
+- new images for small robots by doofus-01
+- small robots image now depends on their components.
