@@ -15,8 +15,6 @@ constants.all_terrains = Set{"fungus", "swamp_water", "forest", "hills", "mounta
 constants.all_damage_types = Set{"arcane", "cold", "fire", "blade" , "pierce", "impact"}
 constants.weapon_bonuses = Set{"damage", "suck", "damage_plus", "attacks" ,"icon", "merge", "damage_type", "name"}
 constants.weapon_speacial_abilites = Set{"firststrike", "poison", "attacks" ,"slow", "plague" ,"chance_to_hit", "berserk", "damage", "dummy", "drains", "swarm"}
--- what was this for ???
---constants.geared_sorts = Set{"armour", "sword"}
 constants.item_list_object = helper.get_variable_array("item_list.object")
 constants.item_by_number = {}
 
