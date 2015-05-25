@@ -500,7 +500,8 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	table.insert(all_effects, wml_codes.get_ad_movement_code(aggregator.movement)[1])
 	table.insert(all_effects, wml_codes.get_ad_movement_costs_code(aggregator.movement_costs)[1])
 	table.insert(all_effects, wml_codes.get_ad_resistances_code(aggregator.resitances_delta.arcane, aggregator.resitances_delta.cold, aggregator.resitances_delta.fire, aggregator.resitances_delta.blade, aggregator.resitances_delta.pierce, aggregator.resitances_delta.impact)[1])
-	local ipfs = {}
+	-- Our image path functions all begin with ~ but image_bod expects that our first image path function does not begin with ~. We fix this by appending 'BLIT(misc/tpixel.png)'
+	local ipfs = { "BLIT(misc/tpixel.png)" }
 	local type_image_mods = (unit_types_data[unit_type] or {}).image_mods or {}
 	for k,v in pairs(aggregator.component_images) do
 		local f = type_image_mods[k]

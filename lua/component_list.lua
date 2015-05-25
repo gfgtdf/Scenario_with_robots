@@ -271,6 +271,7 @@ table.insert(the_list, {
 		--nothing here, so a second one is uselesss
 	end,
 	apply_function = function(robot, aggregator)
+		aggregator.component_images.healing = 1
 		local effects = {}
 		effects[1] = wml_codes.get_healing_ability_code(12)[1]
 		effects[2] = wml_codes.get_regenerate_ability_code(4)[1]
