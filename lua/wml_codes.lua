@@ -224,10 +224,24 @@ wml_codes.get_antenna_leadership_code = function(percent)
 end
 
 wml_codes.get_ipfs_code = function(ipfs)
+	local is_below = function(t1, t2)
+		return (t1.order or 0) < (t2.order or 0)
+	end
+	stable_sort(ipfs, is_below)
+	
+	local ipfs_string = {}
+	for i, t in ipairs(ipfs) do
+		cwo(t)
+		cwo(swr_h.ipf.blit(t.image, t.x, t.y))
+		table.insert(ipfs_string, swr_h.ipf.blit(t.image, t.x, t.y))
+	end
+	-- Our image path functions all begin with ~ but image_bod expects that our first image path function does not begin with ~. We fix this by appending 'BLIT(misc/tpixel.png)'
+	table.insert(ipfs_string, 1, "BLIT(misc/tpixel.png)")
+		cwo(table.concat(ipfs_string))
 	local effects = {}
 	table.insert(effects, T.effect {
 		apply_to = "image_mod",
-		add = table.concat(ipfs),
+		add = table.concat(ipfs_string),
 	})
 	return effects
 end

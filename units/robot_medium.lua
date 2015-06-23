@@ -2,60 +2,60 @@ local u = {}
 u.image_mods = {}
 u.image_mods.spear = function (n, t)
 	if n >= 3 then
-		table.insert(t, swr_h.ipf.blit("units/robots/spear1.png",3,28))
+		table.insert(t, { image = "units/robots/spear1.png", x = 3, y = 28 })
 	end
 	if n >= 1 then
-		table.insert(t, swr_h.ipf.blit("units/robots/spear1.png",3,33))
+		table.insert(t, { image = "units/robots/spear1.png", x = 3, y = 33 })
 	end
 	if n >= 2 then
-		table.insert(t, swr_h.ipf.blit("units/robots/spear1.png",3,38))
+		table.insert(t, { image = "units/robots/spear1.png", x = 3, y = 38 })
 	end
 end
 u.image_mods.wheel = function (n, t)
 	if n >= 3 then
 		-- x=40 is we be > 72 pixels.
-		table.insert(t, swr_h.ipf.blit("units/robots/wheel1.png",49,50))
+		table.insert(t, { image = "units/robots/wheel1.png", x = 49, y = 50 })
 	end
 	if n >= 2 then
-		table.insert(t, swr_h.ipf.blit("units/robots/wheel1.png",44,52))
+		table.insert(t, { image = "units/robots/wheel1.png", x = 44, y = 52 })
 	end
 	if n >= 1 then
-		table.insert(t, swr_h.ipf.blit("units/robots/wheel1.png",39,54))
+		table.insert(t, { image = "units/robots/wheel1.png", x = 39, y = 54 })
 	end
 end
 u.image_mods.laser = function (n, t)
 	if n >= 3 then
-		table.insert(t, swr_h.ipf.blit("units/robots/cannon1.png",50,35))
+		table.insert(t, { image = "units/robots/cannon1.png", x = 50, y = 35 })
 	end
 	if n >= 2 then
-		table.insert(t, swr_h.ipf.blit("units/robots/cannon1.png",50,30))
+		table.insert(t, { image = "units/robots/cannon1.png", x = 50, y = 30 })
 	end
 	if n >= 1 then
-		table.insert(t, swr_h.ipf.blit("units/robots/cannon1.png",50,25))
+		table.insert(t, { image = "units/robots/cannon1.png", x = 50, y = 25 })
 	end
 end
 u.image_mods.bow = function (n, t)
 	if n >= 1 then
-		table.insert(t, swr_h.ipf.blit("units/robots/bow2.png",0,0))
+		table.insert(t, { image = "units/robots/bow2.png", x = 0, y = 0 })
 	end
 end
 u.image_mods.healing = function (n, t)
 	if n >= 1 then
-		table.insert(t, swr_h.ipf.blit("units/robots/healing_medium.png",0,0))
+		table.insert(t, { image = "units/robots/healing_medium.png", x = 0, y = 0 })
 	end
 end
 u.image_mods.propeller = function (n, t)
 	if n >= 1 then
-		table.insert(t, swr_h.ipf.blit("units/robots/propeller1.png",2,15))
+		table.insert(t, { image = "units/robots/propeller1.png", x = 2, y = 15 })
 	end
 	if n >= 2 then
-		table.insert(t, swr_h.ipf.blit("units/robots/propeller1.png",34,0))
+		table.insert(t, { image = "units/robots/propeller1.png", x = 34, y = 0 })
 	end
 	if n >= 3 then
-		table.insert(t, swr_h.ipf.blit("units/robots/propeller1.png",10,20))
+		table.insert(t, { image = "units/robots/propeller1.png", x = 10, y = 20 })
 	end
 	if n >= 4 then
-		table.insert(t, swr_h.ipf.blit("units/robots/propeller1.png",42,5))
+		table.insert(t, { image = "units/robots/propeller1.png", x = 42, y = 5 })
 	end
 end
 return u
