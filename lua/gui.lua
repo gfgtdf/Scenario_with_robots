@@ -70,6 +70,7 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 			for iY = 1 , sizeY do
 				for iX = 1 , sizeX do
 					local f_sel = function()
+					wesnoth.set_dialog_value(false, "cell_panel" .. tostring(iX) .. tostring(iY))
 						self.on_field_clicked({ x = iX, y = iY }, selected_index)
 					end
 					if images[iX][iY] == nil then
