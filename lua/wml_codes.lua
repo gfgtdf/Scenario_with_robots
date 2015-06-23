@@ -205,8 +205,8 @@ wml_codes.get_antenna_leadership_code = function(percent)
 		T.abilities {
 			T.leadership {
 				id = "antenna_leadership",
-				name = _ "Antanna",
-				description = _ "Adjacent robots deal " .. percent .. "% more damage",
+				name = _ "Antenna",
+				description = _ "Adjacent robots deal " .. percent .. _ "% more damage",
 				value = percent,
 				affect_self = false,
 				affect_allies = true,
