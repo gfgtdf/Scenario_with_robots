@@ -46,6 +46,7 @@ function serialize(o, accept_nil)
 end
 --like seralite but without the \n., used if i want to store wml in lua variables
 -- or lua in wml variables
+if false then
 function serialize_oneline(o, accept_nil)
 	accept_nil = accept_nil or false
 	local r = ""
@@ -62,14 +63,16 @@ function serialize_oneline(o, accept_nil)
 	elseif type(o) == "table" then
 		r = "{ "
 		for k,v in pairs(o) do
-			r = r .. " [" .. serialize_oneline(k) .. "] = " .. serialize_oneline(v) .. ", "
+			r = r .. "[" .. serialize_oneline(k) .. "] = " .. serialize_oneline(v) .. ", "
 		end
 		return r .. "} "
 	else
 		error("cannot serialize a " .. type(o))
 	end
 end
-
+else
+	serialize_oneline = z_require("serialize")
+end
 function deseralize(str)
 	return loadstring("return " .. str)()
 end
@@ -189,7 +192,7 @@ local function create_image_path_function(funcname)
 	return function (...)
 		local args = table.pack(...)
 		local r = {}
-		table.insert(r, "~")
+		-- table.insert(r, "~")
 		table.insert(r, funcname_u)
 		table.insert(r, "(")
 		if args.n > 0 then
@@ -213,4 +216,29 @@ setmetatable(my_helper.ipf, {
 	end
 })
 
+local last_time = nil
+cl_b = function()
+	local stamp = wesnoth.get_time_stamp()
+	local old_time = last_time or stamp
+	last_time = stamp
+	wesnoth.message(tostring(stamp - old_time) .. "ticks")
+end
+--[[
+-- a big table to test preformance of serialize(_oneline)
+test_data = function()
+	local res = {}
+	for i,v in ipairs(wesnoth.get_units {}) do
+		table.insert(res, v.__cfg)
+	end
+	for i,v in ipairs(wesnoth.sides) do
+		table.insert(res, v.__cfg)
+	end
+	return res
+end
+s_o_1 = serialize_oneline
+s_o_2 = z_require("serialize")
+
+cl_b(); s_o_1(wesnoth.get_unit(25,19).__cfg);cl_b();
+lua cl_b(); s_o_1(test_data());cl_b();
+]]
 return my_helper
