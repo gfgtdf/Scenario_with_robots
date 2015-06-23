@@ -57,6 +57,7 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 				local f_sel = function()
 					self.on_image_chosen(k)
 					selected_index = k
+					wesnoth.set_dialog_value(false, "down_panel" .. k)
 				end
 				wesnoth.set_dialog_value(v, "down_icon" .. tostring(k))
 				wesnoth.set_dialog_callback(f_sel, "down_panel" .. tostring(k))

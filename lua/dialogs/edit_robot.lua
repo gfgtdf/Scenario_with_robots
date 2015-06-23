@@ -136,7 +136,7 @@ function create_tooltip_field(index_str, tooltip_str)
 end
 
 function create_unused_tooltip_field(imagename)
-	return T.toggle_panel {
+	return --T.toggle_panel {
 		T.grid {
 			T.row {
 				vertical_grow = true, 
@@ -146,7 +146,7 @@ function create_unused_tooltip_field(imagename)
 					},
 				},
 			},
-		},
+	--	},
 	} 
 end
 
