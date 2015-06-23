@@ -146,6 +146,8 @@ function stats.calculate_weapons_only(unit_cnf)
 							if (k ~= "apply_to") and (k ~= "id") and (k ~= "replace")then
 								if effect.replace == false and type(v) == "number" then
 									v1[2][k] = v1[2][k] + v
+								elseif effect.replace == "multiply" and type(v) == "number" then
+									v1[2][k] = v1[2][k] * v
 								else
 									v1[2][k] =  v
 								end
@@ -168,6 +170,8 @@ function stats.calculate_weapons_only(unit_cnf)
 									if (k ~= "apply_to") and (k ~= "attack_name") and (k ~= "id") and (k ~= "replace")then
 										if effect.replace == false and type(v) == "number" then
 											v1[2][k] = v1[2][k] + v
+										elseif effect.replace == "multiply" and type(v) == "number" then
+											v1[2][k] = v1[2][k] * v
 										else
 											v1[2][k] =  v
 										end

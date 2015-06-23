@@ -53,3 +53,11 @@
 
 1.1.6
 - new images for big and medium robots by doofus-01 which depend on their components.
+
+1.1.7
+- Fixes in the edit robot dialog.
+- +def addons now also exists as pipe-on-the-left versions
+- Added amlas for antenna
+- Fix healing drawn on top of properllors
+- cheap 'starter packs' in component shop in mp.
+
