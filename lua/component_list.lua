@@ -376,6 +376,27 @@ table.insert(the_list, {
 	field_images = { [3] = { [3] = "c/addon_n.png" } }
 })
 table.insert(the_list, {
+	field = { [3] = { [3] = { w = true } } },
+	name = "heating_addon_right",
+	tooltip = "gives resitance to cold damage, better effect if placed near the core",
+	check_function = function(r_field, robot, objpos)
+		return true
+	end,
+	aggregate_function = function (robot, comp, aggregator)
+		local distance = comp.distance - 1 --comp.distance == 0 has only the core itself
+		local effect = math.max(20 - (2.5*distance), 0)
+		aggregator.resitances_delta.cold = aggregator.resitances_delta.cold - effect
+	end,
+	apply_function = function(robot, aggregator)
+		return {}
+	end,
+	--no dependencies
+	order_apply = 1,
+	image = "c/addon_heat_w.png",
+	toolbox_order = -50,
+	field_images = { [3] = { [3] = "c/addon_heat_w.png" } }
+})
+table.insert(the_list, {
 	field = { [3] = { [3] = { n = true } } },
 	name = "cooling_addon",
 	tooltip = "gives resitance to fire damage, better effect if placed near the core",
@@ -395,6 +416,27 @@ table.insert(the_list, {
 	image = "c/addon_2_n.png",
 	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_2_n.png" } }
+})
+table.insert(the_list, {
+	field = { [3] = { [3] = { w = true } } },
+	name = "cooling_addon_right",
+	tooltip = "gives resitance to fire damage, better effect if placed near the core",
+	check_function = function(r_field, robot, objpos)
+		return true
+	end,
+	aggregate_function = function (robot, comp, aggregator)
+		local distance = comp.distance - 1 --comp.distance == 0 has only the core itself
+		local effect = math.max(20 - (2.5*distance), 0)
+		aggregator.resitances_delta.fire = aggregator.resitances_delta.fire - effect
+	end,
+	apply_function = function(robot, aggregator)
+		return {}
+	end,
+	--no dependencies
+	order_apply = 1,
+	image = "c/addon_cool_w.png",
+	toolbox_order = -50,
+	field_images = { [3] = { [3] = "c/addon_cool_w.png" } }
 })
 
 table.insert(the_list, {
