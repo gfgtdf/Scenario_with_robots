@@ -1,5 +1,34 @@
 local trader_list = {}
 table.insert(trader_list, {
+	name = "Starter Pack 1", 
+	description = "Items to make a small robot with a bow and a wheel.\n",  
+	price = 10,
+	image = "c/bigbow_c.png",
+	apply_func = function(inv)
+		inv.add_amount("simplewheel", 1)
+		inv.add_amount("bigbow", 1)
+		inv.add_amount("pipe_sw",1)
+		inv.add_amount("antenna", 1)
+	end
+})
+table.insert(trader_list, {
+	name = "Starter Pack 2", 
+	description = "Items to make a small robot equipped with lasers and spears.\n",  
+	price = 15,
+	image = "c/simplespear_1.png",
+	apply_func = function(inv)
+		inv.add_amount("simplewheel", 2)
+		inv.add_amount("pipe_sw",1)
+		inv.add_amount("pipe_es",1)
+		inv.add_amount("pipe_esw",1)
+		inv.add_amount("pipe_sw",1)
+		inv.add_amount("pipe_ew",1)
+		inv.add_amount("pipe_nw",1)
+		inv.add_amount("simplelaser", 1)
+		inv.add_amount("simplepike", 1)
+	end
+})
+table.insert(trader_list, {
 	name = "wheel", 
 	description = "One wheel.\n",  
 	price = 5,
