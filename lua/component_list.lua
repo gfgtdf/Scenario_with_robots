@@ -509,10 +509,11 @@ table.insert(the_list, {
 		return true 
 	end,
 	aggregate_function = function (robot, comp, aggregator) 
-		aggregator.antenna = (aggregator.antenna or 0) + 5
+		aggregator.antenna = (aggregator.antenna or 0) + 1
 	end,
 	apply_function = function(robot, aggregator)
-		return wml_codes.get_antenna_leadership_code(aggregator.antenna)  , wml_codes.get_imp_advancement("antenna")
+		aggregator.component_images.antenna = aggregator.antenna
+		return wml_codes.get_antenna_leadership_code(5 * aggregator.antenna)  , wml_codes.get_imp_advancement("antenna")
 	end,
 	image = "c/antenne_unten.png",
 	field_images = { [3] = { [2] = "c/antenne_oben.png", [3] = "c/antenne_unten.png" } }
