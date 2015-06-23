@@ -41,7 +41,7 @@ u.image_mods.bow = function (n, t)
 end
 u.image_mods.healing = function (n, t)
 	if n >= 1 then
-		table.insert(t, { image = "units/robots/healing_medium.png", x = 0, y = 0 })
+		table.insert(t, { image = "units/robots/healing_medium.png", x = 0, y = 0, order = -100 })
 	end
 end
 u.image_mods.propeller = function (n, t)
