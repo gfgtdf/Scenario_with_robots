@@ -230,14 +230,12 @@ wml_codes.get_ipfs_code = function(ipfs)
 	stable_sort(ipfs, is_below)
 	
 	local ipfs_string = {}
+	local blit = swr_h.ipf.blit
 	for i, t in ipairs(ipfs) do
-		cwo(t)
-		cwo(swr_h.ipf.blit(t.image, t.x, t.y))
-		table.insert(ipfs_string, swr_h.ipf.blit(t.image, t.x, t.y))
+		table.insert(ipfs_string, blit(t.image, t.x, t.y))
 	end
 	-- Our image path functions all begin with ~ but image_bod expects that our first image path function does not begin with ~. We fix this by appending 'BLIT(misc/tpixel.png)'
 	table.insert(ipfs_string, 1, "BLIT(misc/tpixel.png)")
-		cwo(table.concat(ipfs_string))
 	local effects = {}
 	table.insert(effects, T.effect {
 		apply_to = "image_mod",
