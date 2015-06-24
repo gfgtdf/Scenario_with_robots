@@ -14,7 +14,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Starter Pack 2", 
 	description = "Items to make a small robot equipped with lasers and spears.\n",  
-	price = 15,
+	price = 13,
 	image = "c/simplespear_1.png",
 	apply_func = function(inv)
 		inv.add_amount("simplewheel", 2)
@@ -31,7 +31,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "wheel", 
 	description = "One wheel.\n",  
-	price = 5,
+	price = 3,
 	image = "c/wheel.png",
 	apply_func = function(inv)
 		inv.add_amount("simplewheel", 1)
@@ -40,7 +40,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Spear", 
 	description = "One spear\n",  
-	price = 5,
+	price = 4,
 	image = "c/simplespear_1.png",
 	apply_func = function(inv)
 		inv.add_amount("simplepike",1)
@@ -49,7 +49,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Laser", 
 	description = "Contains 1 Lasergun\n",  
-	price = 5,
+	price = 4,
 	image = "c/simplelaser.png",
 	apply_func = function(inv)
 		inv.add_amount("simplelaser", 1)
@@ -58,7 +58,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Bigbow", 
 	description = "One bow.\n",  
-	price = 8, 
+	price = 7, 
 	image = "c/bigbow_c.png",
 	apply_func = function(inv)
 		inv.add_amount("bigbow", 1)
@@ -67,7 +67,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Propellers", 
 	description = "2 Propellers.\n",  
-	price = 10, 
+	price = 5, 
 	image = "c/propeller.png",
 	apply_func = function(inv)
 		inv.add_amount("propeller", 2)
@@ -76,7 +76,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Pipe pack1", 
 	description = "Contains all pipes with 2 ends once\n",  
-	price = 10, 
+	price = 8, 
 	image = "units/robots/robot_small.png",
 	apply_func = function(inv)
 		inv.add_amount("pipe_sw",1)
@@ -90,7 +90,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Pipe pack2", 
 	description = "Contains all pipes with 3 ends once\n",  
-	price = 20, 
+	price = 15, 
 	image = "units/robots/robot_small.png",
 	apply_func = function(inv)
 		inv.add_amount("pipe_nsw",1)
@@ -101,8 +101,8 @@ table.insert(trader_list, {
 })
 table.insert(trader_list, {
 	name = "Gimmick pack", 
-	description = "Contains 2 random gimmick items\n",  
-	price = 10, 
+	description = "Contains healing or +resistance items.\n Note: healing addons take a lot of space and are hard to place.\n",  
+	price = 5, 
 	image = "units/robots/robot_small.png",
 	apply_func = function(inv)
 		inv.add_random_items_from_comma_seperated_list("cooling_addon,heating_addon", 1)
@@ -112,7 +112,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Trapper", 
 	description = "Contains eigher a trapper or a trapper modifer\n",  
-	price = 5, 
+	price = 4, 
 	image = "c/trapper_c.png",
 	apply_func = function(inv)
 		inv.add_random_items_from_comma_seperated_list("bombdropper,bombdropper,bombdropper,trapper_modifier", 1)
@@ -121,7 +121,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Weapon modifer", 
 	description = "Contains weapon modifer that adds fire damage to spears\n",  
-	price = 5, 
+	price = 4, 
 	image = "c/attack_modifier_2_nw.png",
 	apply_func = function(inv)
 		inv.add_amount("spear_fire_modier",1)
@@ -130,7 +130,7 @@ table.insert(trader_list, {
 table.insert(trader_list, {
 	name = "Antanna", 
 	description = "Contains 1 Antenna\n",  
-	price = 5,
+	price = 4,
 	image = "c/antenne_oben.png",
 	apply_func = function(inv)
 		inv.add_amount("antenna", 1)
