@@ -223,7 +223,17 @@ wml_codes.get_antenna_leadership_code = function(percent)
 	return effects
 end
 
+get_imagemod_oversize = function(img)
+	local x1 = -img.x
+	local y1 = -img.y
+	local x2, y2 = wesnoth.get_image_size(img.image)
+	x2 = x2 + img.x - 72
+	y2 = y2 + img.y - 72
+	return math.max(x1, x2, 0), math.max(y1, y2, 0)
+end
+
 wml_codes.get_ipfs_code = function(ipfs)
+	local is_wesnoth_1_13 = wesnoth.compare_versions(wesnoth.game_config.version, ">=", "1.13.0+dev")
 	local is_below = function(t1, t2)
 		return (t1.order or 0) < (t2.order or 0)
 	end
@@ -231,8 +241,25 @@ wml_codes.get_ipfs_code = function(ipfs)
 	
 	local ipfs_string = {}
 	local blit = swr_h.ipf.blit
+	local over_x = 0
+	local over_y = 0
 	for i, t in ipairs(ipfs) do
-		table.insert(ipfs_string, blit(t.image, t.x, t.y))
+		local on_x, on_y  = get_imagemod_oversize(t)
+		local is_oversize = on_x > over_x or on_y > over_y
+		if is_wesnoth_1_13 or not is_oversize then
+			--our oversize code wont work on 1.13.0 and older versions.
+			if is_oversize then
+				-- increase teh base image is needed
+				local diff_x = on_x - over_x
+				local diff_y = on_y - over_y
+				local newsize_x = 2 * on_x + 72
+				local newsize_y = 2 * on_y + 72
+				over_x = on_x
+				over_y = on_y
+				table.insert(ipfs_string, swr_h.ipf.crop(-diff_x, -diff_y, newsize_x, newsize_y))
+			end
+			table.insert(ipfs_string, blit(t.image, t.x + over_x, t.y + over_y))
+		end
 	end
 	-- Our image path functions all begin with ~ but image_bod expects that our first image path function does not begin with ~. We fix this by appending 'BLIT(misc/tpixel.png)'
 	table.insert(ipfs_string, 1, "BLIT(misc/tpixel.png)")

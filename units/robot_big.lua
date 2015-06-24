@@ -58,4 +58,12 @@ u.image_mods.propeller = function (n, t)
 		table.insert(t, { image = "units/robots/propeller1.png", x = 41, y = 5 })
 	end
 end
+u.image_mods.antenna = function (n, t)
+	if n >= 1 then
+		table.insert(t, { image = "units/robots/antenna1.png", x = 12, y = -10 })
+	end
+	if n >= 2 then
+		table.insert(t, { image = "units/robots/antenna1.png", x = 35, y = -21 })
+	end
+end
 return u
