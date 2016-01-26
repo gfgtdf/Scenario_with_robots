@@ -6,7 +6,6 @@ Traps.new = function()
 	self.traplist = {}
 	self.init = function ()
 		global_events.add_event_handler("enter_hex", self.on_hex_enter)
-		global_events.add_event_handler("prestart", self.on_prestart)
 		global_events.add_event_handler("moveto", self.on_move_to)
 		global_events.register_on_save_writer("traps", self.save_traps)
 		global_events.register_on_load_reader("traps", self.load_traps)
@@ -16,8 +15,6 @@ Traps.new = function()
 	end
 	self.save_traps = function (cfg)
 		return {value = swr_h.serialize_oneline( self.traplist ) }
-	end
-	self.on_prestart = function ()
 	end
 	-- lua traps.set_trap({ x = 25, y = 18, power = 1, type = "poison_spikes" }, 1)
 	self.set_trap = function(trap, max_times)
@@ -72,8 +69,6 @@ Traps.new = function()
 				table.remove(remove_traps, #remove_traps)
 			end
 		end		
-	end
-	self.on_prestart = function()
 	end
 	self.execute_trap = function(trap, x, y, taget_ref)
 		local traptype = traptypes[trap.type]
