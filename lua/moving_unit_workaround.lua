@@ -55,7 +55,7 @@ global_events.add_event_handler("exit_hex", function (event_context)
 		moving_unit.move_info.enter_x = event_context.x2
 		moving_unit.move_info.enter_normal = true
 	else
-		moving_unit.move_info.enter_normal = false	
+		moving_unit.move_info.enter_normal = false
 	end
 end)
 

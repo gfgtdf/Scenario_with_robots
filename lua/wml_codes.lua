@@ -182,7 +182,6 @@ wml_codes.get_trapper_ability_code = function(damage, traptype, maxtraps)
 				damage = damage,
 				traptype = traptype,
 				maxtraps = maxtraps,
-				
 			}
 		}
 	})
@@ -238,7 +237,6 @@ wml_codes.get_ipfs_code = function(ipfs)
 		return (t1.order or 0) < (t2.order or 0)
 	end
 	stable_sort(ipfs, is_below)
-	
 	local ipfs_string = {}
 	local blit = swr_h.ipf.blit
 	local over_x = 0

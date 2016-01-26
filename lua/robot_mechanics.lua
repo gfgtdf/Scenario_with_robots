@@ -15,7 +15,6 @@ local function create_component_image(comp)
 	local max_x = 4
 	local min_y = 2
 	local max_y = 4
-	
 	--caclualte the size for the image but make it at lest 3x3.
 	for i_x = 1, 5 do
 		for i_y = 1, 5 do
@@ -79,10 +78,8 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	-- here we load the "robot" variable from the units variablres
 	local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
 	local robot = loadstring("return " .. robot_string )()
-	
 	r_sizeX_delta = max(default_size.x - robot.size.x, 0)
 	r_sizeY_delta = max(default_size.y - robot.size.y, 0)
-	
 	robot.size.x = max(robot.size.x, default_size.x)
 	robot.size.y = max(robot.size.y, default_size.y)
 	for i =1, #robot.components do
@@ -97,9 +94,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	local inv = inventories[wesnoth.current.side]
 	inv.open()
 	local edit_result = wesnoth.synchronize_choice(function ()
-		
 		local inv_delta = robot_mechanics.edit_robot(robot, inv)
-		
 		local robot_to_seralize = {}
 		-- copy only on first level
 		for k,v in pairs(robot) do
@@ -440,7 +435,6 @@ robot_mechanics.find_connected_items = function(field, robot, startpos)
 			elseif not (((field[posnow.x - 1] or {})[posnow.y] or {})["e"] == true) then
 				open_ends_count = open_ends_count + 1
 			end
-				
 		end
 		pos_done[(posnow.x ) * sizeY + posnow.y] = "done"
 	end
@@ -453,11 +447,8 @@ end
 --   effects: the effects that shoudl be applied
 --   advanced: advances that should be applied this is to mak eth ecomonents reqwuirements for advances.
 robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
-
-	local open_ends_count = robot.open_ends_count
 	local rings_count = robot.rings_count
-	
-	open_ends_count = max (1, open_ends_count ) - 1
+	local open_ends_count = max (1, robot.open_ends_count ) - 1
 	local aggregator = {}
 	local apply_functions = {}
 	aggregator.component_images = {}
@@ -473,7 +464,6 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	aggregator.resitances_delta.impact = (open_ends_count - rings_count) * 4
 	for k, v in pairs(robot.components) do
 		if v.component.check_function(field, robot, v.pos) then
-		
 			if v.component.aggregate_function ~= nil then
 				v.component.aggregate_function(robot, v, aggregator)
 			end
@@ -560,9 +550,9 @@ robot_mechanics.apply_bonuses = function(unit_cfg, robot, unit_type)
 			error("found_objects=" .. tostring(#found_objects) .. " but #robot.components=" .. tostring(#robot.components))
 		end
 		robot.components = found_objects
-	end	
+	end
 	local effects, new_advancements = robot_mechanics.calcualte_bonuses(field, robot, unit_cfg.type)
-	robot_mechanics.replace_robot_advancements(unit_cfg, effects, new_advancements)	
+	robot_mechanics.replace_robot_advancements(unit_cfg, effects, new_advancements)
 end
 
 robot_mechanics.replace_robot_advancements = function(unit_cfg, effects, new_advancements)
@@ -575,7 +565,6 @@ robot_mechanics.replace_robot_advancements = function(unit_cfg, effects, new_adv
 		-- remove the robot_improvements
 		return a[2].name == "robot_improvements"
 	end)
-		
 	local obj_cfg = wml_codes.get_robot_object(effects)
 	table.insert(modifications_cfg, 1, obj_cfg)
 	for k,v in pairs(new_advancements) do

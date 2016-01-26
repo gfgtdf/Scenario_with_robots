@@ -53,7 +53,6 @@ Gui_test.new = function(pages)
 		end
 		local function postshow()
 		end
-		
 		self.is_dialog_showing = true
 		local r = wesnoth.show_dialog(self.dialog, preshow, postshow)
 		self.is_dialog_showing = false
@@ -91,7 +90,6 @@ Gui_test.new = function(pages)
 		end
 	end
 	self.show_page = function(page_number)
-		
 		local page1 = self.pages[page_number]
 		local page2 = self.pages[page_number + 1] or {text = ""}
 		local drawing = { 

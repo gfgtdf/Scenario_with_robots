@@ -39,7 +39,6 @@ end)
 -- A possible workaround might be to check whether the robot is still alive when picking up the items.
 global_events.add_event_handler("die", function(event_context)
 	local drop_item_on_die = wesnoth.get_variable("drop_item_on_die")
-	
 	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
 	local variables = helper.get_child(unit_cfg, "variables")
 	local little_inventory = {}

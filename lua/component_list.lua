@@ -333,7 +333,7 @@ table.insert(the_list, {
 			end
 		end
 		aggregator.spear_fire_modier = aggregator.spear_fire_modier  or {}
-		if(nigbour_type ~= nil) then	
+		if(nigbour_type ~= nil) then
 			aggregator.spear_fire_modier[nigbour_type] = (aggregator.spear_fire_modier[nigbour_type] or 0) + 1
 		end
 	end,
@@ -479,7 +479,7 @@ table.insert(the_list, {
 			end
 		end
 		aggregator.trapper_modifier = aggregator.trapper_modifier  or {}
-		if(nigbour_type == "bombdropper") then	
+		if(nigbour_type == "bombdropper") then
 			aggregator.trapper_modifier.count = (aggregator.trapper_modifier.count or 0) + 1
 		end
 	end,
@@ -488,7 +488,6 @@ table.insert(the_list, {
 		if(aggregator.trapper_modifier.count ~= nil) then
 			table.insert(effects, wml_codes.get_change_trapper_type_code("poison_spikes")[1])
 		end
-		
 		return effects, wml_codes.get_imp_advancement("trapper_modier")
 	end,
 	--dependant on simplespear, simplelaser, since i use bonus:attack, wich is always executed after, not implented yet

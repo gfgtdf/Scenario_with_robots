@@ -128,7 +128,7 @@ function stats.calculate_weapons_only(unit_cnf)
 		end
 	end
 	-- TODO: a "change_ability" would be nice.
-	--bonus attacks	
+	--bonus attacks
 	-- i want change_ablitity to takew effect before bonus_attack.
 	for modification in swr_h.child_range_multiple_tags(unit_modifications, Set{advancement_str, "object", "trait"}) do
 		for effect in helper.child_range(modification, "effect") do
@@ -217,7 +217,6 @@ function stats.calculate_weapons_only(unit_cnf)
 					if(unit_cnf.gender == "female") then
 						anim_containing_tag = helper.get_child(unit_style,"female")
 					end
-					
 					for attack_anim in helper.child_range(anim_containing_tag, "attack_anim") do 
 						if(helper.get_child(attack_anim,"filter_attack").name == stongest_attack.name) then
 							animation = attack_anim
@@ -257,7 +256,6 @@ function stats.calculate_weapons_only(unit_cnf)
 				if (effect.damage ~= nil) then 
 					damage = effect.damage 
 				end
-				
 				if (effect.number ~= nil) then 
 					attacks = effect.number 
 				end
@@ -436,12 +434,10 @@ function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 	}
 	
 	unit_cnf_new = wesnoth.create_unit(unit_wml).__cfg
-	
 	unit_cnf_new.moves = unit_cnf.moves
 	unit_cnf_new.attacks_left = unit_cnf.attacks_left
 	
 	return unit_cnf_new
-	
 end
 
 function stats.calculations_end(unit_cnf)
@@ -453,7 +449,6 @@ function stats.calculations_end(unit_cnf)
 		end
 	end
 	unit_cnf.advances_to = string.sub(advancements_list_new,2)
-	
 	wesnoth.put_unit(unit_cnf)
 end
 

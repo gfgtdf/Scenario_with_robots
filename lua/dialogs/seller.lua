@@ -113,13 +113,10 @@ local details_panel_pages = T.multi_page {
 			--vertical_alignment = "bottom",
 			grow_factor = 1,
 			T.column {
-				
 				--vertical_alignment = "bottom",
 				T.grid {
-				
 					--vertical_alignment = "bottom",
 					T.row {
-					
 						--vertical_alignment = "bottom",
 						T.column {
 							vertical_alignment = "bottom",
@@ -214,11 +211,9 @@ local main_window = {
 						}
 					},
 					T.row {
-						
 						maximum_height = 50,
 						grow_factor = 1,
 						T.column {
-							
 						maximum_height = 50,
 							grow_factor = 1,
 							horizontal_grow = true,

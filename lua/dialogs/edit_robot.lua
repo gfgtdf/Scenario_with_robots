@@ -82,7 +82,7 @@ function create_edit_robot_dialog(grid_field, grid_toolbox)
 										T.column {
 											T.image {
 												id = "image_selected_item",
-											},	
+											},
 										},
 									},
 								},
@@ -97,7 +97,7 @@ function create_edit_robot_dialog(grid_field, grid_toolbox)
 											T.button {
 												id = "ok" ,
 												label = "OK",
-											},	
+											},
 										},
 									},
 								},

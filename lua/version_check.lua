@@ -10,7 +10,6 @@ return {
 		local results = sync_choice.version1_11_13(function()
 			return { version = local_version }
 		end, nil, all_sides)
-		
 		for k,v in pairs(results) do
 			-- v.version might be nil for a null controlled sides.
 			if v.version ~= nil and local_version ~= tostring(v.version) then

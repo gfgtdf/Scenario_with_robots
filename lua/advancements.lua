@@ -31,7 +31,6 @@ global_events.add_event_handler("post_advance", function(event_context)
 		-- Don't change the type back if there are still advancementas to do.
 		return
 	end
-	
 	if swr_h.string_starts(unit.type, "advancing") then
 		local original_name = string.sub(unit.type, string.len("advancing") + 1)
 		local un_advancing_type = wesnoth.unit_types[original_name]
@@ -55,7 +54,6 @@ global_events.add_event_handler("turn refresh", function(event_context)
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg
 			local modifications_cfg = helper.get_child(unit_cfg, "modifications")
-			
 			local index = 1
 			local untore_needed = false
 			-- we remove all the "Ooops" advacements and give the unit his exp back.
@@ -75,7 +73,6 @@ global_events.add_event_handler("turn refresh", function(event_context)
 				-- TODO 1.13.2: use wesnoth.put_unit and wesnoth.advance_unit
 				wesnoth.set_variable("advanced_temp_6", unit_cfg)
 				--this start the normal advancing process i handle in on_advance
-				
 				wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_6", find_vacant = "no", advance = true, fire_event = true, animate = false}
 				local new_unit = wesnoth.get_unit(unit_cfg.x,unit_cfg.y)
 				-- we dont want to give healing twice.
