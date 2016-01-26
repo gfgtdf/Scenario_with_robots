@@ -49,7 +49,7 @@ table.insert(default_list, {
 })
 table.insert(default_list, {
 	name = "Bigbow", 
-	description = "contains a bogbow.\n",  
+	description = "contains a bigbow.\n",  
 	price = 10, 
 	quantity = 2,
 	image = "c/bigbow_c.png",
