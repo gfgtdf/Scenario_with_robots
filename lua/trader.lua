@@ -6,6 +6,7 @@ trader.buy_items = function(item_list, max_gold)
 		local seller = Seller.new()
 		local price = 0
 		seller.set_item_list(item_list)
+		seller.set_max_gold(max_gold)
 		local reet = seller.show_dialog()
 		for k,v in pairs(reet) do
 			price = price + v * item_list[k].price

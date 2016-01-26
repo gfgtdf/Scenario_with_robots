@@ -7,6 +7,7 @@ Seller.new = function()
 	self.items = {}
 	self.total_price = 0
 	self.items_bought = {}
+	self.max_gold = nil
 	
 	self.show_dialog = function()
 		local select_from_trader_list = function()
@@ -41,8 +42,10 @@ Seller.new = function()
 			wesnoth.set_dialog_callback(select_from_trader_list, "trader_list")
 			wesnoth.set_dialog_callback(order_item, "order_button")
 			wesnoth.set_dialog_callback(remove_item, "remove_button")
+			wesnoth.set_dialog_markup(true, "total_price_label")
 
 			self.update_all_rows()
+			self.update_buy_button(true)
 			wesnoth.set_dialog_value(1, "trader_list")
 			select_from_trader_list()
 		end
@@ -57,6 +60,9 @@ Seller.new = function()
 	--each item contains: price, quantity, name, description, image
 	self.set_item_list = function(item_list)
 		self.items = item_list
+	end
+	self.set_max_gold = function(max_gold)
+		self.max_gold = max_gold
 	end
 	self.set_on_item_buyed = function(on_buy_func)
 		self.on_buy_func = on_buy_func
@@ -107,12 +113,23 @@ Seller.new = function()
 		end
 	end
 	
-	self.update_buy_button = function()
+	self.update_buy_button = function(initial)
 		local t_price = 0
 		for k, item_b_number in pairs(self.items_bought) do
 			t_price = t_price + self.items[k].price * item_b_number
 		end
-		wesnoth.set_dialog_value(t_price .. "g", "total_price_label")
+		local text = string.format("Total: %dg", t_price)
+		if self.max_gold and self.max_gold < t_price then
+			text = "<span foreground='red'>" .. text .. "</span>"
+			wesnoth.set_dialog_active(false, "use_button")
+		else
+			wesnoth.set_dialog_active(true, "use_button")
+		end
+		if initial then
+			-- Add some invisible text to give it more space during layout phase.
+			text = "    " .. text .. "    "
+		end
+		wesnoth.set_dialog_value(text, "total_price_label")
 	end
 	return self
 end

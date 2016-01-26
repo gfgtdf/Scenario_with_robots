@@ -148,8 +148,6 @@ Traps.new = function()
 		end
 	end
 	return self
-	
-	
 end
 traptypes["spikes"] = 
 {

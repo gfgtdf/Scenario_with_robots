@@ -192,6 +192,12 @@ end
 my_helper.string_starts = function(String, Start)
    return string.sub(String,1,string.len(Start))==Start
 end
+-- Doesnt work becaue it requires pango 1.38
+my_helper.pango_invisible = function(text)
+	-- For some reason pango doesnt support alpha without a color=
+	-- For some reason pango doesnt support alpha = 0
+	return "<span color='#000000' alpha='1'>" .. text .. "</span>"
+end
 
 local function create_image_path_function(funcname)
 	local funcname_u = "~" .. string.upper(funcname)
