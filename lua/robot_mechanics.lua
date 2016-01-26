@@ -118,19 +118,16 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	function()
 		error("edit robot called by ai.")
 	end)
-	
 	for k, v in pairs(edit_result[1][2]) do
 		inv.add_amount(k, v)
 	end
 	inv.close()
-	
 	if not has_inventory_fierd then
 		robot = loadstring("return " .. edit_result.robotstring )()
 		for i =1, #robot.components do
 			robot.components[i].component = component_list.list_by_name[robot.components[i].component]
 		end
 	end
-	
 	variables.robot = edit_result.robotstring
 	robot_mechanics.apply_bonuses(unit_cfg, robot)
 	wesnoth.put_unit(unit_cfg)
@@ -147,7 +144,7 @@ robot_mechanics.get_accesible_components = function(inventory ,robot)
 	end
 	for k,v in pairs(robot.components) do
 		local has_this_component_already = false
-		for k2, v2 in pairs(ac) do	
+		for k2, v2 in pairs(ac) do
 			if v2.component.name == v.component.name then
 				has_this_component_already = true
 			end
@@ -276,13 +273,10 @@ robot_mechanics.edit_robot = function(robot, inv)
 						v.number = v.number + 1
 						if old_name ~= "core" then
 							invenory_delta[old_name] = (invenory_delta[old_name] or 0) + 1
-							
 						end
-						
 						dialog.set_down_label(k + 1, tostring(v.number))
 					end
 				end
-				
 			end
 		elseif imageid ~= 1 then
 			-- -1 because we have the empy at first place
@@ -334,7 +328,6 @@ robot_mechanics.edit_robot = function(robot, inv)
 	--EDIT2: im changing stats.lua to make that difference disappear
 	--maybe i'll use stats.lua to ensure everythings alright.
 	--EDIT3: ocf stats.lua is called (was it really me writing the comment before?), but by te caller of this method here
-	
 	return invenory_delta
 end
 
