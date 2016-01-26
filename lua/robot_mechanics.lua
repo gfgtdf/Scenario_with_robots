@@ -1,4 +1,4 @@
--- this file gives the "edit_robot_at_xy" function with allows to change a robot by a cutom dialog defindet in gui.lua
+-- this file gives the "edit_robot_at_xy" function with allows to change a robot by a cutom dialog defined in gui.lua
 -- and the "reapply_bonuses_at_xy" that should be called if the robots variable was changed without this dialog
 local robot_mechanics = {}
 --local gui = z_require("gui")

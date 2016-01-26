@@ -48,7 +48,7 @@ global_events.init = function()
 end
 
 global_events.toplevel_start = function()
-	global_events.init()	
+	global_events.init()
 end
 
 global_events.is_toplevel_event = function()
@@ -60,7 +60,7 @@ global_events.preload_start = function()
 		error("preload start called when it is not needed, please report this bug")
 	end
 	-- there are 4 "preload" events that are fired in the following order:
-	-- 1) toplevel [lua] tags	
+	-- 1) toplevel [lua] tags
 	-- 2) other type of toplevel [lua] tags	(i think on is insie the [scenrio] tag and the other outside)
 	-- 3) the wesnoth.game_events.on_load event
 	-- 4) the preload wml event
@@ -107,7 +107,7 @@ end
 if globals.no_toplevel_lua_workaround then
 	global_events.register_on_load_reader = function(tagname, f)
 		global_events.add_event_handler("luavars_init", function()
-			local var = wesnoth.get_variable("srw_lua." .. tagname)	
+			local var = wesnoth.get_variable("srw_lua." .. tagname)
 			if (var) then
 				f(var)
 			end

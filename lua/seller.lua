@@ -1,4 +1,4 @@
--- i wanted to make an item seller, not done yet.
+
 local Seller = {}
 Seller.new = function()
 	local self = {}
@@ -35,11 +35,9 @@ Seller.new = function()
 			end
 
 			self.selected_row = i
-			--refresh_use_button_text(i)
 			wesnoth.set_dialog_value(i, "details_pages")
 		end
 		local function preshow()
-
 			wesnoth.set_dialog_callback(select_from_trader_list, "trader_list")
 			wesnoth.set_dialog_callback(order_item, "order_button")
 			wesnoth.set_dialog_callback(remove_item, "remove_button")
@@ -47,7 +45,6 @@ Seller.new = function()
 			self.update_all_rows()
 			wesnoth.set_dialog_value(1, "trader_list")
 			select_from_trader_list()
-			
 		end
 		self.selected_row = 1
 		local r_val = wesnoth.show_dialog(self.dialog, preshow)
@@ -75,8 +72,6 @@ Seller.new = function()
 			end
 			wesnoth.set_dialog_value(image, "trader_list", i, "list_image")
 			
-			
-			
 			local quantity = item.quantity == nil and "" or (item.quantity - (self.items_bought[i] or 0))
 			local price_string = "Price: " .. tostring(item.price) .. "g"
 			local basket_string = "in the basket: " .. (self.items_bought[i] or 0)
@@ -88,9 +83,6 @@ Seller.new = function()
 			wesnoth.set_dialog_value(item.quantity or "       ", "trader_list", i, "list_quantity")
 			wesnoth.set_dialog_value((self.items_bought[i] or "      "), "trader_list", i, "list_basket")
 			wesnoth.set_dialog_value((tostring(item.price) .. "g"), "trader_list", i, "list_price")
-
-			
-			
 			
 			wesnoth.set_dialog_value(item.name, "details_pages", i, "details_name")
 			wesnoth.set_dialog_value(item.description, "details_pages", i, "details_description")
@@ -101,7 +93,6 @@ Seller.new = function()
 			self.page_count = i
 		end
 		wesnoth.set_dialog_value("\n1\n2\n3\n4\n5", "details_pages", self.page_count + 1, "details_description")
-		
 	end
 	
 	self.update_all_basket_rows = function()
@@ -122,7 +113,6 @@ Seller.new = function()
 			t_price = t_price + self.items[k].price * item_b_number
 		end
 		wesnoth.set_dialog_value(t_price .. "g", "total_price_label")
-		
 	end
 	return self
 end

@@ -35,11 +35,11 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 				index_grid_bottom = index_grid_bottom + 1
 				table.insert(grid_bottom.get_cell(iX, iY), create_tooltip_field(tostring(index_grid_bottom), tooltiplist[index_grid_bottom]))
 			else
-				table.insert(grid_bottom.get_cell(iX, iY), create_unused_tooltip_field(imagelist[startimagekey]))			
+				table.insert(grid_bottom.get_cell(iX, iY), create_unused_tooltip_field(imagelist[startimagekey]))
 			end
 			grid_bottom.get_cell(iX, iY).vertical_grow = true
 			grid_bottom.get_cell(iX, iY).horizontal_grow = true
-		end	
+		end
 	end
 	-- creating the upper area 'field'
 	for iY = 1 , sizeY do

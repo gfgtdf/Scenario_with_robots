@@ -116,7 +116,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	end
 	
 	
-	--remove special objects (temporary,gem)
+	--remove temporary objects.
 	local unit_modifications = helper.get_child(unit_cnf, "modifications")
 	local index = 1
 	while index <= #unit_modifications do
