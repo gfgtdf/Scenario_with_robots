@@ -60,4 +60,4 @@
 - Added amlas for antenna
 - Fix healing drawn on top of properllors
 - cheap 'starter packs' in component shop in mp.
-
+- Added images for antanna for 1.13.1 and later
