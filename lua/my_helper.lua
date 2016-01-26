@@ -4,6 +4,12 @@
 local helper = wesnoth.require("lua/helper.lua")
 local my_helper = {}
 
+if wesnoth.compare_versions(wesnoth.game_config.version, ">=", "1.13.2") then
+	advancement_str = "advancement"
+else
+	advancement_str = "advance"
+end
+
 --i want this to be like an extension of lua so i want it to be abele to call without the "helper." prefix
 function Set (list)
 	local set = {}

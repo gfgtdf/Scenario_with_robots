@@ -158,7 +158,7 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 	return effects
 end
 wml_codes.get_imp_advancement = function(name)
-	return { T.advance { id = "robot_imp_" .. name } }
+	return { T[advancement_str] { id = "robot_imp_" .. name } }
 end
 wml_codes.get_robot_object = function(effects)
 	local obj_wml = { }
@@ -166,16 +166,16 @@ wml_codes.get_robot_object = function(effects)
 		table.insert(obj_wml, v)
 	end
 	obj_wml.name = "robot_improvements"
-	-- this MUST be "advance" instead of "object" because advance is always applied before object, and we want the advancement to overwrite this, 
+	-- this MUST be "advancement" instead of "object" because advance is always applied before object, and we want the advancement to overwrite this, 
 	-- if this was an object this would overwrite our advaements
-	return T.advance(obj_wml)
+	return T[advancement_str](obj_wml)
 end
 wml_codes.get_trapper_ability_code = function(damage, traptype, maxtraps)
 	local effects = {}
 	table.insert(effects, T.effect {
 		apply_to = "new_ability",
 		T.abilities {
-			T.ab_trapper{
+			T.ab_trapper {
 				id = "ab_trapper",
 				name = _ "Trapper",
 				description = _ "This units sets a trap at the end of every move, dependent of the type of traps, they can poison, slow, or just deal damage",
