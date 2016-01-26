@@ -74,7 +74,6 @@ Traps.new = function()
 		end		
 	end
 	self.on_prestart = function()
-	
 	end
 	self.execute_trap = function(trap, x, y, taget_ref)
 		local traptype = traptypes[trap.type]
@@ -93,7 +92,8 @@ Traps.new = function()
 				T.remove_item { x= x, y = y, image = "animation/spikes2.png" },
 				T.item { x = x, y = y, halo="animation/spikes.png" },
 				T.delay { time = 50 },
-				T.remove_item { x= x, y = y, image = "animation/spikes.png" } }
+				T.remove_item { x= x, y = y, image = "animation/spikes.png" }
+			}
 		elseif traptype.animation == "explosion" then
 			-- TODO place the animation for the explosion trap here.
 			anim = {
@@ -146,7 +146,7 @@ Traps.new = function()
 					type = ab_trapper.traptype,
 					sender_side = unit.side, 
 					sender_unit_id = unit.id
-					}, ab_trapper.maxtraps) 
+				}, ab_trapper.maxtraps) 
 				global_events.disallow_undo()
 				break
 			end

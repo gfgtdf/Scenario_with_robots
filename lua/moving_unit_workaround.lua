@@ -29,6 +29,8 @@ globals.currently_moving_unit_info = {}
 --    where the currently moving unit is, we calculate this by ourself independent from the
 --    game engine, to that might be not 100% corrent in some corner cases.
 
+
+-- TODO 1.13.2: use event_context.unit_x/unit_y
 -- This must be executd before other "exit_hex" handlers, becasue other exit_hex events need this data.
 global_events.add_event_handler("exit_hex", function (event_context)
 	if moving_unit.move_info.id == nil then

@@ -83,9 +83,11 @@ if version_is_sufficient("1.13.0") then
 	endlevel_eventname = "endlevel"
 end
 
+-- TODO 1.13.2: use side variables feature
 global_events.add_event_handler(endlevel_eventname, function(event_context)
 	-- fix carryover for teams in case side numbers change between scenarios.
 	for i, v in ipairs(wesnoth.sides) do
+		-- TODO 1.13.2: use v.save_id directly
 		local save_id = v.__cfg.save_id
 		local side_inventory_key = "component_inventory_" .. tostring(v.side)
 		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
@@ -95,8 +97,10 @@ global_events.add_event_handler(endlevel_eventname, function(event_context)
 	end
 end)
 
+-- TODO 1.13.2: use side variables feature
 global_events.add_event_handler("prestart", function(event_context)
 	for i, v in ipairs(wesnoth.sides) do
+		-- TODO 1.13.2: use v.save_id directly
 		local save_id = v.__cfg.save_id
 		local side_inventory_key = "component_inventory_" .. tostring(v.side)
 		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
