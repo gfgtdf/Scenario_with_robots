@@ -79,12 +79,12 @@ Seller.new = function()
 			wesnoth.set_dialog_value(image, "trader_list", i, "list_image")
 			
 			local quantity = item.quantity == nil and "" or (item.quantity - (self.items_bought[i] or 0))
-			local price_string = "Price: " .. tostring(item.price) .. "g"
-			local basket_string = "in the basket: " .. (self.items_bought[i] or 0)
+			local price_string = string.format("Price: %sg", tostring(item.price))
+			local basket_string = string.format("in the basket: %d", self.items_bought[i] or 0)
 			if (self.items_bought[i] or 0) < 10 then
 				basket_string = basket_string .. "    "
 			end
-			local quant_string = item.quantity == nil and "         " or "available: " .. item.quantity
+			local quant_string = item.quantity == nil and "         " or string.format("available: %s", item.quantity)
 			wesnoth.set_dialog_value(item.name, "trader_list", i, "list_name")
 			wesnoth.set_dialog_value(item.quantity or "       ", "trader_list", i, "list_quantity")
 			wesnoth.set_dialog_value((self.items_bought[i] or "      "), "trader_list", i, "list_basket")
@@ -127,7 +127,7 @@ Seller.new = function()
 		end
 		if initial then
 			-- Add some invisible text to give it more space during layout phase.
-			text = "    " .. text .. "    "
+			text = text .. "       "
 		end
 		wesnoth.set_dialog_value(text, "total_price_label")
 	end
