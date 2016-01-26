@@ -6,6 +6,7 @@ global_events.add_event_handler("start", function (event_context)
 	wesnoth.wml_actions.set_menu_item {
 		description = "Read a book",
 		id = "menu_read_book",
+		synced = false,
 	}
 end)
 
