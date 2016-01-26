@@ -78,8 +78,8 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	-- here we load the "robot" variable from the units variablres
 	local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
 	local robot = loadstring("return " .. robot_string )()
-	r_sizeX_delta = max(default_size.x - robot.size.x, 0)
-	r_sizeY_delta = max(default_size.y - robot.size.y, 0)
+	local r_sizeX_delta = max(default_size.x - robot.size.x, 0)
+	local r_sizeY_delta = max(default_size.y - robot.size.y, 0)
 	robot.size.x = max(robot.size.x, default_size.x)
 	robot.size.y = max(robot.size.y, default_size.y)
 	for i =1, #robot.components do
