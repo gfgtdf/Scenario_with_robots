@@ -92,6 +92,10 @@ end
 
 --quiet obvious
 global_events.add_event_handler = function(eventname, func)
+	if wesnoth.compare_versions(wesnoth.game_config.version, ">", "1.13.2") then
+		eventname = string.gsub(eventname, " ", "_")
+	end
+
 	global_events.event_handlers[eventname] = global_events.event_handlers[eventname] or {}
 	table.insert(global_events.event_handlers[eventname], func)
 end
