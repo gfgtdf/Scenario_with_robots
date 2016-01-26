@@ -1,8 +1,8 @@
 -- this file contains the base of my lua event handler logic
 -- specially it provides the functions 
---   global_events.init()/global_events.preload_start() which initilize the event handler code
---   global_events.add_event_handler() to register a lua event handler, unfortulateley it does not support filters.
---   global_events.disallow_undo() to make undoing of teh current event impossible (which is not the default for lua event handlers)
+--   global_events.init()/global_events.preload_start() which initilizes the event handler code
+--   global_events.add_event_handler() to register a lua event handler, it does not support filters.
+--   global_events.disallow_undo() to make undoing of the current event impossible (which is not the default for lua event handlers)
 --   global_events.register_on_load_reader()/global_events.register_on_save_writer() to manage persistant lua variables
 
 local global_events = {}

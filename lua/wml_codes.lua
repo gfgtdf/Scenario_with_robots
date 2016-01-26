@@ -14,7 +14,7 @@ wml_codes.get_attack_spear_code = function(attack_number, attack_damage)
 		type = "pierce"
 	})
 	-- TODO: add animations.
-	-- EDIT the "animation" are in teh units cfg files.
+	-- EDIT the animations are in the units cfg files.
 	return effects
 end
 wml_codes.get_attack_laser_code = function(attack_number, attack_damage)
@@ -249,7 +249,7 @@ wml_codes.get_ipfs_code = function(ipfs)
 		if is_wesnoth_1_13 or not is_oversize then
 			--our oversize code wont work on 1.13.0 and older versions.
 			if is_oversize then
-				-- increase teh base image is needed
+				-- increase the base image if needed
 				local diff_x = on_x - over_x
 				local diff_y = on_y - over_y
 				local newsize_x = 2 * on_x + 72

@@ -1,5 +1,5 @@
 -- this is (was) simply LotI's stats.cfg in lua (i don't like those things in wml)
--- i wrote thsi while playing LotI hoping to make some parts faster, but i canged it to fit my campaing, still it has a lot of stuff i dont't need.
+-- i wrote this while playing LotI hoping to make some parts faster, but i changed it to fit my campaign, still it has a lot of stuff i dont't need.
 -- this file "exports":
 --   new effects "bonus_attack", "improve_bonus_attack", "change_ablitity", "change_special", fb objects, advancements and traits. (in use)
 --   add teleport anim (not used)
@@ -26,8 +26,6 @@ local weapon_speacial_abilites = constants.weapon_speacial_abilites
 local stats = {}
 
 function stats.calculate_weapons_only(unit_cnf)
-	-- alhtough this is the greatest of the 4 methods it is alos the fastest (13 milliseconds on efraim with 80 advancements), 
-	-- so i think the main time is needet fo the [unit] tag in backuo_unit_stats and and unstore_unit in calculations_end
 	
 	time2 = wesnoth.get_time_stamp()
 	
@@ -96,7 +94,6 @@ function stats.calculate_weapons_only(unit_cnf)
 			unit_cnf.halo = "halo/illuminates-aura.png"
 		elseif(illuminates.value > 0) then
 			unit_cnf.halo = "halo/darkens-aura.png"
-		
 		end
 	end
 	--add unit halos for special leadership
@@ -125,9 +122,9 @@ function stats.calculate_weapons_only(unit_cnf)
 	while index <= #unit_modifications do
 		if(unit_modifications[index][1] == "object" 
 		and (unit_modifications[index][2].sort == "temporary" or unit_modifications[index][2].sort == "temporary")) then
-			table.remove(unit_modifications, index)
-		else
-			index = index + 1
+		table.remove(unit_modifications, index)
+	else
+		index = index + 1
 		end
 	end
 	-- TODO: a "change_ability" would be nice.
@@ -231,9 +228,17 @@ function stats.calculate_weapons_only(unit_cnf)
 						local new_anim_filter = helper.get_child(new_anim, "filter_attack")
 						new_anim_filter.name = effect.name
 						local anim_object = { sort = "temporary", silent = "yes",
-							{"filter", { x = unit_cnf.x, y = unit_cnf.y}},
-							{"effect", { apply_to = "new_animation", name = ("aa" .. effect.name), {"attack_anim", new_anim}}}}
-						table.insert(objects_to_add, anim_object)-- a global variable?
+							T.filter { 
+								x = unit_cnf.x, 
+								y = unit_cnf.y
+							},
+							T.effect { 
+								apply_to = "new_animation", 
+								name = "aa" .. effect.name, 
+								T.attack_anim (new_anim),
+							},
+						}
+						table.insert(objects_to_add, anim_object)
 					end
 				end
 				new_attack.name = effect.name
@@ -295,9 +300,10 @@ function stats.calculate_weapons_only(unit_cnf)
 			teleport.female_name= "female^teleport"
 			teleport.description= "Teleport:\nThis unit may teleport between any two empty villages owned by its side using one of its moves."
 			teleport[1] = {"tunnel", { id = "village_teleport", 
-			{ "source", { terrain = "*^V*", owner_side = "$teleport_unit.side", { "not", { {"filter", { { "not", { id = "$teleport_unit.id"}}}} }}}},
-			{ "target", { terrain = "*^V*", owner_side = "$teleport_unit.side", { "not", { {"filter", { }} }}}},
-			{ "filter", { ability= "teleport" }}}}
+				{ "source", { terrain = "*^V*", owner_side = "$teleport_unit.side", { "not", { {"filter", { { "not", { id = "$teleport_unit.id"}}}} }}}},
+				{ "target", { terrain = "*^V*", owner_side = "$teleport_unit.side", { "not", { {"filter", { }} }}}},
+				{ "filter", { ability= "teleport" }},
+			}}
 		end
 	end
 	
@@ -342,7 +348,7 @@ function stats.add_damages(object, wep_extra_aggregator)
 		if(type(k) ~= type(1)) then
 			error("", 0)
 		else
-		--since we dont change it we dont need to deepcopy it specials
+			--since we dont change it we dont need to deepcopy it specials
 			table.insert(wep_extra_aggregator.specials, v)
 		end
 	end
@@ -394,8 +400,7 @@ function stats.add_damages_armour(object, weapons_extras)
 end
 
 function stats.backup_unit_stats(unit_cnf, heal, status_heal)
-	-- this method takes 60 millisecons on efraim with 80 advancements and full equip.
-	time1 = wesnoth.get_time_stamp()
+	
 	heal = status_heal or heal
 	unit_cnf.hitpoints = heal and unit_cnf.max_hitpoints or unit_cnf.hitpoints
 	unit_cnf.moves = status_heal and unit_cnf.max_moves or unit_cnf.moves
@@ -425,29 +430,21 @@ function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 		underlying_id=unit_cnf.underlying_id,
 		unrenamable=unit_cnf.unrenamable,
 		overlays=unit_cnf.overlays,
-		{"status", unit_status},
-		{"modifications", unit_modifications},
-		{"variables", unit_variables}}
-	--lua functions may behave different, so is use this first
-	--but that is very slow (i think this lne of code needs 40% time of all the cod ein this file)
-	--wesnoth.fire("unit", unit_wml)
-	--unit_cnf_new = wesnoth.get_variable("advanced_temp_2")
+		T.status (unit_status),
+		T.modifications (unit_modifications),
+		T.variables (unit_variables),
+	}
 	
-	
-	--thats is a little faster but still takes the most time of all
 	unit_cnf_new = wesnoth.create_unit(unit_wml).__cfg
 	
 	unit_cnf_new.moves = unit_cnf.moves
 	unit_cnf_new.attacks_left = unit_cnf.attacks_left
 	
-	time1 = wesnoth.get_time_stamp() - time1
 	return unit_cnf_new
 	
 end
 
 function stats.calculations_end(unit_cnf)
-
-
 	local advancements_list = unit_cnf.advances_to
 	local advancements_list_new = ""
 	for k,v in string.gmatch(advancements_list,"[^[,]]+") do
@@ -457,26 +454,20 @@ function stats.calculations_end(unit_cnf)
 	end
 	unit_cnf.advances_to = string.sub(advancements_list_new,2)
 	
-	-- this mthod take 62 millisecons on efraim with 80 advancements and full equip.
-	-- thats is a little faster but still takes the most time of all
-	
-	-- TODO: we create the unit once at the beginning and once here, 
-	-- since that's the part the takes the most time (at least in 1.112) 
-	--   (> 60 miliseconds on efraim with 80 advancements and full equip
-	--   ,TODO: refresh tests on 1.12.0)
-	-- we maybe could make it more effective if we apply all the changes 
-	-- we do by wml variable mainuation by effectwml or by direct lua unit changes instead.
-	--but that woudl be difficuly, especialy for things like "change_weapon_special"
-	
 	wesnoth.put_unit(unit_cnf)
 end
 
 function stats.refresh_all_stats_xy(x, y)
-	
-		local unit_cnf = wesnoth.get_unit(x, y).__cfg
-		wesnoth.put_unit(x, y)
-		local unit_cnf2 = stats.backup_unit_stats(unit_cnf, false, false)
-		stats.calculate_weapons_only(unit_cnf2)
-		stats.calculations_end(unit_cnf2)
+	-- This function was originally coded to substitude LotI's stats.cfg becasue LotI's code seemed to be slow.
+	-- I tested the performance of this code on an efraim unit with 80 advamcents:
+	--   the wesnoth.create_unit and the wesnoth.put_unit in backup_unit_stats and calculations_end take by far
+	--   the most time > 60 milliseconds each. while calculate_weapons_only which contains teh most lua code only
+	--   takes 13 milliseconds. A possible attempt to fix this would be to change calculate_weapons_only and 
+	--   calculations_end to use direct unit manipulation or effectwml instead of recreating the unit.
+	local unit_cnf = wesnoth.get_unit(x, y).__cfg
+	wesnoth.put_unit(x, y)
+	local unit_cnf2 = stats.backup_unit_stats(unit_cnf, false, false)
+	stats.calculate_weapons_only(unit_cnf2)
+	stats.calculations_end(unit_cnf2)
 end
 return stats

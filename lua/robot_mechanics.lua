@@ -16,7 +16,7 @@ local function create_component_image(comp)
 	local min_y = 2
 	local max_y = 4
 	
-	--caclualte teh size for the image but make it at lest 3x3.
+	--caclualte the size for the image but make it at lest 3x3.
 	for i_x = 1, 5 do
 		for i_y = 1, 5 do
 			if (comp.field[i_x] or {})[i_y] or (comp.field_images[i_x] or {})[i_y] then
@@ -291,10 +291,6 @@ robot_mechanics.edit_robot = function(robot, inv)
 			end
 		elseif imageid ~= 1 then
 			-- -1 because we have the empy at first place
-			-- TODO because can_put_that_there only checks if it fitts in the field we also have to check weather the player is alowwed to do that, 
-			-- for example placing two cores shoudln't be alowed or the player shouldn't be able to place an ithen wich he doesn't have 
-			-- i tihnk doing this all together with the fixed fields and the inventory is the best.
-			-- EDIT it is done
 			if robot_mechanics.can_put_that_there(field, accessible_components[imageid - 1].component, pos) and accessible_components[imageid - 1].number > 0 then
 				place_component(pos, accessible_components[imageid - 1].component)
 				accessible_components[imageid - 1].number = accessible_components[imageid - 1].number - 1

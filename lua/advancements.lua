@@ -24,6 +24,7 @@ global_events.add_event_handler("advance", function(event_context)
 end)
 
 --note, that due to the things we do in on_advance, the post_advance event is fired once, while the advance event is fired twice
+-- TODO 1.13.2: remove the type changing hack and change the units advancments in lua in pre advance events.
 global_events.add_event_handler("post_advance", function(event_context)
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	if unit.experience > unit.max_experience then
@@ -38,7 +39,8 @@ global_events.add_event_handler("post_advance", function(event_context)
 			local unit_cfg = unit.__cfg
 			unit_cfg.type = original_name
 			local do_not_continue = true
-			--i want to use "put_unit" but idk weatehr thats triggers unit advancing. why doesn't "put_unit" have parameters "advance", "fire_event" .. like unstore unit.
+			-- i use [unstore_unit] becasue wesnoth.put_unit doesn't trigger unit advancing.
+			-- TODO 1.13.2: use wesnoth.put_unit and wesnoth.advance_unit
 			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
 			wesnoth.set_variable("advanced_temp_4", unit_cfg)
 			wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_4", find_vacant = "no", advance = false, fire_event = false, animate = false}
@@ -48,8 +50,8 @@ global_events.add_event_handler("post_advance", function(event_context)
 end)
 global_events.add_event_handler("turn refresh", function(event_context)
 	-- this functions asks the advacement question in case a unit advances during the enmy turn.
-	-- i think wesnoth.get_units() gives just all units
 	for k,unit in pairs(wesnoth.get_units()) do
+		-- is checking unit.side == wesnoth.current.side faster than passing a side = wesnoth.current.side filter to wesnoth.get_units() ?
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg
 			local modifications_cfg = helper.get_child(unit_cfg, "modifications")
@@ -69,7 +71,8 @@ global_events.add_event_handler("turn refresh", function(event_context)
 			end
 			if untore_needed then
 				local hp_percent = unit_cfg.hitpoints / unit_cfg.max_hitpoints
-				--"put_unit" doesnt trigger unit advancing.
+				-- i use [unstore_unit] becasue wesnoth.put_unit doesn't trigger unit advancing.
+				-- TODO 1.13.2: use wesnoth.put_unit and wesnoth.advance_unit
 				wesnoth.set_variable("advanced_temp_6", unit_cfg)
 				--this start the normal advancing process i handle in on_advance
 				
