@@ -222,7 +222,7 @@ wml_codes.get_antenna_leadership_code = function(percent)
 	return effects
 end
 
-get_imagemod_oversize = function(img)
+local get_imagemod_oversize = function(img)
 	local x1 = -img.x
 	local y1 = -img.y
 	local x2, y2 = wesnoth.get_image_size(img.image)

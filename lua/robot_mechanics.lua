@@ -207,7 +207,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 	--	dialog.set_down_label(i, tostring(i))
 	--end
 	-- this function does no checks so it asummes it is all right.
-	function place_component(pos, component, graphic_only)
+	local function place_component(pos, component, graphic_only)
 		graphic_only = graphic_only or false
 		local ix_start = max(1, 4 - pos.x)
 		local ix_end = min(5, sizeX - pos.x + 3)
@@ -229,7 +229,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		end
 	end
 	-- this function does no checks so it asummes it is all right.
-	function remove_component(pos, component, graphic_only)
+	local function remove_component(pos, component, graphic_only)
 		graphic_only = graphic_only or false
 		local ix_start = max(1, 4 - pos.x)
 		local ix_end = min(5, sizeX - pos.x + 3)
@@ -254,14 +254,14 @@ robot_mechanics.edit_robot = function(robot, inv)
 		place_component(v.pos, v.component, true)
 	end
 	-- if we pass imageid to on_field_clicked this is not needed
-	function on_image_chosen(imageid)
+	local function on_image_chosen(imageid)
 		if imageid == 1 then
 			dialog.set_selected_item_image("misc/tpixel.png~SCALE(120,120)")
 		else
 			dialog.set_selected_item_image(create_component_image(accessible_components[imageid - 1].component))
 		end
 	end
-	function on_field_clicked(pos, imageid)
+	local function on_field_clicked(pos, imageid)
 		-- the imageid is also the coresponding comonent index in that array
 		if imageid == 1 then
 			if robot_mechanics.can_remove_that_there(components_reference_field, pos, robot) then

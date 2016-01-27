@@ -1,6 +1,6 @@
 -- this file adds addidional functionality to the helper object
 -- right now im not very convinced that this was the right approach
--- it also defines some global functions wich are very important (set, cwo, serialize_oneline)
+-- it also defines some global functions wich are very important (Set, cwo)
 local helper = wesnoth.require("lua/helper.lua")
 local my_helper = {}
 
@@ -20,11 +20,6 @@ end
 -- a function for debugging. cwo = Console Write Object
 function cwo(obj)
 	wesnoth.fire("message",{ message = serialize(obj, true) })
-end
-function l_g()
-	for k,v in pairs(_G) do
-		cwo(k)
-	end
 end
 -- TODO add support for userdata and boolean valuews
 function serialize(o, accept_nil)
@@ -50,42 +45,16 @@ function serialize(o, accept_nil)
 		error("cannot serialize a " .. type(o))
 	end
 end
---like seralite but without the \n., used if i want to store wml in lua variables
--- or lua in wml variables
-if false then
-function serialize_oneline(o, accept_nil)
-	accept_nil = accept_nil or false
-	local r = ""
-	if type(o) == "nil" and accept_nil then
-		return "nil"
-	elseif type(o) == "number" or type(o) == "boolean" then
-		return tostring(o)
-	elseif type(o) == "userdata" and getmetatable(o) == "translatable string" then
-		return serialize_oneline(tostring(o))
-	elseif type(o) == "function" then
-		return "loadstring(" .. string.format("%q", string.dump(o)) .. ")"
-	elseif type(o) == "string" then
-		return string.format("%q", o)
-	elseif type(o) == "table" then
-		r = "{ "
-		for k,v in pairs(o) do
-			r = r .. "[" .. serialize_oneline(k) .. "] = " .. serialize_oneline(v) .. ", "
-		end
-		return r .. "} "
-	else
-		error("cannot serialize a " .. type(o))
-	end
-end
-else
-	serialize_oneline = swr_require("serialize")
-end
+
 function deseralize(str)
 	return loadstring("return " .. str)()
 end
 
 my_helper.cwo = cwo
 my_helper.serialize = serialize
-my_helper.serialize_oneline = serialize_oneline
+--like serialize but faster and without the \n. for storing lua in wml variables
+my_helper.serialize_oneline = swr_require("serialize")
+my_helper.stable_sort = swr_require("stable_sort")
 my_helper.deseralize = function(str)
 	return loadstring("return " .. str)()
 end
@@ -235,22 +204,14 @@ cl_b = function()
 	last_time = stamp
 	wesnoth.message(tostring(stamp - old_time) .. "ticks")
 end
---[[
--- a big table to test preformance of serialize(_oneline)
-test_data = function()
-	local res = {}
-	for i,v in ipairs(wesnoth.get_units {}) do
-		table.insert(res, v.__cfg)
-	end
-	for i,v in ipairs(wesnoth.sides) do
-		table.insert(res, v.__cfg)
-	end
-	return res
-end
-s_o_1 = serialize_oneline
-s_o_2 = swr_require("serialize")
 
-cl_b(); s_o_1(wesnoth.get_unit(25,19).__cfg);cl_b();
-lua cl_b(); s_o_1(test_data());cl_b();
-]]
+function l_g()
+	local known_names = Set { "pairs", "ipairs", "xpcall", "rawget", "print", "select", "error", "wesnoth", "_G", "tonumber", "collectgarbage", "_VERSION", "loadstring", "string", "load", "rawequal", "rawset", "assert", "debug", "getmetatable", "tostring", "next", "bit32", "os", "unpack", "coroutine", "math", "pcall", "setmetatable", "type", "rawlen", "table"}
+	for k,v in pairs(_G) do
+		if not known_names[k] then
+			print(k)
+		end
+	end
+end
+
 return my_helper
