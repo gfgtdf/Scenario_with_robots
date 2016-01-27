@@ -24,7 +24,7 @@ setmetatable(globals, {
 	end,
 })
 constants = swr_require("constants")
-stats = swr_require("stats")
+swr_stats = swr_require("stats")
 wml_codes = swr_require("wml_codes")
 Inventory = swr_require("inventory")
 gui = swr_require("gui")

@@ -43,7 +43,7 @@ global_events.add_event_handler("post_advance", function(event_context)
 			swr_h.remove_from_array(unit_cfg, function (tag) return tag[1] == "advancement" end)
 			wesnoth.set_variable("advanced_temp_4", unit_cfg)
 			wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_4", find_vacant = "no", advance = false, fire_event = false, animate = false}
-			stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
+			swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
 		end
 	end
 end)

@@ -1,7 +1,7 @@
 
 global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
 	robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
-	stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
+	swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
 	global_events.disallow_undo()
 end)
 
