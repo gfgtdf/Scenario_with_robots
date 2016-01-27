@@ -115,8 +115,7 @@ function my_helper.child_range_multiple_tags(cfg, tag_set)
 	return f, { i = 1 }
 end
 
--- i think this was the hardest part, this method is for iterating over 2 enumerations syncroinous, 
--- it is like Enumerabe.Zip in C#, use it like "for k,v in  merge_iterators({pairs(..)},{pairs(..)}) do" then k,v are arrays of len 2 containing the original k v
+-- this method is for iterating over 2 enumerations syncroinous, use it like "for k,v in  merge_iterators({pairs(..)},{pairs(..)}) do" then k,v are arrays of len 2 containing the original k v
 my_helper.merge_iterators = function(it1, it2)
 	local function f(d, i)
 		i1 ,v1 = it1[1](d[1], i[1])
