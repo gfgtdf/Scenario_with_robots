@@ -1,6 +1,7 @@
 -- this file adds addidional functionality to the helper object
 -- right now im not very convinced that this was the right approach
--- it also defines some global functions wich are very important (Set, cwo)
+-- it also defines the Set global function.
+
 local helper = wesnoth.require("lua/helper.lua")
 local my_helper = {}
 
@@ -17,11 +18,7 @@ function Set (list)
 	return set
 end
 
--- a function for debugging. cwo = Console Write Object
-function cwo(obj)
-	wesnoth.fire("message",{ message = serialize(obj, true) })
-end
--- TODO add support for userdata and boolean valuews
+
 function serialize(o, accept_nil)
 	accept_nil = accept_nil or false
 	local r = ""
@@ -50,7 +47,11 @@ function deseralize(str)
 	return loadstring("return " .. str)()
 end
 
-my_helper.cwo = cwo
+-- a function for debugging.
+my_helper.cwo = function(obj)
+	wesnoth.fire("message",{ message = serialize(obj, true) })
+end
+
 my_helper.serialize = serialize
 --like serialize but faster and without the \n. for storing lua in wml variables
 my_helper.serialize_oneline = swr_require("serialize")
