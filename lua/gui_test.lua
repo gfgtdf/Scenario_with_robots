@@ -5,20 +5,17 @@
 --  (note that in cpp boith is possible easily)
 -- i think i have to sacrifice the wrapping, it isn't a verybig sacrifice anyway since "pages" are already static, so going to "lines" isnt a that big difference annymore.
 -- every page has: page.text, and page.images imagaes ist a list of image inforamtion (pos, path..)
+-- TODO: i could use wesnoth.set_dialog_markup (new in wesnoth 1.12, this was coded for wesnoth 1.11.2)
 Gui_test = {}
 Gui_test.new = function(pages)
 	local self = {}
 	self.factor = 1
 	self.pages = pages
 	self.current_page = 1
-	local menu_grid_content = { T.row { 
-		T.column { T.button {  id = "ok" , label = "OK"  } }, 
-		T.column { T.text_box {  id = "textbox_page" , label = "1"  } }, 
-		T.column { T.button {  id = "goto_page_btn" , label = "Go To Page"  } } } }
 	self.dialog = {
 		T.tooltip { id = "tooltip_large" },
 		T.helptip { id = "tooltip_large" },
-		T.grid { 
+		T.grid {
 			T.row { T.column { T.grid { T.row { 
 				-- mabe i can draw right in the panel? 
 				T.column { T.toggle_panel { id = "left_page_panel", T.grid { T.row { T.column { T.drawing {
@@ -26,16 +23,22 @@ Gui_test.new = function(pages)
 					width = 500 * self.factor, 
 					id = "left_page_drwaing",
 					-- i draw an empty text because otherwise i'd get an error, maybe  T.drawing is just not the right widget.
-					T.draw { T.text { font_size = 1 } }
-					} } } } } }, 
+					T.draw { T.text { font_size = 1 } },
+				} } } } } }, 
 				T.column { T.toggle_panel { id = "right_page_panel", T.grid { T.row { T.column { T.drawing {
 					height = 600 * self.factor,
 					width = 500 * self.factor,
 					id = "right_page_drwaing",
-					T.draw { T.text { font_size = 1 } }
-					} } } } } }, 
-				 } } } },
-			T.row { T.column { T.grid (menu_grid_content) } } } }
+					T.draw { T.text { font_size = 1 } },
+				} } } } } }, 
+			} } } },
+			T.row { T.column { T.grid { T.row {
+				T.column { T.button {  id = "ok" , label = "OK"  } },
+				T.column { T.text_box {  id = "textbox_page" , label = "1"  } },
+				T.column { T.button {  id = "goto_page_btn" , label = "Go To Page"  } },
+			} } } },
+		}
+	}
 	self.show_dialog = function()
 		local selected_index = globals.startimagekey
 		local function preshow()
@@ -58,6 +61,7 @@ Gui_test.new = function(pages)
 		self.is_dialog_showing = false
 	end
 	--this is alwasy fires twice so we need a workaround
+	-- TODO 1.13.2: maye this isnt the case anymore?
 	self.turn_right = function()
 		local newstamp = wesnoth.get_time_stamp()
 		self.stamp = self.stamp or 0
@@ -92,14 +96,15 @@ Gui_test.new = function(pages)
 	self.show_page = function(page_number)
 		local page1 = self.pages[page_number]
 		local page2 = self.pages[page_number + 1] or {text = ""}
-		local drawing = { 
+		local drawing = {
 			T.image { 
 				x = 0, 
 				y = 0, 
 				w = 500 * self.factor, 
 				h = 600 * self.factor, 
 				resize_mode = "scale",
-				name= "misc/page1.png" },
+				name= "misc/page1.png"
+			},
 			T.text { 
 				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
 				-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
@@ -108,7 +113,9 @@ Gui_test.new = function(pages)
 				color = "135,74,0,255",
 				maximum_width = (500 - 50)* self.factor,
 				text_markup = true,
-				text_wrap_mode = 3 } }
+				text_wrap_mode = 3
+			},
+		}
 		for k, v in pairs(page1.grapics or {}) do 
 			table.insert(drawing, T.image {
 				x = v.x * self.factor, 
@@ -126,7 +133,8 @@ Gui_test.new = function(pages)
 				w = 500 * self.factor, 
 				h = 600 * self.factor, 
 				resize_mode = "scale",
-				name= "misc/page2.png" },
+				name= "misc/page2.png",
+			},
 			T.text { 
 				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
 				-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
@@ -135,7 +143,9 @@ Gui_test.new = function(pages)
 				color = "135,74,0,255",
 				maximum_width = (500 - 50)* self.factor,
 				text_markup = true,
-				text_wrap_mode = 3 } }
+				text_wrap_mode = 3,
+			},
+		}
 		for k, v in pairs(page2.grapics or {}) do 
 			table.insert(drawing, T.image {
 				x = v.x * self.factor, 
@@ -147,6 +157,7 @@ Gui_test.new = function(pages)
 		end
 		wesnoth.set_dialog_canvas(1, drawing,"right_page_drwaing")
 		-- a workaround to update the canvas
+		-- TODO 1.13.3: maybe this isn't needed anymore?
 		wesnoth.set_dialog_value(self.get_changing_string(), "left_page_drwaing")
 		wesnoth.set_dialog_value(self.get_changing_string(), "right_page_drwaing")
 	end
