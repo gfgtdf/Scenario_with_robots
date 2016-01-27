@@ -35,7 +35,7 @@ moving_unit = swr_require("moving_unit_workaround")
 swr_require("advancements")
 Gui_test = swr_require("gui_test")
 Traps = swr_require("traps")
-trader = swr_require("trader")
+swr_trader = swr_require("trader")
 Seller = swr_require("seller")
 
 dropping = swr_require("dropping")

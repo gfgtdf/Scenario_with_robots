@@ -15,7 +15,7 @@ end)
 global_events.add_event_handler("menu_item robot_trader_mp", function (event_context)
 	global_events.disallow_undo()
 	local side = wesnoth.sides[wesnoth.current.side] 
-	local bought_items, price = trader.buy_items(trader_list_mp, side.gold)
+	local bought_items, price = swr_trader.buy_items(trader_list_mp, side.gold)
 	local inv = inventories[wesnoth.current.side]
 	inv.open()
 	for k, v in pairs(bought_items) do

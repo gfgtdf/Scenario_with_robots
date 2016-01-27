@@ -16,11 +16,11 @@ global_events.add_event_handler("menu_item menu_open_trader", function (event_co
 	trader_inv_minus = globals.trader_inv_minus or Inventory.new("trader_inv")
 	trader_inv_minus.open()
 	local side = wesnoth.sides[wesnoth.current.side] 
-	local item_list = trader.lists["default"]
+	local item_list = swr_trader.lists["default"]
 	for k, v in pairs(trader_inv_minus.get_invenory_set()) do
 		item_list[k].quantity = (item_list[k].quantity) and (item_list[k].quantity - v)
 	end
-	local bought_items, price = trader.buy_items(item_list, side.gold)
+	local bought_items, price = swr_trader.buy_items(item_list, side.gold)
 	for k, v in pairs(trader_inv_minus.get_invenory_set()) do
 		item_list[k].quantity = (item_list[k].quantity) and (item_list[k].quantity + v)
 	end
