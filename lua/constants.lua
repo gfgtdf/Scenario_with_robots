@@ -1,5 +1,5 @@
 -- the function of this file is all LotI related, and used in stats.lua
---local helper = z_require("my_helper")
+--local helper = swr_require("my_helper")
 local constants = {}
 constants.all_sorts = Set{"other", "exotic", "gold", "potion", "limited", "armour", "gauntlets", "helm","boots","cloak","amulet","ring","sword","axe","bow","staff","xbow","dagger","knife","mace","polearm","claws","sling","spear"}
 constants.geared_sorts = Set{"exotic", "limited", "armour", "gauntlets", "helm","boots","cloak","amulet","ring","sword","axe","bow","staff","xbow","dagger","knife","mace","polearm","claws","sling","spear"}

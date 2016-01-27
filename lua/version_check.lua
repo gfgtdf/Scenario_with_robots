@@ -1,8 +1,8 @@
 -- if they have the file "version_check.lua" than they also have the file "version.lua"
-local local_version = z_require("version")
+local local_version = swr_require("version")
 return {
 	do_initial_version_check = function()
-		local sync_choice = z_require("synconize_choice_workaround")
+		local sync_choice = swr_require("synconize_choice_workaround")
 		local all_sides = {}
 		for i, v in ipairs(wesnoth.sides) do
 			all_sides[i] = i

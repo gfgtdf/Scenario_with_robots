@@ -77,7 +77,7 @@ function serialize_oneline(o, accept_nil)
 	end
 end
 else
-	serialize_oneline = z_require("serialize")
+	serialize_oneline = swr_require("serialize")
 end
 function deseralize(str)
 	return loadstring("return " .. str)()
@@ -248,7 +248,7 @@ test_data = function()
 	return res
 end
 s_o_1 = serialize_oneline
-s_o_2 = z_require("serialize")
+s_o_2 = swr_require("serialize")
 
 cl_b(); s_o_1(wesnoth.get_unit(25,19).__cfg);cl_b();
 lua cl_b(); s_o_1(test_data());cl_b();

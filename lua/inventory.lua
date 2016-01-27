@@ -1,4 +1,3 @@
--- local helper = z_require("my_helper")
 -- there musn't be more than one inventory object for each inventory variable otherwise the'd cofuse each other.
 -- if inv_set is map string -> number it is a it is a valid wml table, but im used to serialisation and itgives me more flexibility.
 local Inventory = {}

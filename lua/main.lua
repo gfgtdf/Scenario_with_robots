@@ -1,7 +1,7 @@
 
 -- we want some things to be at "top" level, escecialy for the wesnoth.game_events.on_load/save in case we need them
 -- and since we have that at toplevel we can put it all here, i think everyting else wouls just make it more complicated.
-function z_require(script)
+function swr_require(script)
 	-- I use dofile instead of , require because it allows me to reload the whole lua logics (for my scenarios that means nearly all of the logic)
 	-- without having to quit the game and press F5 or close Wesnoth.
 	-- thats pretty cool feature for debugging compared to wml debugging.
@@ -10,7 +10,7 @@ function z_require(script)
 end
 
 helper = wesnoth.require("lua/helper.lua")
-swr_h = z_require("my_helper")
+swr_h = swr_require("my_helper")
 -- since i don't have any translations yet i use the global "wesnoth"
 _ = wesnoth.textdomain 'wesnoth'
 T = helper.set_wml_tag_metatable {}
@@ -23,26 +23,26 @@ setmetatable(globals, {
 		_G[k] = v
 	end,
 })
-constants = z_require("constants")
-stats = z_require("stats")
-wml_codes = z_require("wml_codes")
-Inventory = z_require("inventory")
-gui = z_require("gui")
-component_list = z_require("component_list")
-robot_mechanics = z_require("robot_mechanics")
-global_events = z_require("global_events")
-moving_unit = z_require("moving_unit_workaround")
-z_require("advancements")
-Gui_test = z_require("gui_test")
-Traps = z_require("traps")
-trader = z_require("trader")
-Seller = z_require("seller")
+constants = swr_require("constants")
+stats = swr_require("stats")
+wml_codes = swr_require("wml_codes")
+Inventory = swr_require("inventory")
+gui = swr_require("gui")
+component_list = swr_require("component_list")
+robot_mechanics = swr_require("robot_mechanics")
+global_events = swr_require("global_events")
+moving_unit = swr_require("moving_unit_workaround")
+swr_require("advancements")
+Gui_test = swr_require("gui_test")
+Traps = swr_require("traps")
+trader = swr_require("trader")
+Seller = swr_require("seller")
 
-dropping = z_require("dropping")
-unit_types_data = z_require("unit_data")
-z_require("has_just_been_recruited_not")
-z_require("robot_event_handlers")
-z_require("stable_sort")
+dropping = swr_require("dropping")
+unit_types_data = swr_require("unit_data")
+swr_require("has_just_been_recruited_not")
+swr_require("robot_event_handlers")
+swr_require("stable_sort")
 
 global_events.toplevel_start()
 

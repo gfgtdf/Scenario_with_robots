@@ -2,7 +2,7 @@
 local Seller = {}
 Seller.new = function()
 	local self = {}
-	self.gui = z_require("dialogs/seller")
+	self.gui = swr_require("dialogs/seller")
 	self.dialog = self.gui.normal
 	self.items = {}
 	self.total_price = 0

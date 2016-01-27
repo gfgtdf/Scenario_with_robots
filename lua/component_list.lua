@@ -1,5 +1,5 @@
 -- this file contains all the components, and most of their logic.
--- local wml_codes = z_require("wml_codes")
+-- local wml_codes = swr_require("wml_codes")
 local component_list = {}
 local the_list = {}
 component_list.the_list = the_list

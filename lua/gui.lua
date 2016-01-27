@@ -1,5 +1,5 @@
 
-z_require("dialogs/edit_robot")
+swr_require("dialogs/edit_robot")
 local gui = {}
 
 Dialog3 = {}
