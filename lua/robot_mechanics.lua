@@ -202,7 +202,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		tooltiplist[#imagelist] = v.component.tooltip
 	end
 	-- classic topdown programming here ..
-	local dialog = gui.Dialog3.new(sizeX, sizeY, imagelist, 1, tooltiplist, 6, down_labels)
+	local dialog = Edit_robot_dialog.new(sizeX, sizeY, imagelist, 1, tooltiplist, 6, down_labels)
 	--for i = 1, # imagelist do
 	--	dialog.set_down_label(i, tostring(i))
 	--end
@@ -518,7 +518,7 @@ robot_mechanics.apply_bonuses = function(unit_cfg, robot, unit_type)
 			field [ix][iy] = "empty"
 		end
 	end
-	function place_component_on_field(pos, component)
+	local function place_component_on_field(pos, component)
 		local ix_start = max(1, 4 - pos.x)
 		local ix_end = min(5, sizeX - pos.x + 3)
 		local iy_start = max(1, 4 - pos.y)

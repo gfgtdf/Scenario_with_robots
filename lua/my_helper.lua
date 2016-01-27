@@ -19,7 +19,7 @@ function Set (list)
 end
 
 
-function serialize(o, accept_nil)
+my_helper.serialize = function(o, accept_nil)
 	accept_nil = accept_nil or false
 	local r = ""
 	if type(o) == "nil" and accept_nil then
@@ -43,16 +43,11 @@ function serialize(o, accept_nil)
 	end
 end
 
-function deseralize(str)
-	return loadstring("return " .. str)()
-end
-
 -- a function for debugging.
 my_helper.cwo = function(obj)
 	wesnoth.fire("message",{ message = serialize(obj, true) })
 end
 
-my_helper.serialize = serialize
 --like serialize but faster and without the \n. for storing lua in wml variables
 my_helper.serialize_oneline = swr_require("serialize")
 my_helper.stable_sort = swr_require("stable_sort")

@@ -1,9 +1,8 @@
 
-swr_require("dialogs/edit_robot")
-local gui = {}
+local gui_edit_robot = swr_require("dialogs/edit_robot")
 
-Dialog3 = {}
-Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last_row_width, down_labels)
+local Edit_robot_dialog = {}
+Edit_robot_dialog.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last_row_width, down_labels)
 	local self = {}
 	sizeX = sizeX or 10 
 	sizeY = sizeY or 10 
@@ -17,7 +16,7 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 		images[ix] = {}
 	end
 	local down_strings= down_labels or {}
-	local grid_top = create_dialog_grid(sizeX, sizeY)
+	local grid_top = gui_edit_robot.create_dialog_grid(sizeX, sizeY)
 	local last_row_content = {}
 	local last_grid_content = {}
 	local menu_grid_content = {}
@@ -26,16 +25,16 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 	-- creating the downer area  "toolbox"
 	local toolbox_size_x = last_row_width
 	local toolbox_size_y = math.ceil(#down_labels / last_row_width)
-	local grid_bottom = create_dialog_grid(toolbox_size_x, toolbox_size_y)
+	local grid_bottom = gui_edit_robot.create_dialog_grid(toolbox_size_x, toolbox_size_y)
 	local index_grid_bottom = 0
 	
 	for iY = 1, toolbox_size_y do
 		for iX = 1, toolbox_size_x do
 			if index_grid_bottom < #imagelist  then
 				index_grid_bottom = index_grid_bottom + 1
-				table.insert(grid_bottom.get_cell(iX, iY), create_tooltip_field(tostring(index_grid_bottom), tooltiplist[index_grid_bottom]))
+				table.insert(grid_bottom.get_cell(iX, iY), gui_edit_robot.create_tooltip_field(tostring(index_grid_bottom), tooltiplist[index_grid_bottom]))
 			else
-				table.insert(grid_bottom.get_cell(iX, iY), create_unused_tooltip_field(imagelist[startimagekey]))
+				table.insert(grid_bottom.get_cell(iX, iY), gui_edit_robot.create_unused_tooltip_field(imagelist[startimagekey]))
 			end
 			grid_bottom.get_cell(iX, iY).vertical_grow = true
 			grid_bottom.get_cell(iX, iY).horizontal_grow = true
@@ -44,11 +43,11 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 	-- creating the upper area 'field'
 	for iY = 1 , sizeY do
 		for iX = 1 , sizeX do
-			table.insert(grid_top.get_cell(iX,iY), create_robot_field(tostring(iX) .. tostring(iY)))
+			table.insert(grid_top.get_cell(iX,iY), gui_edit_robot.create_robot_field(tostring(iX) .. tostring(iY)))
 		end
 	end
 	
-	dialog = create_edit_robot_dialog(grid_top.get_grid(), grid_bottom.get_grid())
+	local dialog = gui_edit_robot.create(grid_top.get_grid(), grid_bottom.get_grid())
 	
 	self.show_dialog = function()
 		local selected_index = startimagekey
@@ -113,5 +112,4 @@ Dialog3.new = function(sizeX, sizeY, imagelist, startimagekey, tooltiplist, last
 	return self
 end
 
-gui.Dialog3 = Dialog3
-return gui
+return Edit_robot_dialog

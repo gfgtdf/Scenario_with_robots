@@ -433,7 +433,7 @@ function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 		T.variables (unit_variables),
 	}
 	
-	unit_cnf_new = wesnoth.create_unit(unit_wml).__cfg
+	local unit_cnf_new = wesnoth.create_unit(unit_wml).__cfg
 	unit_cnf_new.moves = unit_cnf.moves
 	unit_cnf_new.attacks_left = unit_cnf.attacks_left
 	

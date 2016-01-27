@@ -1,6 +1,6 @@
 local T = helper.set_wml_tag_metatable {}
-
-function create_dialog_grid(size_x, size_y)
+local gui_edit_robot = {}
+function gui_edit_robot.create_dialog_grid(size_x, size_y)
 	local grid = T.grid {} 
 	local cells = {}
 	for iY = 1 , size_y do
@@ -19,7 +19,7 @@ function create_dialog_grid(size_x, size_y)
 	}
 end
 
-function create_edit_robot_dialog(grid_field, grid_toolbox)
+function gui_edit_robot.create(grid_field, grid_toolbox)
 	return {
 		T.tooltip {
 			id = "tooltip_large",
@@ -110,7 +110,7 @@ function create_edit_robot_dialog(grid_field, grid_toolbox)
 	}
 end
 
-function create_tooltip_field(index_str, tooltip_str)
+function gui_edit_robot.create_tooltip_field(index_str, tooltip_str)
 	return T.toggle_panel {
 		id = "down_panel" .. index_str,
 		T.grid { 
@@ -135,22 +135,20 @@ function create_tooltip_field(index_str, tooltip_str)
 	}
 end
 
-function create_unused_tooltip_field(imagename)
-	return --T.toggle_panel {
-		T.grid {
-			T.row {
-				vertical_grow = true, 
-				T.column {
-					T.image {
-						label = imagename,
-					},
+function gui_edit_robot.create_unused_tooltip_field(imagename)
+	return T.grid {
+		T.row {
+			vertical_grow = true, 
+			T.column {
+				T.image {
+					label = imagename,
 				},
 			},
-	--	},
+		},
 	} 
 end
 
-function create_robot_field(index_str)
+function gui_edit_robot.create_robot_field(index_str)
 	return  T.toggle_panel {
 		id = "cell_panel" .. index_str,
 		T.grid {
@@ -165,3 +163,4 @@ function create_robot_field(index_str)
 		},
 	}
 end
+return gui_edit_robot
