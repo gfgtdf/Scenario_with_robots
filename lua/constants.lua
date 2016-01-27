@@ -1,5 +1,5 @@
 -- the function of this file is all LotI related, and used in stats.lua
---local helper = swr_require("my_helper")
+-- swr_require("my_helper")
 local constants = {}
 constants.all_sorts = Set{"other", "exotic", "gold", "potion", "limited", "armour", "gauntlets", "helm","boots","cloak","amulet","ring","sword","axe","bow","staff","xbow","dagger","knife","mace","polearm","claws","sling","spear"}
 constants.geared_sorts = Set{"exotic", "limited", "armour", "gauntlets", "helm","boots","cloak","amulet","ring","sword","axe","bow","staff","xbow","dagger","knife","mace","polearm","claws","sling","spear"}
@@ -15,17 +15,7 @@ constants.all_terrains = Set{"fungus", "swamp_water", "forest", "hills", "mounta
 constants.all_damage_types = Set{"arcane", "cold", "fire", "blade" , "pierce", "impact"}
 constants.weapon_bonuses = Set{"damage", "suck", "damage_plus", "attacks" ,"icon", "merge", "damage_type", "name"}
 constants.weapon_speacial_abilites = Set{"firststrike", "poison", "attacks" ,"slow", "plague" ,"chance_to_hit", "berserk", "damage", "dummy", "drains", "swarm"}
-constants.item_list_object = helper.get_variable_array("item_list.object")
 constants.item_by_number = {}
-
-for i=1,#constants.item_list_object do
-	constants.item_by_number[constants.item_list_object[i].number] = i
-end
-
-constants.get_object_by_number = function(number)
-	return constants.item_list_object[constants.item_by_number[number]]
-end
-
 
 
 return constants
