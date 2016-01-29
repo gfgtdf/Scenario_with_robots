@@ -47,7 +47,7 @@ swr_require("stable_sort")
 global_events.toplevel_start()
 
 -- there are some other global variables:
---   serialize, serialize_oneline, deseralize, Set, cwo, - importent global functions exported by my_helper
+--   serialize, serialize_oneline, deserialize, Set, cwo, - importent global functions exported by my_helper
 --   min, max - global functions 
 --   Dialog3
 --   traps - stores the traps object

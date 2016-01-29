@@ -11,7 +11,7 @@ Traps.new = function()
 		global_events.register_on_load_reader("traps", self.load_traps)
 	end
 	self.load_traps = function (cfg)
-		self.traplist = swr_h.deseralize(cfg.value)
+		self.traplist = swr_h.deserialize(cfg.value)
 	end
 	self.save_traps = function (cfg)
 		return {value = swr_h.serialize_oneline( self.traplist ) }

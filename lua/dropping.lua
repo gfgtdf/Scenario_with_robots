@@ -67,7 +67,7 @@ dropping.write = function()
 end
 -- read might not be called if there is no [dropped_items] tag found
 dropping.read = function(cfg)
-	dropping.field_data = swr_h.deseralize(cfg.field_data)
+	dropping.field_data = swr_h.deserialize(cfg.field_data)
 	dropping.next_id = cfg.next_id or 0
 	dropping.remove_empty_lists()
 end

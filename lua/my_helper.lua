@@ -51,7 +51,7 @@ end
 --like serialize but faster and without the \n. for storing lua in wml variables
 my_helper.serialize_oneline = swr_require("serialize")
 my_helper.stable_sort = swr_require("stable_sort")
-my_helper.deseralize = function(str)
+my_helper.deserialize = function(str)
 	return loadstring("return " .. str)()
 end
 my_helper.Set = Set

@@ -123,7 +123,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	end
 	inv.close()
 	if not has_inventory_fierd then
-		robot = loadstring("return " .. edit_result.robotstring )()
+		robot = swr_h.deserialize(edit_result.robotstring )
 		for i =1, #robot.components do
 			robot.components[i].component = component_list.list_by_name[robot.components[i].component]
 		end
