@@ -6,8 +6,8 @@
 -- i think i have to sacrifice the wrapping, it isn't a verybig sacrifice anyway since "pages" are already static, so going to "lines" isnt a that big difference annymore.
 -- every page has: page.text, and page.images imagaes ist a list of image inforamtion (pos, path..)
 -- TODO 1.12: i could use wesnoth.set_dialog_markup (new in wesnoth 1.12, this was coded for wesnoth 1.11.2)
-Gui_test = {}
-Gui_test.new = function(pages)
+Gui_book = {}
+Gui_book.new = function(pages)
 	local self = {}
 	self.factor = 1
 	self.pages = pages
@@ -40,7 +40,6 @@ Gui_test.new = function(pages)
 		}
 	}
 	self.show_dialog = function()
-		local selected_index = globals.startimagekey
 		local function preshow()
 			local goto_page_handler = function()
 				local p_index = tonumber(wesnoth.get_dialog_value("textbox_page"))
@@ -168,4 +167,4 @@ Gui_test.new = function(pages)
 	end
 	return self
 end
-return Gui_test
+return Gui_book

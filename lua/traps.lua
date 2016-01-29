@@ -1,5 +1,7 @@
 local Traps = {}
 local traptypes = {}
+-- TODO: It would be nice if there were amlas to update traps in putiple ways
+--  More damage, allies take less damage, explisive damage.
 Traps.new = function()
 	local self = {}
 	-- each entry contains the following keys: x, y, sender_side, sender_unit_id, type, power
@@ -47,7 +49,7 @@ Traps.new = function()
 	self.on_hex_enter = function(event_context)
 		local remove_traps = {}
 		-- i dont want to event to fire if there is another unit on that hex.
-		if moving_unit.enters_normal() then
+		if swr_moving_unit.enters_normal() then
 			for k, trap in pairs(self.traplist) do
 				-- i caould also check weather the units are allied here
 				if trap.x == event_context.x1 and trap.y == event_context.y1 then
@@ -58,8 +60,9 @@ Traps.new = function()
 					end
 					-- NOTE: just like for wml events this actually means "stop the move"
 					global_events.disallow_undo()
-					-- forcing htem to move on would be unfair i think
+					-- forcing them to move on would be unfair i think
 					-- Create a moveto event to disallow undoing.
+					-- TODO 1.13.2: not needed anymore
 					wesnoth.wml_actions.event { name = "moveto" }
 					
 				end

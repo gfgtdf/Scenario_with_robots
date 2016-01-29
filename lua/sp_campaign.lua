@@ -40,7 +40,7 @@ end)
 global_events.add_event_handler("menu_item menu_read_book", function (event_context)
 	global_events.disallow_undo()
 	local book_manual = swr_require("book_maual")
-	local book_dialog = Gui_test.new(book_manual.pages)
+	local book_dialog = Gui_book.new(book_manual.pages)
 	--this doesn't change the game so no synchronize_choice is needed
 	book_dialog.show_dialog()
 end)
