@@ -26,9 +26,6 @@ local weapon_speacial_abilites = constants.weapon_speacial_abilites
 local stats = {}
 
 function stats.calculate_weapons_only(unit_cnf)
-	
-	time2 = wesnoth.get_time_stamp()
-	
 	local unit_modifications = swr_h.get_or_create_child(unit_cnf, "modifications")
 	
 	local weapons_extras = {}
@@ -61,7 +58,7 @@ function stats.calculate_weapons_only(unit_cnf)
 		else 
 			stats.add_damages_armour(object,weapons_extras)
 		end
-		--user efinded object "effect" tags
+		--user defined object "effect" tags
 		for effect in helper.child_range(object, "effect") do
 			if (effect.apply_to == "alignment") then
 				unit_cnf.alignment = effect.alignment
@@ -197,18 +194,25 @@ function stats.calculate_weapons_only(unit_cnf)
 						stongest_attack = attack
 					end
 					if(effect.name == attack.name) then 
-						--we already have this attack and we dont want it twice
+						--we already have this attack and we don't want it twice
 						has_this_attack = true
 					end
 				end
 				if (has_this_attack ~= true) then
-					--TODO: case that no attack found
-					--TODO: WE NEED A DEEP COPY OF THAT ATTACK!!!
-					new_attack  = swr_h.deepcopy(stongest_attack)
-					table.insert(unit_cnf, {"attack",new_attack}) -- i can still acess it though local variable attack
-					--what happens when has_this_attack==true? 
-					--i think about it later i just copied it from the wml code
-					--the wml code uses later ... [size -1] so it will that latest attack intead :s
+					if stongest_attack then
+						-- we need to deepcopy it because otherwise the original attack would be changed too.
+						new_attack = swr_h.deepcopy(stongest_attack)
+					else
+						new_attack = {
+							range = effect.range,
+							damage = 1,
+							number = 1,
+							type = blade,
+							description = _"Blade",
+							icon = "attacks/sword-steel.png"
+						}
+					end
+					table.insert(unit_cnf, {"attack",new_attack})
 				end
 				if (effect.clone_anim == "yes" or effect.clone_anim == true) then
 					local unit_style = wesnoth.unit_types[unit_cnf.type].__cfg
@@ -308,9 +312,6 @@ function stats.calculate_weapons_only(unit_cnf)
 	for index, object in ipairs(objects_to_add) do
 		table.insert(unit_modifications, T.object( object ))
 	end
-	
-	
-	time2 = wesnoth.get_time_stamp () - time2
 end
 
 function stats.calculate_attack(attack, weapons_extras_t)
@@ -459,6 +460,8 @@ function stats.refresh_all_stats_xy(x, y)
 	--   the most time > 60 milliseconds each. while calculate_weapons_only which contains teh most lua code only
 	--   takes 13 milliseconds. A possible attempt to fix this would be to change calculate_weapons_only and 
 	--   calculations_end to use direct unit manipulation or effectwml instead of recreating the unit.
+	
+	-- TODO 1.13.2: Try to implement custom [effect]s using wesnoth.effects
 	local unit_cnf = wesnoth.get_unit(x, y).__cfg
 	wesnoth.put_unit(x, y)
 	local unit_cnf2 = stats.backup_unit_stats(unit_cnf, false, false)

@@ -110,9 +110,10 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 			end
 			new_comp.component = old_comp.component.name
 		end
-		-- by doing that we dont need to unseralize the robot unnessesarily.
+		-- Optimisation: If we did this choice locally then we can use the 'robot' variable 
+		-- (instead uf using robotstring) which saves us one deserialize call.
 		has_inventory_fierd = true
-		robotstring = swr_h.serialize_oneline(robot_to_seralize)
+		local robotstring = swr_h.serialize_oneline(robot_to_seralize)
 		return { robotstring = robotstring, T.inv_delta (inv_delta)}
 	end,
 	function()
