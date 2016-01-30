@@ -58,20 +58,7 @@ function stats.calculate_weapons_only(unit_cnf)
 		else 
 			stats.add_damages_armour(object,weapons_extras)
 		end
-		--user defined object "effect" tags
-		for effect in helper.child_range(object, "effect") do
-			if (effect.apply_to == "alignment") then
-				unit_cnf.alignment = effect.alignment
-			elseif (effect.apply_to == "new_advancement") then
-				local has_this_already = false
-				for advance in helper.child_range(helper.get_child(unit_cnf, "modifications"), advancement_str) do
-					has_this_already = has_this_already or advance.id == effect.id
-				end
-				if (not has_this_already)  then
-					table.insert(helper.get_child(unit_cnf, "modifications"), T[advancement_str] { id = effect.id} )
-				end
-			end
-		end
+		-- user defined object "effect" tags
 	end
 	-- ]]
 	--begin to apply things
@@ -176,7 +163,7 @@ function stats.calculate_weapons_only(unit_cnf)
 			end
 		end
 	end
-	
+	-- TODO: 1.13.2 use wesnoth effect for bonus_attack
 	for advance in swr_h.child_range_multiple_tags(unit_modifications, Set{advancement_str, "object", "trait"}) do
 		for effect in helper.child_range(advance, "effect") do
 			if(effect.apply_to == "bonus_attack") then
@@ -214,36 +201,6 @@ function stats.calculate_weapons_only(unit_cnf)
 					end
 					table.insert(unit_cnf, {"attack",new_attack})
 				end
-				if (effect.clone_anim == "yes" or effect.clone_anim == true) then
-					local unit_style = wesnoth.unit_types[unit_cnf.type].__cfg
-					local animation = nil
-					local anim_containing_tag = unit_style
-					if(unit_cnf.gender == "female") then
-						anim_containing_tag = helper.get_child(unit_style,"female")
-					end
-					for attack_anim in helper.child_range(anim_containing_tag, "attack_anim") do 
-						if(helper.get_child(attack_anim,"filter_attack").name == stongest_attack.name) then
-							animation = attack_anim
-						end
-					end
-					if(animation ~= nil) then --nil <=> we coudn't found the animation because the weaopn was already renamed by an object, TOD fix this EDIT: is was my fault i canged the weaons name insteady of desription
-						local new_anim = swr_h.deepcopy(animation)
-						local new_anim_filter = helper.get_child(new_anim, "filter_attack")
-						new_anim_filter.name = effect.name
-						local anim_object = { sort = "temporary", silent = "yes",
-							T.filter { 
-								x = unit_cnf.x, 
-								y = unit_cnf.y
-							},
-							T.effect { 
-								apply_to = "new_animation", 
-								name = "aa" .. effect.name, 
-								T.attack_anim (new_anim),
-							},
-						}
-						table.insert(objects_to_add, anim_object)
-					end
-				end
 				new_attack.name = effect.name
 				if (effect.description ~= nil) then
 					new_attack.description = effect.description
@@ -261,6 +218,7 @@ function stats.calculate_weapons_only(unit_cnf)
 					damage = effect.damage 
 				end
 				if (effect.number ~= nil) then 
+				
 					attacks = effect.number 
 				end
 				for other_advance in swr_h.child_range_multiple_tags(unit_modifications, Set {advancement_str, "object", "trait"}) do
@@ -275,7 +233,7 @@ function stats.calculate_weapons_only(unit_cnf)
 				new_attack.number =  new_attack.number * (100 + attacks) / 100
 				new_attack.attack_weight = effect.attack_weight or new_attack.attack_weight
 				new_attack.defense_weight = effect.defense_weight or new_attack.defense_weight
-				if effect.merge == true  then --seems like "yes" is translated to true but tostring shows "yes" ???
+				if effect.merge == true then
 					new_attack.damage = new_attack.damage * new_attack.number
 					new_attack.number = 1
 				end

@@ -150,7 +150,6 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 		apply_to = "bonus_attack",
 		attacks = number_change,
 		damage = damage_change,
-		clone_anim = true,
 		type = attack_type,
 		force_original_attack = attack_name,
 		name = attack_name .. "_with_type_" .. attack_type
