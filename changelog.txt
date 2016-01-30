@@ -61,3 +61,9 @@
 - Fix healing drawn on top of properllors
 - cheap 'starter packs' in component shop in mp.
 - Added images for antanna for 1.13.1 and later
+
+1.1.8
+- help menu it now unsynced on 1.13.2+
+- Improved shop dialog.
+- the addon is now compatible with wesnoth 1.13.2
+- Code cleanups
