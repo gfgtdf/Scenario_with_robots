@@ -41,8 +41,6 @@ global_events.init = function()
 	for i,side in ipairs(wesnoth.sides) do
 		inventories[side.side] = Inventory.new("component_inventory_" .. tostring(side.side))
 	end
-	traps = Traps.new()
-	traps.init()
 	current_event_name = ""
 end
 

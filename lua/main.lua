@@ -34,7 +34,7 @@ global_events = swr_require("global_events")
 swr_moving_unit = swr_require("moving_unit_workaround")
 swr_require("advancements")
 Gui_book = swr_require("gui_test")
-Traps = swr_require("traps")
+swr_traps = swr_require("traps")
 swr_trader = swr_require("trader")
 Seller = swr_require("seller")
 
