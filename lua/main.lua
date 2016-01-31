@@ -23,7 +23,7 @@ setmetatable(globals, {
 		_G[k] = v
 	end,
 })
-constants = swr_require("constants")
+swr_constants = swr_require("constants")
 swr_stats = swr_require("stats")
 wml_codes = swr_require("wml_codes")
 Inventory = swr_require("inventory")

@@ -11,18 +11,18 @@
 --   the other differnece is, that change_ablitity allows you to change int values relavively with replace=no
 
 
-local all_sorts = constants.all_sorts
-local weapon_sorts = constants.weapon_sorts
-local armour_sorts = constants.armour_sorts
-local melee_weapon_sorts = constants.melee_weapon_sorts
-local ranged_weapon_sorts = constants.ranged_weapon_sorts
-local non_weaon_sorts = constants.non_weaon_sorts
+local all_sorts = swr_constants.all_sorts
+local weapon_sorts = swr_constants.weapon_sorts
+local armour_sorts = swr_constants.armour_sorts
+local melee_weapon_sorts = swr_constants.melee_weapon_sorts
+local ranged_weapon_sorts = swr_constants.ranged_weapon_sorts
+local non_weaon_sorts = swr_constants.non_weaon_sorts
 
-local sort_of_weapons = constants.sort_of_weapons
-local all_terrains = constants.all_terrains
-local all_damage_types = constants.all_damage_types
-local weapon_bonuses = constants.weapon_bonuses 
-local weapon_speacial_abilites = constants.weapon_speacial_abilites
+local sort_of_weapons = swr_constants.sort_of_weapons
+local all_terrains = swr_constants.all_terrains
+local all_damage_types = swr_constants.all_damage_types
+local weapon_bonuses = swr_constants.weapon_bonuses 
+local weapon_speacial_abilites = swr_constants.weapon_speacial_abilites
 local stats = {}
 
 function stats.calculate_weapons_only(unit_cnf)
