@@ -40,11 +40,25 @@ Traps.new = function()
 				end
 			end
 			if firstfound_count == 0 then
-				wesnoth.wml_actions["remove_item"]({x = firstfound_loc.x, y = firstfound_loc.y, image = "misc/red_border.png"})
+				wesnoth.wml_actions.remove_item {
+					x = firstfound_loc.x,
+					y = firstfound_loc.y,
+					image = "misc/red_border.png"
+				}
 			end
 		end
 		table.insert(self.traplist, trap)
-		wesnoth.wml_actions["item"]({x = trap.x, y = trap.y, image = "misc/red_border.png", visible_in_fog = false})
+		local allied_sides = {}
+		for k,v in ipairs(wesnoth.get_sides { T.allied_with { side = trap.sender_side } }) do
+			table.insert(allied_sides, v.team_name)
+		end
+		wesnoth.wml_actions.item {
+			x = trap.x, 
+			y = trap.y, 
+			image = "misc/red_border.png", 
+			visible_in_fog = false,
+			team_name = table.concat(allied_sides, ",") 
+		}
 	end
 	self.on_hex_enter = function(event_context)
 		local remove_traps = {}
@@ -94,24 +108,13 @@ Traps.new = function()
 			}
 		elseif traptype.animation == "explosion" then
 			-- TODO place the animation for the explosion trap here.
-			anim = {
-				T.item { x = x, y = y, halo="animation/spikes.png" },
-				T.delay { time = 50 },
-				T.item { x = x, y = y, halo="animation/spikes2.png" },
-				T.delay { time = 100 },
-				T.item { x = x, y = y, halo="animation/spikes3.png" },
-				T.delay { time = 50 },
-				T.item { x = x, y = y, halo="animation/spikes2.png" },
-				T.delay { time = 50 },
-				T.item { x = x, y = y, halo="animation/spikes.png" },
-				T.delay { time = 50 },
-				T.remove_item { x= x, y = y},
-			}
 		end
 		for k,v in pairs(anim) do 
 			wesnoth.wml_actions[v[1]](v[2])
 		end
 		local resist = wesnoth.unit_resistance(taget_ref, traptype.damagetype or "pierce")
+		-- wesnoth 1.12 assumes a vconfig parameter.
+		-- TODO 1.13.3: remvoe the tovconfig call.
 		wesnoth.wml_actions.harm_unit( wesnoth.tovconfig {
 			T.filter { x = x, y = y},
 			amount = traptype.amount * trap.power,
@@ -127,8 +130,14 @@ Traps.new = function()
 				trapcount = trapcount + 1 
 			end
 		end 
+		-- remove this if it was the last trap on this hex
+		-- TODO 1.13.3: Use item names to remove this item in case multiple traps were put to this location.
 		if trapcount == 1 then
-			wesnoth.wml_actions["remove_item"]({x = trap.x, y = trap.y, image = "misc/red_border.png"})
+			wesnoth.wml_actions.remove_item {
+				x = trap.x,
+				y = trap.y,
+				image = "misc/red_border.png"
+			}
 		end
 	end
 	self.on_move_to = function(event_context)
