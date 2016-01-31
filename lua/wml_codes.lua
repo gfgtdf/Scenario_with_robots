@@ -221,6 +221,30 @@ wml_codes.get_antenna_leadership_code = function(percent)
 	return effects
 end
 
+wml_codes.get_solar_cell_leadership_code = function(percent)
+	local effects = {}
+	table.insert(effects, T.effect {
+		apply_to = "new_ability",
+		T.abilities {
+			T.leadership {
+				id = "solar_cell",
+				name = _ "Solar cell",
+				description = _ "The robot deals " .. percent .. _ "% more damage in light areas",
+				value = percent,
+				affect_self = true,
+				affect_allies = false,
+				cumulative = false,
+				T.filter {
+					T.filter_location {
+						time_of_day = "lawful",
+					},
+				},
+			},
+		}
+	})
+	return effects
+end
+
 local get_imagemod_oversize = function(img)
 	local x1 = -img.x
 	local y1 = -img.y
