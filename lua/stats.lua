@@ -247,6 +247,7 @@ function stats.calculate_weapons_only(unit_cnf)
 		end
 	end
 	--teleport abilitiy (what is that good for??)
+	-- TODO: maybe remove it?
 	for teleport in helper.child_range(unit_abilities, "teleport") do
 		if(teleport.id == "teleport") then
 			--clear the teleport table
