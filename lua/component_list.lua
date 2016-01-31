@@ -492,6 +492,7 @@ table.insert(the_list, {
 	end,
 	--dependant on simplespear, simplelaser, since i use bonus:attack, wich is always executed after, not implented yet
 	-- since this uses "bonus_attack" wich is alwasy appied last by stats.lua it is not needed right now.
+	-- TODO 1.13.3: Fix this hen we use wesnoth.effects implementation of bonus_attack.
 	order_apply = 2,
 	image = "c/trapper_poison.png",
 	field_images = { [3] = { [3] = "c/trapper_poison.png" } }
@@ -518,7 +519,9 @@ table.insert(the_list, {
 	field_images = { [3] = { [2] = "c/antenne_oben.png", [3] = "c/antenne_unten.png" } }
 })
 
-
+-- TODO: Add new components, for example:
+--   a Soloar cell that inceased damage in light
+--   a weapon that deals impace damage.
 
 for k,v in pairs(component_list.the_list) do
 	if(component_list.list_by_name[v.name] ~= nil) then
