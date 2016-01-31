@@ -6,15 +6,20 @@ Inventory.new = function(inventory_variable)
 	-- i think thats the better way.
 	local self = {}
 	self.variable_name = inventory_variable
+	self.side_number = nil
 	self.is_open = false
 	-- opens the inventory so it can be written and read
 	self.open = function()
 		if self.is_open then
 			error("Inventory cannot be opened because it is already open")
 		else
-			local inv_string = wesnoth.get_variable(self.variable_name) or "{}"
-			local inv_set = loadstring("return " .. inv_string)()
-			self.inv_set = inv_set
+			local inv_string = nil
+			if self.side_number then
+				inv_string = wesnoth.get_side_variable(self.side_number, self.variable_name)
+			else
+				inv_string = wesnoth.get_variable(self.variable_name)
+			end
+			self.inv_set = swr_h.deserialize(inv_string or "{}")
 			self.is_open = true
 		end
 	end
@@ -24,7 +29,11 @@ Inventory.new = function(inventory_variable)
 			error("Inventory cannot be closed because it is not open")
 		else
 			local inv_string = swr_h.serialize_oneline(self.inv_set)
-			wesnoth.set_variable(self.variable_name, inv_string)
+			if self.side_number then
+				wesnoth.set_side_variable(self.side_number, self.variable_name, inv_string)
+			else
+				wesnoth.set_variable(self.variable_name, inv_string)
+			end
 			self.inv_set = nil
 			self.is_open = false
 		end
