@@ -67,6 +67,7 @@ global_events.preload_start = function()
 	-- Usually our lua code gets initlized at (2) and our variables are initlized at (3)
 	-- However in 1.12.x (not in 1.13.x) [lua] tags inside era are not supported so we need to inilize our lua code in (4)
 	-- In that case global_events.init() runs in (4) and we need this function to emulate (3) and (4)
+	-- TODO 1.13.2: remove this workaround.
 	
 	-- Emulate the varaible loading process
 	local old_event_name = current_event_name

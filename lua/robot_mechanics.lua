@@ -171,8 +171,8 @@ robot_mechanics.get_accesible_components = function(inventory ,robot)
 	table.sort(ac, sorter)
 	return ac
 end
--- shows the robot edit dialog and writes the canges into the robot variable
--- this function changes the robot variable, and returns wich items are taken from the inventory
+-- shows the robot edit dialog and writes the changes into the robot variable
+-- this function changes the robot variable, and returns which items are taken from the inventory (can contain negative numbers, if components were removed from the robot.)
 -- this function assumes that the inventory is open but doesn't change it(because this is called in a sync_context).
 robot_mechanics.edit_robot = function(robot, inv)
 	local invenory_delta = {}
@@ -439,7 +439,7 @@ end
 -- this function applys the bonusses
 -- returns: 
 --   effects: the effects that shoudl be applied
---   advanced: advances that should be applied this is to mak eth ecomonents reqwuirements for advances.
+--   advanced: advances that should be applied this is to make the components requirements for advances.
 robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	local rings_count = robot.rings_count
 	local open_ends_count = max (1, robot.open_ends_count ) - 1
