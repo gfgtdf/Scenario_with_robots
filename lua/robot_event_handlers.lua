@@ -54,6 +54,12 @@ global_events.add_event_handler("die", function(event_context)
 		dropping.add_item(event_context.x1, event_context.y1, { image = "items/box.png", dropped_components = little_inventory })
 	end
 end)
+global_events.add_event_handler("post advance", function(event_context)
+	-- This is needed to adjust the overlay for the animatiosn for the new unit type.
+	if robot_mechanics.reapply_bonuses_at_xy(event_context.x1,event_context.y1) then
+		swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
+	end
+end)
 
 global_events.add_event_handler("drop_pickup", function(event_context)
 	local dropped_items = dropping.current_item.dropped_components

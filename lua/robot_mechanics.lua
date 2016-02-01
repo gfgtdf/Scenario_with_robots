@@ -77,7 +77,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	default_size.y = default_size.y or 2
 	-- here we load the "robot" variable from the units variablres
 	local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
-	local robot = loadstring("return " .. robot_string )()
+	local robot = swr_h.deserialize(robot_string )
 	local r_sizeX_delta = max(default_size.x - robot.size.x, 0)
 	local r_sizeY_delta = max(default_size.y - robot.size.y, 0)
 	robot.size.x = max(robot.size.x, default_size.x)
@@ -111,7 +111,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 			new_comp.component = old_comp.component.name
 		end
 		-- Optimisation: If we did this choice locally then we can use the 'robot' variable 
-		-- (instead uf using robotstring) which saves us one deserialize call.
+		-- (instead of using robotstring) which saves us one deserialize call.
 		has_inventory_fierd = true
 		local robotstring = swr_h.serialize_oneline(robot_to_seralize)
 		return { robotstring = robotstring, T.inv_delta (inv_delta)}
@@ -494,16 +494,18 @@ end
 
 robot_mechanics.reapply_bonuses_at_xy = function(x, y)
 	local unit_cfg = wesnoth.get_unit(x, y).__cfg
-	local variables = helper.get_child(unit_cfg, "variables")
+	local variables = helper.get_child(unit_cfg, "variables") or {}
 	local robot_string = variables.robot
 	if not robot_string then
+		return false
 	else
-		local robot = loadstring("return " .. robot_string )()
+		local robot = swr_h.deserialize(robot_string)
 		for i =1, #robot.components do
 			robot.components[i].component = component_list.list_by_name[robot.components[i].component]
 		end
 		robot_mechanics.apply_bonuses(unit_cfg, robot)
 		wesnoth.put_unit(unit_cfg)
+		return true
 	end
 end
 
