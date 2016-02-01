@@ -445,6 +445,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	local open_ends_count = max (1, robot.open_ends_count ) - 1
 	local aggregator = {}
 	local apply_functions = {}
+	local apply_functions_set = {}
 	aggregator.component_images = {}
 	aggregator.movement = 0
 	aggregator.movement_costs = {}
@@ -462,14 +463,17 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 				v.component.aggregate_function(robot, v, aggregator)
 			end
 			if v.component.apply_function ~= nil then
-				apply_functions[v.component.apply_function] = true
+				if not apply_functions_set[v.component.apply_function] then
+					table.insert(apply_functions, v.component.apply_function)
+				end
+				apply_functions_set[v.component.apply_function] = true
 			end
 		end
 	end
 	local all_effects = {}
 	local all_advances = {}
 	for k, v in pairs(apply_functions) do
-		local new_effects, new_advances = k(robot, aggregator)
+		local new_effects, new_advances = v(robot, aggregator)
 		for k2, v2 in pairs(new_effects or {}) do
 			table.insert(all_effects, v2)
 		end
