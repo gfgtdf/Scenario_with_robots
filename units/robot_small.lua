@@ -1,14 +1,14 @@
 local u = {}
 u.image_mods = {}
 u.image_mods.spear = function (n, t)
-	if n >= 3 then
-		table.insert(t, { image = "units/robots/spear1.png", x = 12, y = 15 })
-	end
 	if n >= 1 then
 		table.insert(t, { image = "units/robots/spear1.png", x = 12, y = 20 })
 	end
 	if n >= 2 then
-		table.insert(t, { image = "units/robots/spear1.png", x = 2, y = 5 })
+		table.insert(t, { image = "units/robots/spear1.png", x = 12, y = 5 })
+	end
+	if n >= 3 then
+		table.insert(t, { image = "units/robots/spear1.png", x = 12, y = 15 })
 	end
 end
 u.image_mods.wheel = function (n, t)
