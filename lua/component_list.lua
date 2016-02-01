@@ -199,6 +199,35 @@ table.insert(the_list, {
 	image = "c/propeller.png",
 	field_images = { [3] = { [3] = "c/propeller.png" } }
 })
+
+table.insert(the_list, {
+	field = { [3] = { [3] = { s = true } } },
+	name = "solar_panel",
+	tooltip = "can cause huge storms or make the robot fly",
+	check_function = function(r_field, robot, objpos) 
+		for i = 1 , objpos.y - 1 do
+			if(r_field[objpos.y][i] ~= "empty") then return false end
+		end
+		return true 
+	end,
+	aggregate_function = function (robot, comp, aggregator) 
+		aggregator.solar_panel = aggregator.solar_panel or {}
+		aggregator.solar_panel.count = (aggregator.solar_panel.count or 0) + 1
+	end,
+	apply_function = function(robot, aggregator)
+		local count = aggregator.solar_panel.count or 0
+		aggregator.component_images.solar_panel = (aggregator.component_images.solar_panel or 0) + count
+		local effects = {}
+		if count > 0 then
+			local added_damage = math.floor(math.sqrt(200 * count) + 0.5)
+			table.insert(effects, wml_codes.get_solar_cell_leadership_code(added_damage)[1])
+		end
+		return effects,  wml_codes.get_imp_advancement("solar_panel")
+	end,
+	image = "c/solar_panel.png",
+	field_images = { [3] = { [3] = "c/solar_panel.png" } },
+})
+
 table.insert(the_list, {
 	field = { [3] = { [3] = { n = true } } },
 	name = "simplewheel",
