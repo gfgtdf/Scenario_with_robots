@@ -44,19 +44,20 @@ global_events.add_event_handler("die", function(event_context)
 	local little_inventory = {}
 	if variables.robot ~= nil and drop_item_on_die then
 		local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
-		local robot = loadstring("return " .. robot_string )()
+		local robot = swr_h.deserialize(robot_string)
 		for k,v in ipairs(robot.components) do
 			if v.component ~= "core" then
 				little_inventory[v.component] = (little_inventory[v.component] or 0) + 1
 			end
 		end
-		-- TODO: find a better item.
+		-- TODO: find a better image.
 		dropping.add_item(event_context.x1, event_context.y1, { image = "items/box.png", dropped_components = little_inventory })
 	end
 end)
 global_events.add_event_handler("post advance", function(event_context)
 	-- This is needed to adjust the overlay for the animatiosn for the new unit type.
 	if robot_mechanics.reapply_bonuses_at_xy(event_context.x1,event_context.y1) then
+		-- only recalculate stats if this was a robot.
 		swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
 	end
 end)
