@@ -106,13 +106,14 @@ Gui_book.new = function(pages)
 			},
 			T.text { 
 				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
-				-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
+				-- -2 for the line spacing (i dont know how to change line spacing), it doesnt work very good
 				font_size = 22 * self.factor - 2,  
 				text = page1.text, 
 				color = "135,74,0,255",
 				maximum_width = (500 - 50)* self.factor,
 				text_markup = true,
-				text_wrap_mode = 3
+				text_wrap_mode = 0,
+				maximum_width = 90
 			},
 		}
 		for k, v in pairs(page1.grapics or {}) do 
