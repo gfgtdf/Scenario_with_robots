@@ -27,7 +27,7 @@ local book_manual = {
 		"right click the robot and then \"edit robot\"\n" ..
 		"that is only posible, if the robot\n" ..
 		"stands on a castle, and didn't attack\n" ..
-		"in that move yet.\n" ..
+		"in that turn yet.\n" ..
 		"click in the downer grid to choose a\n" ..
 		"component, and then in the upper grid to\n" ..
 		"place the component.\n" ..
@@ -51,7 +51,8 @@ local book_manual = {
 		"\n" ..
 		"\n" ..
 		"" ..
-		"</span>"},
+		"</span>"
+	},
 	{ text = "<span font='segoe print'>A Picture of the Edit Robot field:\n" ..
 		"\n" ..
 		"\n" ..
@@ -67,8 +68,9 @@ local book_manual = {
 		"\n" ..
 		"" ..
 		"</span>",
-		grapics = { { name = "misc/edit_sample.png", x = 100, y = 100, h = 320, w = 275 } },},
-	{ text = "<span font='segoe print'>Hot to get components:\n" ..
+		grapics = { { name = "misc/edit_sample.png", x = 100, y = 100, h = 320, w = 275 } },
+	},
+	{ text = "<span font='segoe print'>How to get components:\n" ..
 		" \n" ..
 		"For every robot you recruit, you get a \n" ..
 		"certain amount of components.\n" ..

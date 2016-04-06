@@ -9,7 +9,6 @@ max = function(a, b) return a > b and a or b end
 min = function(a, b) return a < b and a or b end
 
 
-
 local function create_component_image(comp)
 	local min_x = 2
 	local max_x = 4
@@ -439,7 +438,7 @@ end
 -- this function applys the bonusses
 -- returns: 
 --   effects: the effects that shoudl be applied
---   advanced: advances that should be applied this is to make the components requirements for advances.
+--   advances: advances that should be applied this is to make the components requirements for advances.
 robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	local rings_count = robot.rings_count
 	local open_ends_count = max (1, robot.open_ends_count ) - 1
@@ -449,6 +448,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	aggregator.component_images = {}
 	aggregator.movement = 0
 	aggregator.movement_costs = {}
+	-- TODO: implement resistances
 	aggregator.terrain_defenses_delta = {}
 	aggregator.resitances_delta = {}
 	aggregator.resitances_delta.arcane = (open_ends_count - rings_count) * 4
@@ -485,6 +485,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	table.insert(all_effects, wml_codes.get_ad_movement_costs_code(aggregator.movement_costs)[1])
 	table.insert(all_effects, wml_codes.get_ad_resistances_code(aggregator.resitances_delta.arcane, aggregator.resitances_delta.cold, aggregator.resitances_delta.fire, aggregator.resitances_delta.blade, aggregator.resitances_delta.pierce, aggregator.resitances_delta.impact)[1])
 	local ipfs = { }
+	-- TODO 1.13.2: create a custom [effect] apply_to=robot_overlay that creates these images when the effect is applied.
 	local type_image_mods = (unit_types_data[unit_type] or {}).image_mods or {}
 	for k,v in pairs(aggregator.component_images) do
 		local f = type_image_mods[k]

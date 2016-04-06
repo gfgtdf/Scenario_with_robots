@@ -26,6 +26,7 @@ global_events.add_event_handler("menu_item robot_trader_mp", function (event_con
 	inv.close()
 	side.gold = side.gold - price
 end)
+
 global_events.add_event_handler("start", function (event_context)
 	for k,v in pairs(wesnoth.get_units { type = "Robot_Medium" } ) do
 		if v.variables.robot == nil then
@@ -39,8 +40,7 @@ end)
 
 global_events.add_event_handler("recruit", function (event_context)
 	global_events.disallow_undo()
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
-	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
+	local unit = wesnoth.get_unit(event_context.x1, event_context.y1
 	-- TODO 1.13.0: Use unit.race directly
 	if unit.__cfg.race == "zt_robots" then
 		unit.variables.robot = "{  [\"rings_count\"] = 0,  [\"size\"] = {  [\"x\"] = 3,  [\"y\"] = 4, } ,  [\"open_ends_count\"] = 3,  [\"components\"] = {  [1] = {  [\"distance\"] = 0,  [\"component\"] = \"core\",  [\"pos\"] = {  [\"x\"] = 2,  [\"y\"] = 3, } , } ,  [2] = {  [\"distance\"] = 1,  [\"component\"] = \"simplewheel\",  [\"pos\"] = {  [\"x\"] = 2,  [\"y\"] = 4, } , } , } , } "
