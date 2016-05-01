@@ -67,3 +67,4 @@
 - Improved shop dialog.
 - the addon is now compatible with wesnoth 1.13.2
 - Code cleanups
+- Added a wesnoth version check 
