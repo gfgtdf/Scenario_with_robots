@@ -113,7 +113,6 @@ Gui_book.new = function(pages)
 				maximum_width = (500 - 50)* self.factor,
 				text_markup = true,
 				text_wrap_mode = 0,
-				maximum_width = 90
 			},
 		}
 		for k, v in pairs(page1.grapics or {}) do 
