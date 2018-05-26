@@ -1,4 +1,4 @@
-local last_tested_version = "1.13.5"
+local last_tested_version = "1.13.6"
 local min_wesnoth_version = "1.12"
 global_events.add_event_handler("prestart", function(event_context)
 	if wesnoth.compare_versions(wesnoth.game_config.version, ">", last_tested_version) then
