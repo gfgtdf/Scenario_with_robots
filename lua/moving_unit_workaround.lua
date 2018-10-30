@@ -1,3 +1,5 @@
+local on_event = wesnoth.require("on_event")
+
 local moving_unit = {}
 moving_unit.move_info = {}
 globals.currently_moving_unit_info = {}
@@ -32,7 +34,7 @@ globals.currently_moving_unit_info = {}
 
 -- TODO 1.13.2: use event_context.unit_x/unit_y
 -- This must be executd before other "exit_hex" handlers, becasue other exit_hex events need this data.
-global_events.add_event_handler("exit_hex", function (event_context)
+on_event("exit_hex", function (event_context)
 	if moving_unit.move_info.id == nil then
 		-- no moving info yet => it is teh first step of teh move and we can assume that the unit is standing on (x1,y1)
 		local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
@@ -59,8 +61,7 @@ global_events.add_event_handler("exit_hex", function (event_context)
 	end
 end)
 
--- This must be executd before other "exit_hex" handlers 
-global_events.add_event_handler("moveto", function (event_context)
+on_event("moveto", function (event_context)
 	--move has ended, reset move_info.
 	moving_unit.move_info = {}
 end)

@@ -1,6 +1,8 @@
+local on_event = wesnoth.require("on_event")
+
 local trader_list_mp = swr_require("trader_list_mp")
 
-global_events.add_event_handler("start", function (event_context)
+on_event("start", function (event_context)
 	swr_require("version_check").do_initial_version_check()
 	wesnoth.wml_actions.set_menu_item {
 		description = "Buy components",
@@ -8,11 +10,11 @@ global_events.add_event_handler("start", function (event_context)
 	}
 end)
 
-global_events.add_event_handler("preload", function (event_context)
+on_event("preload", function (event_context)
 	swr_require("version_check").do_reload_version_check()
 end)
 
-global_events.add_event_handler("menu_item robot_trader_mp", function (event_context)
+on_event("menu_item robot_trader_mp", function (event_context)
 	global_events.disallow_undo()
 	local side = wesnoth.sides[wesnoth.current.side] 
 	local bought_items, price = swr_trader.buy_items(trader_list_mp, side.gold)
@@ -27,7 +29,7 @@ global_events.add_event_handler("menu_item robot_trader_mp", function (event_con
 	side.gold = side.gold - price
 end)
 
-global_events.add_event_handler("start", function (event_context)
+on_event("start", function (event_context)
 	for k,v in pairs(wesnoth.get_units { type = "Robot_Medium" } ) do
 		if v.variables.robot == nil then
 			v.variables.robot = "{  [\"open_ends_count\"] = 0,  [\"rings_count\"] = 0,  [\"components\"] = {  [1] = {  [\"component\"] = \"core\",  [\"distance\"] = 0,  [\"pos\"] = {  [\"y\"] = 4,  [\"x\"] = 3, } , } ,  [2] = {  [\"component\"] = \"simplepike\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 4,  [\"x\"] = 2, } , } ,  [3] = {  [\"component\"] = \"pipe_nw\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 4,  [\"x\"] = 4, } , } ,  [4] = {  [\"component\"] = \"pipe_ns\",  [\"distance\"] = 2,  [\"pos\"] = {  [\"y\"] = 3,  [\"x\"] = 4, } , } ,  [5] = {  [\"component\"] = \"propeller\",  [\"distance\"] = 3,  [\"pos\"] = {  [\"y\"] = 2,  [\"x\"] = 4, } , } ,  [6] = {  [\"component\"] = \"simplewheel\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 5,  [\"x\"] = 3, } , } ,  [7] = {  [\"component\"] = \"pipe_sw\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 3,  [\"x\"] = 3, } , } ,  [8] = {  [\"component\"] = \"simplepike\",  [\"distance\"] = 2,  [\"pos\"] = {  [\"y\"] = 3,  [\"x\"] = 2, } , } , } ,  [\"size\"] = {  [\"y\"] = 5,  [\"x\"] = 5, } , }"
@@ -38,7 +40,7 @@ global_events.add_event_handler("start", function (event_context)
 	end
 end)
 
-global_events.add_event_handler("recruit", function (event_context)
+on_event("recruit", function (event_context)
 	global_events.disallow_undo()
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	-- TODO 1.13.0: Use unit.race directly

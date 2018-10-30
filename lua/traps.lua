@@ -1,3 +1,5 @@
+local on_event = wesnoth.require("on_event")
+
 local traps = {}
 local traptypes = {}
 traps.traplist = {}
@@ -109,7 +111,7 @@ function wesnoth.persistent_tags.swr_traps.write(add)
 end
 
 
-global_events.add_event_handler("enter_hex", function(event_context)
+on_event("enter_hex", function(event_context)
 	local remove_traps = {}
 	-- i dont want to event to fire if there is another unit on that hex.
 	if swr_moving_unit.enters_normal() then
@@ -136,7 +138,7 @@ global_events.add_event_handler("enter_hex", function(event_context)
 	end
 end)
 
-global_events.add_event_handler("moveto", function(event_context)
+on_event("moveto", function(event_context)
 	unit = wesnoth.get_unit(event_context.x1,event_context.y1)
 	if wesnoth.unit_ability(unit, "ab_trapper") then
 		unit_cfg = unit.__cfg

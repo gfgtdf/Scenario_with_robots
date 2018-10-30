@@ -1,11 +1,12 @@
+local on_event = wesnoth.require("on_event")
 
-global_events.add_event_handler("menu_item menu_edit_robot", function(event_context)
+on_event("menu_item menu_edit_robot", function(event_context)
 	robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
 	swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
 	global_events.disallow_undo()
 end)
 
-global_events.add_event_handler("start", function(event_context)
+on_event("start", function(event_context)
 	wesnoth.wml_actions.set_menu_item {
 		description = "edit robot",
 		id = "menu_edit_robot",
@@ -37,7 +38,7 @@ end)
 -- i think the unit CAN be brought back to life with in a die event from wml, or from lua.
 -- so we have to watch out here, since we cannot be 100% sure that the unit is dead.
 -- A possible workaround might be to check whether the robot is still alive when picking up the items.
-global_events.add_event_handler("die", function(event_context)
+on_event("die", function(event_context)
 	local drop_item_on_die = wesnoth.get_variable("drop_item_on_die")
 	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
 	local variables = helper.get_child(unit_cfg, "variables")
@@ -54,7 +55,8 @@ global_events.add_event_handler("die", function(event_context)
 		dropping.add_item(event_context.x1, event_context.y1, { image = "items/box.png", dropped_components = little_inventory })
 	end
 end)
-global_events.add_event_handler("post advance", function(event_context)
+
+on_event("post advance", function(event_context)
 	-- This is needed to adjust the overlay for the animatiosn for the new unit type.
 	if robot_mechanics.reapply_bonuses_at_xy(event_context.x1,event_context.y1) then
 		-- only recalculate stats if this was a robot.
@@ -62,7 +64,7 @@ global_events.add_event_handler("post advance", function(event_context)
 	end
 end)
 
-global_events.add_event_handler("drop_pickup", function(event_context)
+on_event("drop_pickup", function(event_context)
 	local dropped_items = dropping.current_item.dropped_components
 	if dropped_items == nil then
 		return
@@ -81,7 +83,7 @@ global_events.add_event_handler("drop_pickup", function(event_context)
 end)
 
 -- TODO 1.13.2: use side variables feature
-global_events.add_event_handler("scenario_end", function(event_context)
+on_event("scenario_end", function(event_context)
 	-- fix carryover for teams in case side numbers change between scenarios.
 	for i, v in ipairs(wesnoth.sides) do
 		-- TODO 1.13.2: use v.save_id directly
@@ -95,7 +97,7 @@ global_events.add_event_handler("scenario_end", function(event_context)
 end)
 
 -- TODO 1.13.2: use side variables feature
-global_events.add_event_handler("prestart", function(event_context)
+on_event("prestart", function(event_context)
 	for i, v in ipairs(wesnoth.sides) do
 		-- TODO 1.13.2: use v.save_id directly
 		local save_id = v.__cfg.save_id

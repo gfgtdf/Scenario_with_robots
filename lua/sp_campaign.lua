@@ -1,4 +1,6 @@
-global_events.add_event_handler("start", function (event_context)
+local on_event = wesnoth.require("on_event")
+
+on_event("start", function (event_context)
 	wesnoth.wml_actions.set_menu_item {
 		description = "Buy components",
 		id = "menu_open_trader",
@@ -10,7 +12,7 @@ global_events.add_event_handler("start", function (event_context)
 	}
 end)
 
-global_events.add_event_handler("menu_item menu_open_trader", function (event_context)
+on_event("menu_item menu_open_trader", function (event_context)
 	global_events.disallow_undo()
 	-- i want to save the save the items that are alredy bought so i use an "inventory" object for that
 	trader_inv_minus = globals.trader_inv_minus or Inventory.new("trader_inv")
@@ -37,7 +39,7 @@ global_events.add_event_handler("menu_item menu_open_trader", function (event_co
 	side.gold = side.gold - price
 end)
 
-global_events.add_event_handler("menu_item menu_read_book", function (event_context)
+on_event("menu_item menu_read_book", function (event_context)
 	global_events.disallow_undo()
 	local book_manual = swr_require("book_maual")
 	local book_dialog = Gui_book.new(book_manual.pages)
@@ -46,7 +48,7 @@ global_events.add_event_handler("menu_item menu_read_book", function (event_cont
 end)
 
 -- use this to give the player a certain amount of components whenever he recruits a robot.
-global_events.add_event_handler("recruit", function (event_context)
+on_event("recruit", function (event_context)
 	global_events.disallow_undo()
 	-- why is the "race" property not accessible though the proxy?
 	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg

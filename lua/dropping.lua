@@ -1,3 +1,5 @@
+local on_event = wesnoth.require("on_event")
+
 local dropping = {}
 
 dropping.field_data = {}
@@ -131,7 +133,7 @@ function wesnoth.persistent_tags.swr_dropped_items.write(add)
 	add(dropping.write())
 end
 
-global_events.add_event_handler("moveto", dropping.on_moveto)
-global_events.add_event_handler("preload", dropping.on_preload)
+on_event("moveto", dropping.on_moveto)
+on_event("preload", dropping.on_preload)
 
 return dropping

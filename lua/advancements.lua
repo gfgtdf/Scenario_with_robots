@@ -1,6 +1,8 @@
+local on_event = wesnoth.require("on_event")
+
 local advancements = {}
 
-global_events.add_event_handler("advance", function(event_context)
+on_event("advance", function(event_context)
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	local advancing_type = wesnoth.unit_types["advancing" .. unit.type]
 	if(advancing_type ~= nil) then
@@ -25,7 +27,7 @@ end)
 
 --note, that due to the things we do in on_advance, the post_advance event is fired once, while the advance event is fired twice
 -- TODO 1.13.2: remove the type changing hack and change the units advancments in lua in pre advance events.
-global_events.add_event_handler("post_advance", function(event_context)
+on_event("post_advance", function(event_context)
 	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
 	if unit.experience > unit.max_experience then
 		-- Don't change the type back if there are still advancementas to do.
@@ -47,7 +49,8 @@ global_events.add_event_handler("post_advance", function(event_context)
 		end
 	end
 end)
-global_events.add_event_handler("turn refresh", function(event_context)
+
+on_event("turn refresh", function(event_context)
 	-- this functions asks the advacement question in case a unit advances during the enmy turn.
 	for k,unit in pairs(wesnoth.get_units()) do
 		-- is checking unit.side == wesnoth.current.side faster than passing a side = wesnoth.current.side filter to wesnoth.get_units() ?
