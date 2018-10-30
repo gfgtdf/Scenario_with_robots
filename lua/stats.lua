@@ -39,7 +39,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	swr_h.remove_from_array(unit_cnf, function(e) return (e[1] == "attack" and (e[2].temporary == "yes" or e[2].temporary == true)) end)
 	
 	-- collect information from advancements.
-	for advance in helper.child_range(helper.get_child(unit_cnf, "modifications"), advancement_str) do
+	for advance in helper.child_range(helper.get_child(unit_cnf, "modifications"), "advancement") do
 		for effect in helper.child_range(advance, "effect") do 
 			if (effect.set_icon ~= nil and string.find(effect.set_icon, "png",1,true)) then
 				for attack in helper.child_range(unit_cnf, "attack") do 
@@ -114,7 +114,7 @@ function stats.calculate_weapons_only(unit_cnf)
 	-- TODO: a "change_ability" would be nice.
 	--bonus attacks
 	-- i want change_ablitity to takew effect before bonus_attack.
-	for modification in swr_h.child_range_multiple_tags(unit_modifications, Set{advancement_str, "object", "trait"}) do
+	for modification in swr_h.child_range_multiple_tags(unit_modifications, Set{"advancement", "object", "trait"}) do
 		for effect in helper.child_range(modification, "effect") do
 			-- a new tag that allows changes of abilies
 			-- since we change something we might have to deepcopy somthing here.
@@ -164,7 +164,7 @@ function stats.calculate_weapons_only(unit_cnf)
 		end
 	end
 	-- TODO: 1.13.2 use wesnoth effect for bonus_attack
-	for advance in swr_h.child_range_multiple_tags(unit_modifications, Set{advancement_str, "object", "trait"}) do
+	for advance in swr_h.child_range_multiple_tags(unit_modifications, Set{"advancement", "object", "trait"}) do
 		for effect in helper.child_range(advance, "effect") do
 			if(effect.apply_to == "bonus_attack") then
 				local stongest_attack -- note that unline in the wml code this is NOT the index of the attack
@@ -221,7 +221,7 @@ function stats.calculate_weapons_only(unit_cnf)
 				
 					attacks = effect.number 
 				end
-				for other_advance in swr_h.child_range_multiple_tags(unit_modifications, Set {advancement_str, "object", "trait"}) do
+				for other_advance in swr_h.child_range_multiple_tags(unit_modifications, Set {"advancement", "object", "trait"}) do
 					for other_effect in helper.child_range(other_advance, "effect") do
 						if other_effect.apply_to == "improve_bonus_attack" and other_effect.name == effect.name  then 
 							damage = damage + (other_effect.increase_damage or 0)

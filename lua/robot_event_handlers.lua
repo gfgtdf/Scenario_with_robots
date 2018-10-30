@@ -80,17 +80,8 @@ global_events.add_event_handler("drop_pickup", function(event_context)
 	dropping.item_taken = true
 end)
 
-local endlevel_eventname = "victory"
-local function version_is_sufficient(required)
- if not wesnoth.compare_versions then return false end
- return wesnoth.compare_versions(wesnoth.game_config.version, ">=", required)
-end
-if version_is_sufficient("1.13.0") then
-	endlevel_eventname = "endlevel"
-end
-
 -- TODO 1.13.2: use side variables feature
-global_events.add_event_handler(endlevel_eventname, function(event_context)
+global_events.add_event_handler("scenario_end", function(event_context)
 	-- fix carryover for teams in case side numbers change between scenarios.
 	for i, v in ipairs(wesnoth.sides) do
 		-- TODO 1.13.2: use v.save_id directly

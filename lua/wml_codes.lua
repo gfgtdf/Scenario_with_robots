@@ -157,7 +157,7 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 	return effects
 end
 wml_codes.get_imp_advancement = function(name)
-	return { T[advancement_str] { id = "robot_imp_" .. name } }
+	return { T.advancement { id = "robot_imp_" .. name } }
 end
 wml_codes.get_robot_object = function(effects)
 	local obj_wml = { }
@@ -167,7 +167,7 @@ wml_codes.get_robot_object = function(effects)
 	obj_wml.name = "robot_improvements"
 	-- this MUST be "advancement" instead of "object" because advance is always applied before object, and we want the advancement to overwrite this, 
 	-- if this was an object this would overwrite our advaements
-	return T[advancement_str](obj_wml)
+	return T.advancement (obj_wml)
 end
 wml_codes.get_trapper_ability_code = function(damage, traptype, maxtraps)
 	local effects = {}
@@ -267,20 +267,18 @@ wml_codes.get_ipfs_code = function(ipfs)
 	for i, t in ipairs(ipfs) do
 		local on_x, on_y  = get_imagemod_oversize(t)
 		local is_oversize = on_x > over_x or on_y > over_y
-		if is_wesnoth_1_13 or not is_oversize then
-			--our oversize code wont work on 1.13.0 and older versions.
-			if is_oversize then
-				-- increase the base image if needed
-				local diff_x = on_x - over_x
-				local diff_y = on_y - over_y
-				local newsize_x = 2 * on_x + 72
-				local newsize_y = 2 * on_y + 72
-				over_x = on_x
-				over_y = on_y
-				table.insert(ipfs_string, swr_h.ipf.crop(-diff_x, -diff_y, newsize_x, newsize_y))
-			end
-			table.insert(ipfs_string, blit(t.image, t.x + over_x, t.y + over_y))
+		--our oversize code wont work on 1.13.0 and older versions.
+		if is_oversize then
+			-- increase the base image if needed
+			local diff_x = on_x - over_x
+			local diff_y = on_y - over_y
+			local newsize_x = 2 * on_x + 72
+			local newsize_y = 2 * on_y + 72
+			over_x = on_x
+			over_y = on_y
+			table.insert(ipfs_string, swr_h.ipf.crop(-diff_x, -diff_y, newsize_x, newsize_y))
 		end
+		table.insert(ipfs_string, blit(t.image, t.x + over_x, t.y + over_y))
 	end
 	-- Our image path functions all begin with ~ but image_bod expects that our first image path function does not begin with ~. We fix this by appending 'BLIT(misc/tpixel.png)'
 	table.insert(ipfs_string, 1, "BLIT(misc/tpixel.png)")
