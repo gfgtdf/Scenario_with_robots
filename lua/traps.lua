@@ -100,13 +100,14 @@ traps.set_trap = function(trap, max_times)
 	}
 end
 
-global_events.register_on_save_writer("traps", function(cfg)
-	return {value = swr_h.serialize_oneline( traps.traplist ) }
-end)
+function wesnoth.persistent_tags.swr_traps.read(cfg)
+    traps.traplist = swr_h.deserialize(cfg.value)
+end
 
-global_events.register_on_load_reader("traps", function(cfg)
-	traps.traplist = swr_h.deserialize(cfg.value)
-end)
+function wesnoth.persistent_tags.swr_traps.write(add)
+	add { value = swr_h.serialize_oneline( traps.traplist ) }
+end
+
 
 global_events.add_event_handler("enter_hex", function(event_context)
 	local remove_traps = {}

@@ -122,8 +122,15 @@ dropping.on_moveto = function(event_context)
 	end
 end
 
-global_events.register_on_load_reader("dropped_items", dropping.read)
-global_events.register_on_save_writer("dropped_items", dropping.write)
+
+function wesnoth.persistent_tags.swr_dropped_items.read(cfg)
+    dropping.read(cfg)
+end
+
+function wesnoth.persistent_tags.swr_dropped_items.write(add)
+	add(dropping.write())
+end
+
 global_events.add_event_handler("moveto", dropping.on_moveto)
 global_events.add_event_handler("preload", dropping.on_preload)
 
