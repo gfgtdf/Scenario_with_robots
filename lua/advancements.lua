@@ -56,31 +56,18 @@ on_event("turn refresh", function(event_context)
 		-- is checking unit.side == wesnoth.current.side faster than passing a side = wesnoth.current.side filter to wesnoth.get_units() ?
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg
-			local modifications_cfg = helper.get_child(unit_cfg, "modifications")
-			local index = 1
-			local untore_needed = false
-			-- we remove all the "Ooops" advacements and give the unit his exp back.
-			while index <= #modifications_cfg do
-				if(modifications_cfg[index][2].id == "Oooops") then
-					table.remove(modifications_cfg, index)
-					-- unit_cfg.max_experience  because the Ooops advancement doesn't increase the units max_experience
-					unit_cfg.experience = unit_cfg.experience  + unit_cfg.max_experience 
-					untore_needed = true
-				else
-					index = index + 1
-				end
+			local modifications_cfg = helper.get_child(unit.__cfg, "modifications")
+			local count = 0
+			for advancement in wml.child_range(modifications_cfg, "advacement") do
+				if advancement.id == "Oooops" then count = count + 1 end
 			end
-			if untore_needed then
-				local hp_percent = unit_cfg.hitpoints / unit_cfg.max_hitpoints
-				-- i use [unstore_unit] becasue wesnoth.put_unit doesn't trigger unit advancing.
-				-- TODO 1.13.2: use wesnoth.put_unit and wesnoth.advance_unit
-				wesnoth.set_variable("advanced_temp_6", unit_cfg)
-				--this start the normal advancing process i handle in on_advance
-				wesnoth.wml_actions.unstore_unit { variable = "advanced_temp_6", find_vacant = "no", advance = true, fire_event = true, animate = false}
-				local new_unit = wesnoth.get_unit(unit_cfg.x,unit_cfg.y)
+			if count > 0 then
+				u:remove_modifications({ id = "Oooops"}, "advacement")
+				u.experience = u.experience  + count * u.max_experience
+				local hp_percent = u.hitpoints / u.max_hitpoints
+				u:advance()
 				-- we dont want to give healing twice.
-				new_unit.hitpoints = new_unit.hitpoints  * hp_percent
-				-- i could add a loop here for the case there ar multiple advancements. shouldn't be too hard
+				u.hitpoints = u.max_hitpoints  * hp_percent
 			end
 		end
 	end

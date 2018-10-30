@@ -33,9 +33,7 @@ traps.execute_trap = function(trap, x, y, taget_ref)
 		wesnoth.wml_actions[v[1]](v[2])
 	end
 	local resist = wesnoth.unit_resistance(taget_ref, traptype.damagetype or "pierce")
-	-- wesnoth 1.12 assumes a vconfig parameter.
-	-- TODO 1.13.3: remvoe the tovconfig call.
-	wesnoth.wml_actions.harm_unit( wesnoth.tovconfig {
+	wesnoth.wml_actions.harm_unit {
 		T.filter { x = x, y = y},
 		amount = traptype.amount * trap.power,
 		resistance_multiplier = resist / 100,
@@ -43,7 +41,7 @@ traps.execute_trap = function(trap, x, y, taget_ref)
 		kill = false,
 		poisoned = traptype.poisoned,
 		slowed = traptype.slowed,
-	})
+	}
 	local trapcount = 0
 	for k, other_trap in pairs(traps.traplist) do
 		if trap.x == other_trap.x and trap.y == other_trap.y then

@@ -86,8 +86,7 @@ end)
 on_event("scenario_end", function(event_context)
 	-- fix carryover for teams in case side numbers change between scenarios.
 	for i, v in ipairs(wesnoth.sides) do
-		-- TODO 1.13.2: use v.save_id directly
-		local save_id = v.__cfg.save_id
+		local save_id = v.save_id
 		local side_inventory_key = "component_inventory_" .. tostring(v.side)
 		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
 		local inventory_data = wesnoth.get_variable(side_inventory_key)
@@ -99,8 +98,7 @@ end)
 -- TODO 1.13.2: use side variables feature
 on_event("prestart", function(event_context)
 	for i, v in ipairs(wesnoth.sides) do
-		-- TODO 1.13.2: use v.save_id directly
-		local save_id = v.__cfg.save_id
+		local save_id = v.save_id
 		local side_inventory_key = "component_inventory_" .. tostring(v.side)
 		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
 		local inventory_data = wesnoth.get_variable(carryover_side_inventory_key)
