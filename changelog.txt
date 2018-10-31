@@ -1,25 +1,40 @@
-1.0.1:
-- added some images/animations
-- fixed a little bug with the spear booster component
-- added 2 difficulcies
-- added the trap dropper + booster comonents
-- removed the "give random items (debug)" option and added an component shop.
+1.1.8
+- help menu it now unsynced on 1.13.2+
+- Improved shop dialog.
+- the addon is now compatible with wesnoth 1.13.2
+- Code cleanups
+- Added a wesnoth version check 
 
-1.0.2
-- removed some unused code
-- fixed paths on linux
-- fixed strict lua related problems in 1.13
+1.1.7
+- Fixes in the edit robot dialog.
+- +def addons now also exists as pipe-on-the-left versions
+- Added amlas for antenna
+- Fix healing drawn on top of properllors
+- cheap 'starter packs' in component shop in mp.
+- Added images for antanna for 1.13.1 and later
 
-1.0.3
-- more pathfixes on linux
-- Add image for selected item in the edit robot dialog
+1.1.6
+- new images for big and medium robots by doofus-01 which depend on their components.
+
+1.1.5
+- new images for small robots by doofus-01
+- small robots image now depends on their components.
+
+1.1.4
+- Fixed bug with version checks which caused false positive warnings about version missmatch.
+
+1.1.3
+- Added an option in "Era with robots" to let robots drop their component if they die
+- Code cleanups
+- Fix player beeing able to undo after running into a trap.
+
+1.1.2
+- removed some debug messsages
+- fix menu items beeing undoable
+- make robot components cheaper in mp
+- make traps not visible in fog
 - code cleanups
-- give starting unit full moves in the scenario.
-
-1.1
-- Add 'Era with Robots' for 1.13 and later
-- Added version checks in mp
-- code cleanups
+- Fixup enter/exit_hex workaround.
 
 1.1.1
 - Fix robots amlas on 1.13.x
@@ -31,40 +46,26 @@
 - Allow defensive modules to add
 - 'Era with robots' now works with 1.12.x
 
-1.1.2
-- removed some debug messsages
-- fix menu items beeing undoable
-- make robot components cheaper in mp
-- make traps not visible in fog
+1.1
+- Add 'Era with Robots' for 1.13 and later
+- Added version checks in mp
 - code cleanups
-- Fixup enter/exit_hex workaround.
 
-1.1.3
-- Added an option in "Era with robots" to let robots drop their component if they die
-- Code cleanups
-- Fix player beeing able to undo after running into a trap.
+1.0.3
+- more pathfixes on linux
+- Add image for selected item in the edit robot dialog
+- code cleanups
+- give starting unit full moves in the scenario.
 
-1.1.4
-- Fixed bug with version checks which caused false positive warnings about version missmatch. 
+1.0.2
+- removed some unused code
+- fixed paths on linux
+- fixed strict lua related problems in 1.13
 
-1.1.5
-- new images for small robots by doofus-01
-- small robots image now depends on their components.
+1.0.1:
+- added some images/animations
+- fixed a little bug with the spear booster component
+- added 2 difficulcies
+- added the trap dropper + booster comonents
+- removed the "give random items (debug)" option and added an component shop.
 
-1.1.6
-- new images for big and medium robots by doofus-01 which depend on their components.
-
-1.1.7
-- Fixes in the edit robot dialog.
-- +def addons now also exists as pipe-on-the-left versions
-- Added amlas for antenna
-- Fix healing drawn on top of properllors
-- cheap 'starter packs' in component shop in mp.
-- Added images for antanna for 1.13.1 and later
-
-1.1.8
-- help menu it now unsynced on 1.13.2+
-- Improved shop dialog.
-- the addon is now compatible with wesnoth 1.13.2
-- Code cleanups
-- Added a wesnoth version check 
