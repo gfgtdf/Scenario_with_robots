@@ -203,4 +203,20 @@ function l_g()
 	end
 end
 
+function my_helper.lua_to_wml_array(t, tagname)
+	local res = {}
+	for i, v in ipairs(t) do
+		res[#res] = { "tagname", v }
+	end
+	return res
+end
+
+function my_helper.wml_to_lua_array(t, tagname)
+	local res = {}
+	for tag in wml.child_range(t, tag_set) do
+		res[#res] = tag
+	end
+	return res
+end
+
 return my_helper

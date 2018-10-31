@@ -121,12 +121,9 @@ on_event("enter_hex", function(ec)
 				if traptypes[trap.type].permanent ~= true then
 					table.insert(remove_traps, k)
 				end
-				-- NOTE: just like for wml events this actually means "stop the move"
-				global_events.disallow_undo()
 				-- forcing them to move on would be unfair i think
-				-- Create a moveto event to disallow undoing.
-				-- TODO 1.13.2: not needed anymore
-				wesnoth.wml_actions.event { name = "moveto" }
+				wesnoth.cancel_action()
+				global_events.disallow_undo()
 			end
 		end
 		while #remove_traps > 0 do
