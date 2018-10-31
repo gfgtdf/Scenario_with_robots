@@ -109,13 +109,13 @@ function wesnoth.persistent_tags.swr_traps.write(add)
 end
 
 
-on_event("enter_hex", function(event_context)
+on_event("enter_hex", function(ec)
 	local remove_traps = {}
 	-- i dont want to event to fire if there is another unit on that hex.
-	if swr_moving_unit.enters_normal() then
+	if ec.x1 == ec.unit_x and ec.y1 == ec.unit_y then
 		for k, trap in pairs(traps.traplist) do
 			-- i caould also check weather the units are allied here
-			if trap.x == event_context.x1 and trap.y == event_context.y1 then
+			if trap.x == ec.x1 and trap.y == ec.y1 then
 				local unit_ref = wesnoth.get_unit(trap.x,trap.y)
 				traps.execute_trap(trap, trap.x, trap.y, unit_ref)
 				if traptypes[trap.type].permanent ~= true then
