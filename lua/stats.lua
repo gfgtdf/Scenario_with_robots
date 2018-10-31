@@ -401,14 +401,6 @@ function stats.backup_unit_stats(unit_cnf, heal, status_heal)
 end
 
 function stats.calculations_end(unit_cnf)
-	local advancements_list = unit_cnf.advances_to
-	local advancements_list_new = ""
-	for k,v in string.gmatch(advancements_list,"[^[,]]+") do
-		if(not string.find(v,"Advancing",1,true)) then
-			advancements_list_new = advancements_list_new .. "," .. v
-		end
-	end
-	unit_cnf.advances_to = string.sub(advancements_list_new,2)
 	wesnoth.put_unit(unit_cnf)
 end
 
