@@ -19,13 +19,13 @@ on_event("menu_item robot_trader_mp", function (event_context)
 	local side = wesnoth.sides[wesnoth.current.side] 
 	local bought_items, price = swr_trader.buy_items(trader_list_mp, side.gold)
 	local inv = inventories[wesnoth.current.side]
-	inv.open()
+	inv:open()
 	for k, v in pairs(bought_items) do
 		for i = 1, v do
 			trader_list_mp[k].apply_func(inv)
 		end
 	end
-	inv.close()
+	inv:close()
 	side.gold = side.gold - price
 end)
 

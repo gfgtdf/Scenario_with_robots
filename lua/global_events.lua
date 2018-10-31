@@ -13,7 +13,7 @@ global_events.init = function()
 
 	inventories = {}
 	for i,side in ipairs(wesnoth.sides) do
-		inventories[side.side] = Inventory.new("component_inventory_" .. tostring(side.side))
+	inventories[side.side] = Inventory:create("component_inventory", side.side)
 	end
 end
 

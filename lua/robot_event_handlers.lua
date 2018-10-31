@@ -74,37 +74,11 @@ on_event("drop_pickup", function(event_context)
 		return
 	end
 	local inventory = inventories[wesnoth.current.side]
-	inventory.open()
+	inventory:open()
 	for k,v in pairs(dropped_items) do
-		inventory.add_amount(k,v)
+		inventory:add_amount(k,v)
 	end
-	inventory.close()
+	inventory:close()
 	dropping.item_taken = true
 end)
 
--- TODO 1.13.2: use side variables feature
-on_event("scenario_end", function(event_context)
-	-- fix carryover for teams in case side numbers change between scenarios.
-	for i, v in ipairs(wesnoth.sides) do
-		local save_id = v.save_id
-		local side_inventory_key = "component_inventory_" .. tostring(v.side)
-		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
-		local inventory_data = wesnoth.get_variable(side_inventory_key)
-		wesnoth.set_variable(side_inventory_key)
-		wesnoth.set_variable(carryover_side_inventory_key, inventory_data)
-	end
-end)
-
--- TODO 1.13.2: use side variables feature
-on_event("prestart", function(event_context)
-	for i, v in ipairs(wesnoth.sides) do
-		local save_id = v.save_id
-		local side_inventory_key = "component_inventory_" .. tostring(v.side)
-		local carryover_side_inventory_key = "carryover_component_inventory_" .. save_id
-		local inventory_data = wesnoth.get_variable(carryover_side_inventory_key)
-		if inventory_data then
-			wesnoth.set_variable(carryover_side_inventory_key)
-			wesnoth.set_variable(carryover_side_inventory_key, side_inventory_key)
-		end
-	end
-end)

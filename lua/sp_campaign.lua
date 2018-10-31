@@ -15,27 +15,27 @@ end)
 on_event("menu_item menu_open_trader", function (event_context)
 	global_events.disallow_undo()
 	-- i want to save the save the items that are alredy bought so i use an "inventory" object for that
-	trader_inv_minus = globals.trader_inv_minus or Inventory.new("trader_inv")
-	trader_inv_minus.open()
+	trader_inv_minus = globals.trader_inv_minus or Inventory:create("trader_inv")
+	trader_inv_minus:open()
 	local side = wesnoth.sides[wesnoth.current.side] 
 	local item_list = swr_trader.lists["default"]
-	for k, v in pairs(trader_inv_minus.get_invenory_set()) do
+	for k, v in pairs(trader_inv_minus:get_invenory_set()) do
 		item_list[k].quantity = (item_list[k].quantity) and (item_list[k].quantity - v)
 	end
 	local bought_items, price = swr_trader.buy_items(item_list, side.gold)
-	for k, v in pairs(trader_inv_minus.get_invenory_set()) do
+	for k, v in pairs(trader_inv_minus:get_invenory_set()) do
 		item_list[k].quantity = (item_list[k].quantity) and (item_list[k].quantity + v)
 	end
 	local inv = inventories[wesnoth.current.side]
-	inv.open()
+	inv:open()
 	for k, v in pairs(bought_items) do
 		for i = 1, v do
 			item_list[k].apply_func(inv)
 		end
-		trader_inv_minus.add_amount(k, v)
+		trader_inv_minus:add_amount(k, v)
 	end
-	inv.close()
-	trader_inv_minus.close()
+	inv:close()
+	trader_inv_minus:close()
 	side.gold = side.gold - price
 end)
 
@@ -55,12 +55,12 @@ on_event("recruit", function (event_context)
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
 	if unit_cfg.race == "zt_robots" then
 		local inv = inventories[wesnoth.current.side]
-		inv.open()
-		inv.add_amount("simplewheel", 1)
-		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
-		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
-		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
-		inv.add_random_items(2)
-		inv.close()
+		inv:open()
+		inv:add_amount("simplewheel", 1)
+		inv:add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
+		inv:add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
+		inv:add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
+		inv:add_random_items(2)
+		inv:close()
 	end
 end)

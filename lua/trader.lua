@@ -31,11 +31,11 @@ table.insert(default_list, {
 	price = 20, 
 	image = "units/robots/robot_small.png",
 	apply_func = function(inv)
-		inv.add_amount("simplewheel", 1)
-		inv.add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
-		inv.add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
-		inv.add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
-		inv.add_random_items(2)
+		inv:add_amount("simplewheel", 1)
+		inv:add_random_items_from_comma_seperated_list("simplepike,simplelaser,simplepike,simplelaser,bigbow", 1)
+		inv:add_random_items_from_comma_seperated_list("pipe_ns,pipe_ne,pipe_nw,pipe_es,pipe_ew,pipe_sw", 3)
+		inv:add_random_items_from_comma_seperated_list("pipe_nes,pipe_new,pipe_esw,pipe_nsw", 1)
+		inv:add_random_items(2)
 	end
 })
 table.insert(default_list, {
@@ -44,7 +44,7 @@ table.insert(default_list, {
 	price = 4, 
 	image = "misc/unknown1.png",
 	apply_func = function(inv)
-		inv.add_random_items(1)
+		inv:add_random_items(1)
 	end
 })
 table.insert(default_list, {
@@ -54,7 +54,7 @@ table.insert(default_list, {
 	quantity = 2,
 	image = "c/bigbow_c.png",
 	apply_func = function(inv)
-		inv.add_amount("bigbow", 1)
+		inv:add_amount("bigbow", 1)
 	end
 })
 table.insert(default_list, {
@@ -64,7 +64,7 @@ table.insert(default_list, {
 	quantity = 2,
 	image = "c/propeller.png",
 	apply_func = function(inv)
-		inv.add_amount("propeller", 2)
+		inv:add_amount("propeller", 2)
 	end
 })
 table.insert(default_list, {
@@ -73,12 +73,12 @@ table.insert(default_list, {
 	price = 20, 
 	image = "units/robots/robot_small.png",
 	apply_func = function(inv)
-		inv.add_amount("pipe_sw",1)
-		inv.add_amount("pipe_ew",1)
-		inv.add_amount("pipe_es",1)
-		inv.add_amount("pipe_nw",1)
-		inv.add_amount("pipe_ne",1)
-		inv.add_amount("pipe_ns",1)
+		inv:add_amount("pipe_sw",1)
+		inv:add_amount("pipe_ew",1)
+		inv:add_amount("pipe_es",1)
+		inv:add_amount("pipe_nw",1)
+		inv:add_amount("pipe_ne",1)
+		inv:add_amount("pipe_ns",1)
 	end
 })
 table.insert(default_list, {
@@ -87,10 +87,10 @@ table.insert(default_list, {
 	price = 30, 
 	image = "units/robots/robot_small.png",
 	apply_func = function(inv)
-		inv.add_amount("pipe_nsw",1)
-		inv.add_amount("pipe_esw",1)
-		inv.add_amount("pipe_new",1)
-		inv.add_amount("pipe_nes",1)
+		inv:add_amount("pipe_nsw",1)
+		inv:add_amount("pipe_esw",1)
+		inv:add_amount("pipe_new",1)
+		inv:add_amount("pipe_nes",1)
 	end
 })
 table.insert(default_list, {
@@ -100,7 +100,7 @@ table.insert(default_list, {
 	quantity = 2,
 	image = "c/simplespear_1.png",
 	apply_func = function(inv)
-		inv.add_amount("simplepike",1)
+		inv:add_amount("simplepike",1)
 	end
 })
 return trader

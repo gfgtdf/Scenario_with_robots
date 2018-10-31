@@ -91,7 +91,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	--
 	local has_inventory_fierd = false
 	local inv = inventories[wesnoth.current.side]
-	inv.open()
+	inv:open()
 	local edit_result = wesnoth.synchronize_choice(function ()
 		local inv_delta = robot_mechanics.edit_robot(robot, inv)
 		local robot_to_seralize = {}
@@ -119,9 +119,9 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 		error("edit robot called by ai.")
 	end)
 	for k, v in pairs(edit_result[1][2]) do
-		inv.add_amount(k, v)
+		inv:add_amount(k, v)
 	end
-	inv.close()
+	inv:close()
 	if not has_inventory_fierd then
 		robot = swr_h.deserialize(edit_result.robotstring )
 		for i =1, #robot.components do
