@@ -2,12 +2,11 @@
 local local_version = swr_require("version")
 return {
 	do_initial_version_check = function()
-		local sync_choice = swr_require("synconize_choice_workaround")
 		local all_sides = {}
 		for i, v in ipairs(wesnoth.sides) do
 			all_sides[i] = i
 		end
-		local results = sync_choice.version1_11_13(function()
+		local results = wesnoth.synchronize_choices("version check", function()
 			return { version = local_version }
 		end, nil, all_sides)
 		for k,v in pairs(results) do
