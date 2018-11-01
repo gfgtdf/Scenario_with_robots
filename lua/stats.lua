@@ -1,7 +1,7 @@
 -- this is (was) simply LotI's stats.cfg in lua (i don't like those things in wml)
 -- i wrote this while playing LotI hoping to make some parts faster, but i changed it to fit my campaign, still it has a lot of stuff i dont't need.
 -- this file "exports":
---   new effects "bonus_attack", "improve_bonus_attack", "change_ablitity", "change_special", fb objects, advancements and traits. (in use)
+--   new effects "bonus_attack", "improve_bonus_attack", "change_ablitity", "change_special", for objects, advancements and traits. (in use)
 --   add teleport anim (not used)
 --   damage, icon, merge, damage_type, name, specials on "object" with a weapon type (not used)
 --   damage, damage_type, specials on "object" with another or without type. (not used)
@@ -10,6 +10,7 @@
 --   the difference between using change_ablitity and removing the old and adding a new ability is that change_ablitity wnont have any effect if the is no ablity.
 --   the other differnece is, that change_ablitity allows you to change int values relavively with replace=no
 
+-- adds te following effecttypes: improve_bonus_attack,bonus_attack, change_special, change_ablitity
 
 local all_sorts = swr_constants.all_sorts
 local weapon_sorts = swr_constants.weapon_sorts
@@ -96,19 +97,6 @@ function stats.calculate_weapons_only(unit_cnf)
 			unit_cnf.halo = "misc/marksman-1.png:100,misc/marksman-2.png:100,misc/marksman-3.png:100,misc/marksman-2.png:100"
 		elseif(dummy.id == "drain_leadership") then
 			unit_cnf.halo = "misc/drain-1.png:100,misc/drain-2.png:100,misc/drain-3.png:100,misc/drain-2.png:100"
-		end
-	end
-	
-	
-	--remove temporary objects.
-	local unit_modifications = helper.get_child(unit_cnf, "modifications")
-	local index = 1
-	while index <= #unit_modifications do
-		if(unit_modifications[index][1] == "object" 
-		and (unit_modifications[index][2].sort == "temporary" or unit_modifications[index][2].sort == "temporary")) then
-		table.remove(unit_modifications, index)
-	else
-		index = index + 1
 		end
 	end
 	-- TODO: a "change_ability" would be nice.
@@ -244,27 +232,6 @@ function stats.calculate_weapons_only(unit_cnf)
 					table.insert(new_attack_specials,special)
 				end
 			end
-		end
-	end
-	--teleport abilitiy (what is that good for??)
-	-- TODO: maybe remove it?
-	for teleport in helper.child_range(unit_abilities, "teleport") do
-		if(teleport.id == "teleport") then
-			--clear the teleport table
-			for k,v in pairs (teleport) do
-				teleport[k] = nil
-			end
-			--and refill it ... ??
-			teleport.id = "teleport"
-			teleport.id = "teleport"
-			teleport.name = "teleport"
-			teleport.female_name= "female^teleport"
-			teleport.description= "Teleport:\nThis unit may teleport between any two empty villages owned by its side using one of its moves."
-			teleport[1] = {"tunnel", { id = "village_teleport", 
-				{ "source", { terrain = "*^V*", owner_side = "$teleport_unit.side", { "not", { {"filter", { { "not", { id = "$teleport_unit.id"}}}} }}}},
-				{ "target", { terrain = "*^V*", owner_side = "$teleport_unit.side", { "not", { {"filter", { }} }}}},
-				{ "filter", { ability= "teleport" }},
-			}}
 		end
 	end
 	
@@ -405,6 +372,11 @@ function stats.calculations_end(unit_cnf)
 end
 
 function stats.refresh_all_stats_xy(x, y)
+	if true then
+		local u = wesnoth.get_unit(x, y)
+		u:transform(u.type)
+		return
+	end
 	-- This function was originally coded to substitude LotI's stats.cfg becasue LotI's code seemed to be slow.
 	-- I tested the performance of this code on an efraim unit with 80 advamcents:
 	--   the wesnoth.create_unit and the wesnoth.put_unit in backup_unit_stats and calculations_end take by far

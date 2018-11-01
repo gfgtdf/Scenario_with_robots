@@ -139,11 +139,12 @@ on_event("moveto", function(event_context)
 		unit_cfg = unit.__cfg
 		local unit_abilities = swr_h.get_or_create_child(unit_cfg, "abilities")
 		for ab_trapper in helper.child_range(unit_abilities, "ab_trapper") do
+			local traptype = unit.variables["mods.swr_traptype"] or ab_trapper.traptype 
 			traps.set_trap({
 				x = event_context.x1,
 				y = event_context.y1,
 				power = ab_trapper.damage,
-				type = ab_trapper.traptype,
+				type = traptype,
 				sender_side = unit.side,
 				sender_unit_id = unit.id
 			}, ab_trapper.maxtraps)

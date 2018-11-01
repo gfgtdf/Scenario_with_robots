@@ -376,8 +376,8 @@ table.insert(the_list, {
 		end
 		return effects, wml_codes.get_imp_advancement("fire_modier")
 	end,
-	--dependant on simplespear, simplelaser, since i use bonus:attack, wich is always executed after, not implented yet
-	-- since this uses "bonus_attack" wich is alwasy appied last by stats.lua it is not needed right now.
+	--dependant on simplespear, simplelaser.
+	-- FIXME: order_apply is not implemented yet.
 	order_apply = 2,
 	image = "c/attack_modifier_2_nw.png",
 	toolbox_order = -60,
@@ -519,9 +519,8 @@ table.insert(the_list, {
 		end
 		return effects, wml_codes.get_imp_advancement("trapper_modier")
 	end,
-	--dependant on simplespear, simplelaser, since i use bonus:attack, wich is always executed after, not implented yet
-	-- since this uses "bonus_attack" wich is alwasy appied last by stats.lua it is not needed right now.
-	-- TODO 1.13.3: Fix this hen we use wesnoth.effects implementation of bonus_attack.
+	--dependant on ??.
+	-- FIXME: order_apply is not implemented yet.
 	order_apply = 2,
 	image = "c/trapper_poison.png",
 	field_images = { [3] = { [3] = "c/trapper_poison.png" } }

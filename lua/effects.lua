@@ -1,14 +1,15 @@
 local function find_best_attack(u_cfg, a_range, a_type, a_forced_name, a_new_name)
 	local best_attack = nil
-	local best_attack_damage = nil
+	local best_attack_damage = 0
 	local name_exists = false
 	for attack in helper.child_range(u_cfg, "attack") do
 		if(a_new_name == attack.name) then 
 			--we already have this attack and we don't want it twice
+			wesnoth.message("find_best_attack:name_exists")
 			name_exists = true
 		end
-		if(a_new_name) then
-			if(attack.name == a_new_name) then 
+		if a_forced_name then
+			if attack.name == a_forced_name then 
 				-- can't return because we want to calculate name_exists too.
 				best_attack_damage = 100000000
 				best_attack = attack
@@ -17,7 +18,7 @@ local function find_best_attack(u_cfg, a_range, a_type, a_forced_name, a_new_nam
 			-- do nothing
 		elseif a_range and a_range ~= attack.range then
 			-- do nothing
-		elseif attack.damage * attack.number <= best_attack_damage
+		elseif attack.damage * attack.number <= best_attack_damage then
 			-- do nothing
 		else
 			best_attack_damage = attack.damage * attack.number
@@ -46,8 +47,8 @@ function wesnoth.effects.bonus_attack(u, cfg)
 	best_attack.bonus_attack = true
 	-- removed 'improve_bonus_attack' simply use apply_to=attack to change the damage of the attack.
 	best_attack.damage = best_attack.damage * (100 + (cfg.damage or 0)) / 100
-	best_attack.number = best_attack.number * (100 + (cfg.number or 0)) / 100
-	best_attack.number = cfg.description or best_attack.description
+	best_attack.number = best_attack.number * (100 + (cfg.strikes or 0)) / 100
+	best_attack.description = cfg.description or best_attack.description
 	best_attack.attack_weight = cfg.attack_weight or best_attack.attack_weight
 	best_attack.defense_weight = cfg.defense_weight or best_attack.defense_weight
 	if cfg.merge == true  then --seems like "yes" is translated to true but tostring shows "yes" ???
@@ -62,7 +63,7 @@ function wesnoth.effects.bonus_attack(u, cfg)
 	-- Mark this attack as a bonus attack.
 	table.insert(specials, T.is_bonus_attack {
 		T.filter_self {
-			T.not {
+			T["not"] {
 			}
 		},
 		id = "derived_from_" .. old_name
@@ -74,4 +75,37 @@ end
 function wesnoth.effects.alignment(u, cfg)
 	u.alignment = cfg.alignment
 end
+
+function wesnoth.effects.swr_antenna_bonus(u, cfg)
+	local add = tonumber(cfg.add) or 0
+	local percent = tonumber(cfg.add_percent) or 0
+	u.variables["mods.antenna_add"] = add + (u.variables["mods.antenna_add"] or 0)
+	u.variables["mods.antenna_per"] = percent + (u.variables["mods.antenna_per"] or 0)
+end
+
+function wesnoth.effects.swr_4p_healing_bonus(u, cfg)
+	local add = tonumber(cfg.add) or 0
+	u.variables["mods.p4_healing_add"] = add + (u.variables["mods.p4_healing_add"] or 0)
+end
+
+function wesnoth.effects.swr_4p_regen_bonus(u, cfg)
+	local add = tonumber(cfg.add) or 0
+	u.variables["mods.p4_regen_add"] = add + (u.variables["mods.p4_regen_add"] or 0)
+end
+
+function wesnoth.effects.swr_charge_bonus(u, cfg)
+	local add = tonumber(cfg.add) or 0
+	u.variables["mods.swr_charge_add"] = add + (u.variables["mods.swr_charge_add"] or 0)
+end
+
+function wesnoth.effects.swr_precision_bonus(u, cfg)
+	local add = tonumber(cfg.add) or 0
+	u.variables["mods.swr_precison_add"] = add + (u.variables["mods.swr_precison_add"] or 0)
+end
+
+function wesnoth.effects.swr_set_variable(u, cfg)
+	u.variables[cfg.name] = cfg.value
+end
+
+
 -- TODO: Add change_specialy, change_ability effects.

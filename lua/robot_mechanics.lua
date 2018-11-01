@@ -443,6 +443,8 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	local rings_count = robot.rings_count
 	local open_ends_count = max (1, robot.open_ends_count ) - 1
 	local aggregator = {}
+	local used_component_types = {}
+	local used_component_types_set = {}
 	local apply_functions = {}
 	local apply_functions_set = {}
 	aggregator.component_images = {}
@@ -462,23 +464,25 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 			if v.component.aggregate_function ~= nil then
 				v.component.aggregate_function(robot, v, aggregator)
 			end
-			if v.component.apply_function ~= nil then
-				if not apply_functions_set[v.component.apply_function] then
-					table.insert(apply_functions, v.component.apply_function)
-				end
-				apply_functions_set[v.component.apply_function] = true
+			if not apply_functions_set[v.component] then
+				table.insert(used_component_types, v.component)
 			end
+			apply_functions_set[v.component] = true
 		end
 	end
 	local all_effects = {}
 	local all_advances = {}
-	for k, v in pairs(apply_functions) do
-		local new_effects, new_advances = v(robot, aggregator)
-		for k2, v2 in pairs(new_effects or {}) do
-			table.insert(all_effects, v2)
-		end
-		for k2, v2 in pairs(new_advances or {}) do
-			table.insert(all_advances, v2)
+	--todo sheck wheterh this sots in the correct direction
+	stable_sort(used_component_types, function(c1, c2) return (c1.order_apply or 0) < (c2.order_apply or 0) end)
+	for k, v in pairs(used_component_types) do
+		if v.apply_function then
+			local new_effects, new_advances = v.apply_function(robot, aggregator)
+			for k2, v2 in pairs(new_effects or {}) do
+				table.insert(all_effects, v2)
+			end
+			for k2, v2 in pairs(new_advances or {}) do
+				table.insert(all_advances, v2)
+			end
 		end
 	end
 	table.insert(all_effects, wml_codes.get_ad_movement_code(aggregator.movement)[1])

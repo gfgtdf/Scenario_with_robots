@@ -64,7 +64,7 @@ wml_codes.get_attack_bigbow_code = function(attack_number, attack_damage)
 				description = _ "This attack always has at least a 80% chance to hit.",
 				id = "focused",
 				name = _ "focused",
-				value = 80
+				value = "(80 + wml_vars.mods[0].swr_precison_add)"
 			}
 		}
 	})
@@ -106,6 +106,7 @@ wml_codes.get_ad_resistances_code = function(res_arcane, res_cold, res_fire, res
 end
 wml_codes.get_healing_ability_code = function(strength)
  	local effects = {}
+	local value_str = "($d + wml_vars.mods[0].p4_healing_add)"
 	table.insert(effects, T.effect { 
 		apply_to = "new_ability",
 		T.abilities { 
@@ -117,7 +118,7 @@ wml_codes.get_healing_ability_code = function(strength)
 				id = "robot_heals_with_4parts",
 				name = _ "heals +" .. tostring(strength),
 				poison = "cured",
-				value = strength,
+				value = string.format(value_str, strength),
 				T.affect_adjacent { adjacent = "n,ne,se,s,sw,nw" }
 			}
 		}
@@ -126,6 +127,7 @@ wml_codes.get_healing_ability_code = function(strength)
 end
 wml_codes.get_regenerate_ability_code = function(strength)
  	local effects = {}
+	local value_str = "($d + wml_vars.mods[0].p4_regen_add)"
 	table.insert(effects, T.effect { 
 		apply_to = "new_ability",
 		T.abilities {
@@ -136,7 +138,7 @@ wml_codes.get_regenerate_ability_code = function(strength)
 				id = "robot_regenerate_with_4parts",
 				name = _ "regenerates (" .. tostring(strength) .. _ ")",
 				poison = "slowed",
-				value = strength
+				value = string.format(value_str, strength)
 			}
 		}
 	})
@@ -148,7 +150,7 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 	local effects = {}
 	table.insert(effects, T.effect { 
 		apply_to = "bonus_attack",
-		attacks = number_change,
+		strikes = number_change,
 		damage = damage_change,
 		type = attack_type,
 		force_original_attack = attack_name,
@@ -189,15 +191,16 @@ end
 wml_codes.get_change_trapper_type_code = function(traptype) 
 	local effects = {}
 	table.insert(effects, T.effect {
-		apply_to = "change_ablitity",
-		id = "ab_trapper",
-		traptype = traptype,
+		apply_to = "swr_set_variable",
+		name = "mods.swr_traptype",
+		value = traptype,
 	})
 	return effects
 end
 
 wml_codes.get_antenna_leadership_code = function(percent)
 	local effects = {}
+	local value_str = "(($d + wml_vars.mods[0].antenna_add) * (100 + wml_vars.mods[0].antenna_per) / 100)"
 	table.insert(effects, T.effect {
 		apply_to = "new_ability",
 		T.abilities {
@@ -205,7 +208,7 @@ wml_codes.get_antenna_leadership_code = function(percent)
 				id = "antenna_leadership",
 				name = _ "Antenna",
 				description = _ "Adjacent robots deal " .. percent .. _ "% more damage",
-				value = "(" .. tostring(percent) .. " + wml_vars.mods[0].antenna_bonus)",
+				value = string.format(value_str, percent),
 				affect_self = false,
 				affect_allies = true,
 				cumulative = true,

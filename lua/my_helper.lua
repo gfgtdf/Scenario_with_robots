@@ -46,7 +46,7 @@ end
 my_helper.serialize_oneline = swr_require("serialize")
 my_helper.stable_sort = swr_require("stable_sort")
 my_helper.deserialize = function(str)
-	return loadstring("return " .. str)()
+	return load("return " .. str, nil, "t", {})()
 end
 my_helper.Set = Set
 
