@@ -59,25 +59,11 @@ Gui_book.new = function(pages)
 		local r = wesnoth.show_dialog(self.dialog, preshow, postshow)
 		self.is_dialog_showing = false
 	end
-	--this is alwasy fires twice so we need a workaround
-	-- TODO 1.13.2: maye this isnt the case anymore?
 	self.turn_right = function()
-		local newstamp = wesnoth.get_time_stamp()
-		self.stamp = self.stamp or 0
-		if (newstamp - self.stamp) < 100 or self.current_page + 2 >  #pages then
-		else
-			self.stamp = newstamp
-			self.set_page(self.current_page + 2)
-		end
+		self.set_page(self.current_page + 2)
 	end
 	self.turn_left = function()
-		local newstamp = wesnoth.get_time_stamp()
-		self.stamp = self.stamp or 0
-		if (newstamp - self.stamp) < 100 or self.current_page - 2 < 1 then
-		else
-			self.stamp = newstamp
-			self.set_page(self.current_page - 2)
-		end
+		self.set_page(self.current_page - 2)
 	end
 	-- ofc this sets both pages, the right page is set to page_number + 1
 	self.set_page = function(page_number)
