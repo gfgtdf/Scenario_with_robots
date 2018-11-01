@@ -203,7 +203,7 @@ table.insert(the_list, {
 table.insert(the_list, {
 	field = { [3] = { [3] = { s = true } } },
 	name = "solar_panel",
-	tooltip = "can cause huge storms or make the robot fly",
+	tooltip = "Makes the robot stronger in daylight, must be places on top of the robot.",
 	check_function = function(r_field, robot, objpos) 
 		for i = 1 , objpos.y - 1 do
 			if(r_field[objpos.y][i] ~= "empty") then return false end
@@ -377,7 +377,6 @@ table.insert(the_list, {
 		return effects, wml_codes.get_imp_advancement("fire_modier")
 	end,
 	--dependant on simplespear, simplelaser.
-	-- FIXME: order_apply is not implemented yet.
 	order_apply = 2,
 	image = "c/attack_modifier_2_nw.png",
 	toolbox_order = -60,
@@ -519,8 +518,7 @@ table.insert(the_list, {
 		end
 		return effects, wml_codes.get_imp_advancement("trapper_modier")
 	end,
-	--dependant on ??.
-	-- FIXME: order_apply is not implemented yet.
+	--dependant on trapper
 	order_apply = 2,
 	image = "c/trapper_poison.png",
 	field_images = { [3] = { [3] = "c/trapper_poison.png" } }
