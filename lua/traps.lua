@@ -3,7 +3,7 @@ local on_event = wesnoth.require("on_event")
 local traps = {}
 local traptypes = {}
 traps.traplist = {}
--- TODO: It would be nice if there were amlas to update traps in putiple ways
+-- TODO: It would be nice if there were amlas to update traps in multiple ways
 --  More damage, allies take less damage, explisive damage.
 
 

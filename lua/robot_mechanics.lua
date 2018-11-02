@@ -322,12 +322,19 @@ robot_mechanics.edit_robot = function(robot, inv)
 		end
 	end
 	robot.components = connected_comonents
-	--TODO change stats acording to the robot structure, i thought about adding an "object" or "advance" to the robot that contains all the efects and might be quite long.
-	--(is there a major diefference between "object" and "advance"?)
-	--EDIT: if i use stats.lua there IS one because some effect tags are only acceptd form "advance" others only from "object", i could fix that but i don't have the time do to.
+	--TODO:  change stats acording to the robot structure, i thought about
+	--       adding an "object" or "advance" to the robot that contains all
+	--       the efects and might be quite long.
+	--       (is there a major diefference between "object" and "advance"?)
+	--EDIT:  if i use stats.lua there IS one because some effect tags are only acceptd form 
+	--       "advance" others only from "object", i could fix that but i don't have the time do to.
 	--EDIT2: im changing stats.lua to make that difference disappear
-	--maybe i'll use stats.lua to ensure everythings alright.
+	--       maybe i'll use stats.lua to ensure everythings alright.
 	--EDIT3: ocf stats.lua is called (was it really me writing the comment before?), but by te caller of this method here
+	--EDIT4: it is possible to have a general 'robot' effect that basicially does the calculations below,
+	--       but i think that'd be rather slow since its recalculate all this stuff, but a midddle-way
+	--       might be agood idea, that is have a gneral 'robot' effect that uses precalulatedinfromation
+	--       from unit variales.
 	return invenory_delta
 end
 
@@ -489,7 +496,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	table.insert(all_effects, wml_codes.get_ad_movement_costs_code(aggregator.movement_costs)[1])
 	table.insert(all_effects, wml_codes.get_ad_resistances_code(aggregator.resitances_delta.arcane, aggregator.resitances_delta.cold, aggregator.resitances_delta.fire, aggregator.resitances_delta.blade, aggregator.resitances_delta.pierce, aggregator.resitances_delta.impact)[1])
 	local ipfs = { }
-	-- TODO 1.13.2: create a custom [effect] apply_to=robot_overlay that creates these images when the effect is applied.
+	-- TODO 1.15.0: create a custom [effect] apply_to=robot_overlay that creates these images when the effect is applied.
 	local type_image_mods = (unit_types_data[unit_type] or {}).image_mods or {}
 	for k,v in pairs(aggregator.component_images) do
 		local f = type_image_mods[k]
