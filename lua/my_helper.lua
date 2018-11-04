@@ -138,18 +138,11 @@ my_helper.remove_subtag = function(cfg, name)
 	end
 	return false
 end
--- min, max are keyword according to notepad++ syntax highlighting-
-my_helper.random_number = function(mi, ma)
-	if not ma then mi, ma = 1, mi end
-	wesnoth.fire("set_variable", { name = "LUA_random", rand = string.format("%d..%d", mi, ma) })
-	local res = wesnoth.get_variable "LUA_random"
-	wesnoth.set_variable "LUA_random"
-	return res
-end
 
 my_helper.string_starts = function(String, Start)
    return string.sub(String,1,string.len(Start))==Start
 end
+
 -- Doesnt work becaue it requires pango 1.38
 my_helper.pango_invisible = function(text)
 	-- For some reason pango doesnt support alpha without a color=
