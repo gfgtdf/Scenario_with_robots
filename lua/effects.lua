@@ -5,7 +5,6 @@ local function find_best_attack(u_cfg, a_range, a_type, a_forced_name, a_new_nam
 	for attack in helper.child_range(u_cfg, "attack") do
 		if(a_new_name == attack.name) then 
 			--we already have this attack and we don't want it twice
-			wesnoth.message("find_best_attack:name_exists")
 			name_exists = true
 		end
 		if a_forced_name then

@@ -7,7 +7,6 @@ function advancements.get_extra_advancements(type_id, res)
 	local t = wesnoth.unit_types[type_id]
 	local variables = wml.get_child(t.__cfg, "type_variables") or {}
 	for advancement in wml.child_range(variables, "advancement") do
-		wesnoth.message("get_extra_advancements:" .. type(1))
 		res[#res + 1] = advancement
 	end
 	return res
@@ -21,7 +20,6 @@ on_event("pre_advance", function(event_context)
 
 	unit.variables["mods.pre_advance_flag"] = true
 	local new_advacenemnts = advancements.get_extra_advancements(unit.type)
-	wesnoth.message("pre_advance:" .. #new_advacenemnts)
 	if #new_advacenemnts > 0 then
 		unit.advancements = new_advacenemnts
 	end
