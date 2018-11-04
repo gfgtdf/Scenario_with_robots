@@ -195,7 +195,8 @@ cl_b = function()
 end
 
 function l_g()
-	local known_names = Set { "pairs", "ipairs", "xpcall", "rawget", "print", "select", "error", "wesnoth", "_G", "tonumber", "collectgarbage", "_VERSION", "loadstring", "string", "load", "rawequal", "rawset", "assert", "debug", "getmetatable", "tostring", "next", "bit32", "os", "unpack", "coroutine", "math", "pcall", "setmetatable", "type", "rawlen", "table"}
+	local known_names = Set { "pairs", "ipairs", "xpcall", "rawget", "print", "select", "error", "wesnoth", "_G", "tonumber", "collectgarbage", "_VERSION", "loadstring", "string", "load", "rawequal", "rawset", "assert", "debug", "getmetatable", "tostring", "next", "bit32", "os", "unpack", "coroutine", "math", "pcall", "setmetatable", "type", "rawlen", "table"
+	                        , "wml", "wesnoth", "globals" }
 	for k,v in pairs(_G) do
 		if not known_names[k] then
 			print(k)
@@ -206,7 +207,7 @@ end
 function my_helper.lua_to_wml_array(t, tagname)
 	local res = {}
 	for i, v in ipairs(t) do
-		res[#res] = { "tagname", v }
+		res[#res + 1] = { "tagname", v }
 	end
 	return res
 end
@@ -214,7 +215,7 @@ end
 function my_helper.wml_to_lua_array(t, tagname)
 	local res = {}
 	for tag in wml.child_range(t, tag_set) do
-		res[#res] = tag
+		res[#res + 1] = tag
 	end
 	return res
 end
