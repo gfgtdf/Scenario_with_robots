@@ -106,7 +106,7 @@ wml_codes.get_ad_resistances_code = function(res_arcane, res_cold, res_fire, res
 end
 wml_codes.get_healing_ability_code = function(strength)
  	local effects = {}
-	local value_str = "($d + wml_vars.mods[0].p4_healing_add)"
+	local value_str = "(%d + wml_vars.mods[0].p4_healing_add)"
 	table.insert(effects, T.effect { 
 		apply_to = "new_ability",
 		T.abilities { 
@@ -127,7 +127,7 @@ wml_codes.get_healing_ability_code = function(strength)
 end
 wml_codes.get_regenerate_ability_code = function(strength)
  	local effects = {}
-	local value_str = "($d + wml_vars.mods[0].p4_regen_add)"
+	local value_str = "(%d + wml_vars.mods[0].p4_regen_add)"
 	table.insert(effects, T.effect { 
 		apply_to = "new_ability",
 		T.abilities {
@@ -200,7 +200,7 @@ end
 
 wml_codes.get_antenna_leadership_code = function(percent)
 	local effects = {}
-	local value_str = "(($d + wml_vars.mods[0].antenna_add) * (100 + wml_vars.mods[0].antenna_per) / 100)"
+	local value_str = "((%d + wml_vars.mods[0].antenna_add) * (100 + wml_vars.mods[0].antenna_per) / 100)"
 	table.insert(effects, T.effect {
 		apply_to = "new_ability",
 		T.abilities {
