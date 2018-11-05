@@ -141,15 +141,6 @@ Gui_book.new = function(pages)
 			})
 		end
 		wesnoth.set_dialog_canvas(1, drawing,"right_page_drwaing")
-		-- a workaround to update the canvas
-		-- TODO 1.13.3: maybe this isn't needed anymore?
-		wesnoth.set_dialog_value(self.get_changing_string(), "left_page_drwaing")
-		wesnoth.set_dialog_value(self.get_changing_string(), "right_page_drwaing")
-	end
-	-- neddet for the workaround 4 lines above
-	self.get_changing_string = function()
-		self.changing = (self.changing or 0) + 1
-		return tostring(self.changing) 
 	end
 	return self
 end
