@@ -177,9 +177,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 	local invenory_delta = {}
 	local sizeX = robot.size.x
 	local sizeY = robot.size.y
-	local imagelist = {}
-	local tooltiplist = {}
-	local down_labels = {}
+	local tools = {}
 	local field = {}
 	-- im still note sure weather i need this.
 	local components_reference_field = {}
@@ -193,19 +191,20 @@ robot_mechanics.edit_robot = function(robot, inv)
 			field [ix][iy] = "empty"
 		end
 	end
-	table.insert(imagelist, "c/empty.png")
-	table.insert(down_labels, "del")
-	table.insert(tooltiplist, "removes a component")
+	table.insert(tools, {
+		icon = "c/empty.png",
+		label = "del",
+		tooltip = "removes a component"
+	})
 	for k,v in pairs(accessible_components) do
-		table.insert(imagelist, v.component.image)
-		table.insert(down_labels, tostring(v.number))
-		tooltiplist[#imagelist] = v.component.tooltip
+		table.insert(tools, {
+			icon = v.component.image,
+			label = tostring(v.number),
+			tooltip = v.component.tooltip
+		})
 	end
 	-- classic topdown programming here ..
-	local dialog = Edit_robot_dialog.new(sizeX, sizeY, imagelist, 1, tooltiplist, 6, down_labels)
-	--for i = 1, # imagelist do
-	--	dialog.set_down_label(i, tostring(i))
-	--end
+	local dialog = EditRobotDialog:create(sizeX, sizeY, tools, 6)
 	-- this function does no checks so it asummes it is all right.
 	local function place_component(pos, component, graphic_only)
 		graphic_only = graphic_only or false
@@ -216,7 +215,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		for ix = ix_start, ix_end do 
 			for iy = iy_start, iy_end do
 				if (component.field_images[ix] or {}) [iy] ~= nil then
-					dialog.set_image(pos.x + ix - 3, pos.y + iy - 3, component.field_images[ix][iy])
+					dialog:set_image(pos.x + ix - 3, pos.y + iy - 3, component.field_images[ix][iy])
 				end
 				if (component.field[ix] or {}) [iy] ~= nil then
 					field[pos.x + ix - 3][pos.y + iy - 3] = component.field[ix][iy]
@@ -238,7 +237,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		for ix = ix_start, ix_end do 
 			for iy = iy_start, iy_end do
 				if (component.field_images[ix] or {}) [iy] ~= nil then
-					dialog.set_image(pos.x + ix - 3, pos.y + iy - 3, imagelist[1])
+					dialog:set_image(pos.x + ix - 3, pos.y + iy - 3, tools[1].icon)
 				end
 				if (component.field[ix] or {}) [iy] ~= nil then
 					field[pos.x + ix - 3][pos.y + iy - 3] = "empty"
@@ -256,9 +255,9 @@ robot_mechanics.edit_robot = function(robot, inv)
 	-- if we pass imageid to on_field_clicked this is not needed
 	local function on_image_chosen(imageid)
 		if imageid == 1 then
-			dialog.set_selected_item_image("misc/tpixel.png~SCALE(120,120)")
+			dialog:set_selected_item_image("misc/tpixel.png~SCALE(120,120)")
 		else
-			dialog.set_selected_item_image(create_component_image(accessible_components[imageid - 1].component))
+			dialog:set_selected_item_image(create_component_image(accessible_components[imageid - 1].component))
 		end
 	end
 	local function on_field_clicked(pos, imageid)
@@ -274,7 +273,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 						if old_name ~= "core" then
 							invenory_delta[old_name] = (invenory_delta[old_name] or 0) + 1
 						end
-						dialog.set_down_label(k + 1, tostring(v.number))
+						dialog:set_tool_label(k + 1, tostring(v.number))
 					end
 				end
 			end
@@ -283,7 +282,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 			if robot_mechanics.can_put_that_there(field, accessible_components[imageid - 1].component, pos) and accessible_components[imageid - 1].number > 0 then
 				place_component(pos, accessible_components[imageid - 1].component)
 				accessible_components[imageid - 1].number = accessible_components[imageid - 1].number - 1
-				dialog.set_down_label(imageid, tostring(accessible_components[imageid - 1].number))
+				dialog:set_tool_label(imageid, tostring(accessible_components[imageid - 1].number))
 				--cores cannot be put in inventory
 				if(imageid ~= 2) then
 					local compname = accessible_components[imageid - 1].component.name
@@ -294,9 +293,9 @@ robot_mechanics.edit_robot = function(robot, inv)
 	end
 	--initilize the image
 	on_image_chosen(1)
-	dialog.on_image_chosen = on_image_chosen
+	dialog.on_tool_chosen = on_image_chosen
 	dialog.on_field_clicked = on_field_clicked
-	dialog.show_dialog()
+	dialog:show_dialog()
 	--it's still not over
 	local pos_of_core = nil
 	for k,v in pairs(robot.components) do

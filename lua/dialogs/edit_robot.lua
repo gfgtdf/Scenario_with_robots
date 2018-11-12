@@ -135,14 +135,16 @@ function gui_edit_robot.create_tooltip_field(index_str, tooltip_str)
 	}
 end
 
-function gui_edit_robot.create_unused_tooltip_field(imagename)
+function gui_edit_robot.create_unused_tooltip_field()
 	return T.grid {
 		T.row {
 			vertical_grow = true, 
 			T.column {
-				T.image {
-					label = imagename,
+				T.spacer {
 				},
+				--T.image {
+				--	label = imagename,
+				--},
 			},
 		},
 	} 

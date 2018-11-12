@@ -3,11 +3,11 @@ trader.lists = {}
 
 trader.buy_items = function(item_list, max_gold)
 	local buy_result_str = wesnoth.synchronize_choice(function ()
-		local seller = Seller.new()
+		local seller = Seller:create()
 		local price = 0
-		seller.set_item_list(item_list)
-		seller.set_max_gold(max_gold)
-		local reet = seller.show_dialog()
+		seller:set_item_list(item_list)
+		seller:set_max_gold(max_gold)
+		local reet = seller:show_dialog()
 		for k,v in pairs(reet) do
 			price = price + v * item_list[k].price
 		end
@@ -20,7 +20,7 @@ trader.buy_items = function(item_list, max_gold)
 	function()
 		error("buy_items called by ai.")
 	end)
-	return loadstring("return ".. buy_result_str.s)(), buy_result_str.p
+	return swr_h.deserialize(buy_result_str.s), buy_result_str.p
 end
 
 local default_list = {}
