@@ -213,4 +213,18 @@ function my_helper.wml_to_lua_array(t, tagname)
 	return res
 end
 
+
+-- workaround for `local a = obj:member; a(1)` not working.
+function members(obj)
+	return setmetatable({}, {
+		__index = function(t, k)
+			return function(...)
+				return obj[k](obj, ...)
+			end
+		end
+	})
+end
+
+
+
 return my_helper
