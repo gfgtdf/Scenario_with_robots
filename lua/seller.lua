@@ -6,11 +6,12 @@ function Seller:create()
 	local res = {}
 	setmetatable(res, self)
 	res.gui = swr_require("dialogs/seller")
-	res.dialog = self.gui.normal
+	res.dialog = res.gui.normal
 	res.items = {}
 	res.total_price = 0
 	res.items_bought = {}
 	res.max_gold = nil
+	return res
 end
 
 function Seller:show_dialog()
