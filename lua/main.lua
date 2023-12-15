@@ -32,7 +32,7 @@ swr.require("advancements")
 swr.traps = swr.require("traps")
 swr.trader = swr.require("trader")
 
-dropping = swr.require("dropping")
+swr.dropping = swr.require("dropping")
 swr.unit_types_data = swr.require("unit_data")
 swr.require("has_just_been_recruited_not")
 swr.require("robot_event_handlers")

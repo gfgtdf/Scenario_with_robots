@@ -39,19 +39,27 @@ end)
 -- A possible workaround might be to check whether the robot is still alive when picking up the items.
 on_event("die", function(event_context)
 	local drop_item_on_die = wml.variables.wc2_config_drop_item_on_die
-	local unit_cfg = wesnoth.units.get(event_context.x1, event_context.y1).__cfg
+	local u = wesnoth.units.get(event_context.x1, event_context.y1)
+	local unit_cfg = u.__cfg
 	local variables = wml.get_child(unit_cfg, "variables")
 	local little_inventory = {}
 	if variables.robot ~= nil and drop_item_on_die then
-		local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
-		local robot = swr_h.deserialize(robot_string)
-		for k,v in ipairs(robot.components) do
-			if v.component ~= "core" then
-				little_inventory[v.component] = (little_inventory[v.component] or 0) + 1
+		local robot2 = swr.RobotEditor:create_from_unit(u)
+		for k,v in ipairs(robot2.robot.components) do
+			if v.component.name ~= "core" then
+				little_inventory[v.component.name] = (little_inventory[v.component.name] or 0) + 1
 			end
 		end
 		-- TODO: find a better image.
-		dropping.add_item(event_context.x1, event_context.y1, { image = "items/box.png", dropped_components = little_inventory })
+
+		wesnoth.wml_actions.item {
+			x = event_context.x1,
+			y = event_context.y1,
+			image = "items/box.png",
+			z_order = 15,
+			wml.tag.variables { wml.tag.swr_components(little_inventory) },
+		}
+		--dropping.add_item(event_context.x1, event_context.y1, { image = "items/box.png", dropped_components = little_inventory })
 	end
 end)
 
@@ -60,11 +68,13 @@ on_event("post advance", function(event_context)
 	wesnoth.wml_actions.swr_update_unit { x = event_context.x1, y = event_context.y1}
 end)
 
-on_event("drop_pickup", function(event_context)
-	local dropped_items = dropping.current_item.dropped_components
+on_event("swr_pickup_item", function(event_context)
+	local dropped_items = wml.get_child(swr.dropping.current_item.variables or {}, "swr_components")
+
 	if dropped_items == nil then
 		return
 	end
+
 	if #wesnoth.units.find_on_map ({ side = wesnoth.current.side, ability = "robot_ability"}) == 0 then
 		-- robot components can only be picked up from sides that own robots.
 		return
@@ -74,6 +84,6 @@ on_event("drop_pickup", function(event_context)
 		inventory:add_amount(k,v)
 	end
 	inventory:close()
-	dropping.item_taken = true
+	swr.dropping.item_taken = true
 end)
 
