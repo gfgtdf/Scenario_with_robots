@@ -24,7 +24,6 @@ setmetatable(globals, {
 })
 swr_require("effects")
 swr_stats = swr_require("stats")
-wml_codes = swr_require("wml_codes")
 Inventory = swr_require("inventory")
 Edit_robot_dialog = swr_require("gui")
 component_list = swr_require("component_list")

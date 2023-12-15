@@ -3,7 +3,9 @@
 local robot_mechanics = {}
 --local gui = swr_require("gui")
 --local component_list = swr_require("component_list")
---local wml_codes = swr_require("wml_codes")
+
+local wml_codes = swr_require("wml_codes")
+
 --local helper = swr_require("my_helper")
 max = function(a, b) return a > b and a or b end
 min = function(a, b) return a < b and a or b end
