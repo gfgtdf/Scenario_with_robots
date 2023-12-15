@@ -31,7 +31,7 @@ swr.SellerDialog = swr.require("dialogs/seller_dialog")
 swr.RobotEditor = swr.require("robot_editor")
 
 swr.component_list = swr.require("component_list")
-robot_mechanics = swr.require("robot_mechanics")
+swr.mechanics = swr.require("robot_mechanics")
 swr.require("advancements")
 swr.traps = swr.require("traps")
 swr.trader = swr.require("trader")

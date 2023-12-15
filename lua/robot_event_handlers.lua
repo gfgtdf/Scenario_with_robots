@@ -1,7 +1,7 @@
 local on_event = wesnoth.require("on_event")
 
 on_event("menu_item menu_edit_robot", function(event_context)
-	robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
+	swr.mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
 	swr_h.disallow_undo()
 end)
 
