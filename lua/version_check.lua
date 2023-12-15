@@ -19,7 +19,7 @@ return {
 	end,
 	do_reload_version_check = function()
 		-- Note: we cannot use mp sync here becasue it runs from a preload event.
-		local original_version = wesnoth.get_variable("swr_version")
+		local original_version = wml.variables.swr_version
 		if original_version ~= nil and tostring(original_version) ~= local_version then
 				wesnoth.message("Detected different versions of Scenario With robots: " .. original_version .. " and "  .. local_version .. " OOS are likeley")
 		end

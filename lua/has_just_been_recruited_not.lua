@@ -3,7 +3,7 @@ local on_event = wesnoth.require("on_event")
 -- checks whether a unit was recruited in teh current turn by logging the recruit times of units.
 -- i use this in the filter for the "edit robot" menu
 function has_just_been_recruited_not(unit)
-	local recruited_list = swr_h.deserialize(wesnoth.get_variable("recruited_list") or "{}")
+	local recruited_list = swr_h.deserialize(wml.variables.recruited_list or "{}")
 	return  not (recruited_list[unit.id] == wesnoth.current.turn )
 end
 
@@ -17,7 +17,7 @@ on_event("prestart", function(event_context)
 end)
 
 on_event("recruit", function(event_context)
-	local recruited_list = swr_h.deserialize(wesnoth.get_variable("recruited_list") or "{}")
+	local recruited_list = swr_h.deserialize(wml.variables.recruited_list or "{}")
 	local unit = wesnoth.units.get(event_context.x1, event_context.y1)
 	recruited_list[unit.id] = wesnoth.current.turn
 	wml.variables["recruited_list"] = swr_h.serialize_oneline(recruited_list)

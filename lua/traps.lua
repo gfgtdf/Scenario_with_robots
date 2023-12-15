@@ -88,7 +88,7 @@ traps.set_trap = function(trap, max_times)
 	end
 	table.insert(traps.traplist, trap)
 	local allied_sides = {}
-	for k,v in ipairs(wesnoth.get_sides { T.allied_with { side = trap.sender_side } }) do
+	for k,v in ipairs(wesnoth.sides.find { T.allied_with { side = trap.sender_side } }) do
 		table.insert(allied_sides, v.team_name)
 	end
 	wesnoth.wml_actions.item {

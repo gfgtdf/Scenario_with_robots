@@ -19,9 +19,9 @@ function Inventory:open()
 	else
 		local inv_string = nil
 		if self.side_number then
-			inv_string = wesnoth.get_side_variable(self.side_number, self.variable_name)
+			inv_string = wesnoth.sides[self.side_number].variables[self.variable_name]
 		else
-			inv_string = wesnoth.get_variable(self.variable_name)
+			inv_string = wml.variables[self.variable_name]
 		end
 		self.inv_set = swr_h.deserialize(inv_string or "{}")
 		self.is_open = true
@@ -35,7 +35,7 @@ function Inventory:close()
 	else
 		local inv_string = swr_h.serialize_oneline(self.inv_set)
 		if self.side_number then
-			wesnoth.set_side_variable(self.side_number, self.variable_name, inv_string)
+			wesnoth.sides[self.side_number].variables[self.variable_name] = inv_string
 		else
 			wml.variables[self.variable_name] = inv_string
 		end

@@ -39,7 +39,7 @@ end)
 -- so we have to watch out here, since we cannot be 100% sure that the unit is dead.
 -- A possible workaround might be to check whether the robot is still alive when picking up the items.
 on_event("die", function(event_context)
-	local drop_item_on_die = wesnoth.get_variable("drop_item_on_die")
+	local drop_item_on_die = wml.variables.drop_item_on_die
 	local unit_cfg = wesnoth.units.get(event_context.x1, event_context.y1).__cfg
 	local variables = wml.get_child(unit_cfg, "variables")
 	local little_inventory = {}

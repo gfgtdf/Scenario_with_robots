@@ -36,7 +36,7 @@ end)
 
 on_event("turn refresh", function(event_context)
 	-- this functions asks the advacement question in case a unit advances during the enmy turn.
-	for k,unit in pairs(wesnoth.get_units()) do
+	for k,unit in pairs(wesnoth.units.find_on_map()) do
 		-- is checking unit.side == wesnoth.current.side faster than passing a side = wesnoth.current.side filter to wesnoth.get_units() ?
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg

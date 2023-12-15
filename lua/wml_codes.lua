@@ -251,14 +251,13 @@ end
 local get_imagemod_oversize = function(img)
 	local x1 = -img.x
 	local y1 = -img.y
-	local x2, y2 = wesnoth.get_image_size(img.image)
+	local x2, y2 = filesystem.image_size(img.image)
 	x2 = x2 + img.x - 72
 	y2 = y2 + img.y - 72
 	return math.max(x1, x2, 0), math.max(y1, y2, 0)
 end
 
 wml_codes.get_ipfs_code = function(ipfs)
-	local is_wesnoth_1_13 = wesnoth.compare_versions(wesnoth.game_config.version, ">=", "1.13.0+dev")
 	local is_below = function(t1, t2)
 		return (t1.order or 0) < (t2.order or 0)
 	end
@@ -270,7 +269,6 @@ wml_codes.get_ipfs_code = function(ipfs)
 	for i, t in ipairs(ipfs) do
 		local on_x, on_y  = get_imagemod_oversize(t)
 		local is_oversize = on_x > over_x or on_y > over_y
-		--our oversize code wont work on 1.13.0 and older versions.
 		if is_oversize then
 			-- increase the base image if needed
 			local diff_x = on_x - over_x
