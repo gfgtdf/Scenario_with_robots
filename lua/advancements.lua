@@ -39,15 +39,10 @@ on_event("turn refresh", function(event_context)
 	for k,unit in pairs(wesnoth.units.find_on_map()) do
 		-- is checking unit.side == wesnoth.current.side faster than passing a side = wesnoth.current.side filter to wesnoth.units.find_on_map() ?
 		if unit.side == wesnoth.current.side then
-			local unit_cfg = unit.__cfg
-			local modifications_cfg = wml.get_child(unit.__cfg, "modifications")
-			local count = 0
-			for advancement in wml.child_range(modifications_cfg, "advacement") do
-				if advancement.id == "Oooops" then count = count + 1 end
-			end
-			if count > 0 then
-				u:remove_modifications({ id = "Oooops"}, "advacement")
-				u.experience = u.experience  + count * u.max_experience
+			local stored_xp = unit.variables["mods.swr_stored_xp"] or 0
+			if stored_xp > 0 then
+				u:remove_modifications({ id = "swr_Oooops"}, "advacement")
+				u.experience = u.experience  + stored_xp
 				local hp_percent = u.hitpoints / u.max_hitpoints
 				u:advance()
 				-- we dont want to give healing twice.

@@ -108,6 +108,11 @@ function wesnoth.effects.swr_set_variable(u, cfg)
 	u.variables[cfg.name] = cfg.value
 end
 
+function wesnoth.effects.swr_store_xp(u, cfg)
+	local stored_xp = u.variables["mods.swr_stored_xp"] or 0
+	u.variables["mods.swr_stored_xp"] = stored_xp + u.max_experience
+end
+
 function wesnoth.effects.swr_robot_overlay(u, cfg)
 	local utype = u.type
 	print("u.unit_type", u.type)
