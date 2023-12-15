@@ -72,8 +72,9 @@ function EditRobotDialog:show_dialog()
 		for k, v in pairs(self.tools) do 
 
 			local function f_sel()
-				self.on_tool_chosen(k)
+				--self.on_tool_chosen(k)
 				self.selected_index = k
+				self:set_selected_item_image(v.preview)
 				self:find("down_panel", k).selected = false
 			end
 			
@@ -83,6 +84,7 @@ function EditRobotDialog:show_dialog()
 			self:find("down_panel", k).callback = f_sel
 
 		end
+		self:set_selected_item_image(self.tools[1].preview)
 		for iY = 1 , self.size_y do
 			for iX = 1 , self.size_x do
 				local function f_sel()

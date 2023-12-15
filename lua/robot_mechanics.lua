@@ -159,13 +159,15 @@ robot_mechanics.edit_robot = function(robot, inv)
 	table.insert(tools, {
 		icon = "c/empty.png",
 		label = "del",
-		tooltip = "removes a component"
+		tooltip = "removes a component",
+		preview = "misc/tpixel.png~SCALE(120,120)"
 	})
 	for k,v in pairs(accessible_components) do
 		table.insert(tools, {
 			icon = v.component.image,
 			label = tostring(v.number),
-			tooltip = v.component.tooltip
+			tooltip = v.component.tooltip,
+			preview = v.component:get_full_image()
 		})
 	end
 	-- classic topdown programming here ..
@@ -210,14 +212,6 @@ robot_mechanics.edit_robot = function(robot, inv)
 	for k,v in pairs(robot.components) do
 		place_component(v.pos, v.component, true)
 	end
-	-- if we pass imageid to on_field_clicked this is not needed
-	local function on_image_chosen(imageid)
-		if imageid == 1 then
-			dialog:set_selected_item_image("misc/tpixel.png~SCALE(120,120)")
-		else
-			dialog:set_selected_item_image(accessible_components[imageid - 1].component:get_full_image())
-		end
-	end
 	local function on_field_clicked(pos, imageid)
 		-- the imageid is also the coresponding comonent index in that array
 		if imageid == 1 then
@@ -250,8 +244,6 @@ robot_mechanics.edit_robot = function(robot, inv)
 		end
 	end
 	--initilize the image
-	on_image_chosen(1)
-	dialog.on_tool_chosen = on_image_chosen
 	dialog.on_field_clicked = on_field_clicked
 	dialog:show_dialog()
 	--it's still not over
