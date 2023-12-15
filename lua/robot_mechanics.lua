@@ -61,58 +61,76 @@ local function create_component_image(comp)
 	return table.concat(res)
 end
 
-robot_mechanics.edit_robot_at_xy = function(x, y)
-	local unit_cfg = wesnoth.units.get(x, y).__cfg
-	local variables = wml.get_child(unit_cfg, "variables")
-	local default_size = {}
+function robot_mechanics.serialize(robot_data)
+	local robot_to_seralize = {}
+	-- copy only on first level attributes
+	for k,v in pairs(robot_data) do
+		robot_to_seralize[k] = v
+	end
+	robot_to_seralize.components = {}
+	for i, comp in ipairs(robot_data.components) do
+		local new_comp = {}
+		robot_to_seralize.components[i] = new_comp
+		for k,v in pairs(comp) do
+			new_comp[k] = v
+		end
+		new_comp.component = comp.component.name
+	end
+	return swr_h.serialize_oneline(robot_to_seralize)
+end
+
+function robot_mechanics.deserialize(robot_str)
+	local res = swr_h.deserialize(robot_str)
+	for i =1, #(res.components or {}) do
+		res.components[i].component = component_list.list_by_name[res.components[i].component]
+	end
+	return res
+end
+
+function robot_mechanics.update_size(robot, unit_cfg)
+	local size = {}
 	-- we check if the robot has gottten bigger for example by levelup.
 	for dummy in wml.child_range(wml.get_child(unit_cfg, "abilities"), "dummy") do
 		if(dummy.id == "robot_ability") then
-			default_size.x = dummy.sizex
-			default_size.y = dummy.sizey
+			size.x = dummy.sizex
+			size.y = dummy.sizey
 		end
 	end
-	default_size.x = default_size.x or 2
-	default_size.y = default_size.y or 2
-	-- here we load the "robot" variable from the units variablres
-	local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"
-	local robot = swr_h.deserialize(robot_string )
-	local r_sizeX_delta = max(default_size.x - robot.size.x, 0)
-	local r_sizeY_delta = max(default_size.y - robot.size.y, 0)
-	robot.size.x = max(robot.size.x, default_size.x)
-	robot.size.y = max(robot.size.y, default_size.y)
-	for i =1, #robot.components do
+	robot_mechanics.update_size_to(robot, size.x, size.y)
+end
+
+function robot_mechanics.update_size_to(robot, x_new, y_new)
+	robot.size = robot.size or { x= 2, y = 2}
+	x_new = x_new or robot.size.x
+	robot.size.x = math.max(x_new , robot.size.x)
+	y_new = y_new or robot.size.y
+	robot.size.y = math.max(y_new , robot.size.y)
+	local size_x_delta = math.max(x_new - robot.size.x, 0)
+	local size_y_delta = math.max(y_new - robot.size.y, 0)
+	for i, comp in ipairs(robot.components) do
 		-- in case the field grows i want to grow it to above not at down
-		local pos = robot.components[i].pos
-		pos.y = pos.y + r_sizeY_delta
-		pos.x = pos.x
-		robot.components[i].component = component_list.list_by_name[robot.components[i].component]
+		comp.pos.y = comp.pos.y + size_y_delta
 	end
+end
+
+robot_mechanics.edit_robot_at_xy = function(x, y)
+	local unit = wesnoth.units.get(x, y)
+	local unit_cfg = unit.__cfg
+	local variables = wml.get_child(unit_cfg, "variables")
+	-- here we load the "robot" variable from the units variablres
+	local robot_string = variables.robot or "{ components = {} }"
+	local robot = robot_mechanics.deserialize(robot_string)
+	robot_mechanics.update_size(robot, unit_cfg)
 	--
 	local has_inventory_fierd = false
 	local inv = inventories[wesnoth.current.side]
 	inv:open()
 	local edit_result = wesnoth.sync.evaluate_single(function ()
 		local inv_delta = robot_mechanics.edit_robot(robot, inv)
-		local robot_to_seralize = {}
-		-- copy only on first level
-		for k,v in pairs(robot) do
-			robot_to_seralize[k] = v
-		end
-		robot_to_seralize.components = {}
-		for i =1, #robot.components do
-			local new_comp = {}
-			local old_comp = robot.components[i]
-			robot_to_seralize.components[i] = new_comp
-			for k,v in pairs(old_comp) do
-				new_comp[k] = v
-			end
-			new_comp.component = old_comp.component.name
-		end
 		-- Optimisation: If we did this choice locally then we can use the 'robot' variable 
 		-- (instead of using robotstring) which saves us one deserialize call.
 		has_inventory_fierd = true
-		local robotstring = swr_h.serialize_oneline(robot_to_seralize)
+		local robotstring = robot_mechanics.serialize(robot)
 		return { robotstring = robotstring, T.inv_delta (inv_delta)}
 	end,
 	function()
@@ -123,14 +141,10 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	end
 	inv:close()
 	if not has_inventory_fierd then
-		robot = swr_h.deserialize(edit_result.robotstring )
-		for i =1, #robot.components do
-			robot.components[i].component = component_list.list_by_name[robot.components[i].component]
-		end
+		robot = robot_mechanics.deserialize(edit_result.robotstring)
 	end
 	variables.robot = edit_result.robotstring
-	robot_mechanics.apply_bonuses(unit_cfg, robot)
-	wesnoth.put_unit(unit_cfg)
+	robot_mechanics.apply_bonuses(unit, robot)
 end
 -- we collect all compnents from the inventory and from the robot 
 robot_mechanics.get_accesible_components = function(inventory ,robot)
@@ -170,6 +184,7 @@ robot_mechanics.get_accesible_components = function(inventory ,robot)
 	table.sort(ac, sorter)
 	return ac
 end
+
 -- shows the robot edit dialog and writes the changes into the robot variable
 -- this function changes the robot variable, and returns which items are taken from the inventory (can contain negative numbers, if components were removed from the robot.)
 -- this function assumes that the inventory is open but doesn't change it(because this is called in a sync_context).
@@ -507,25 +522,22 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	return all_effects, all_advances
 end
 
-robot_mechanics.reapply_bonuses_at_xy = function(x, y)
-	local unit_cfg = wesnoth.units.get(x, y).__cfg
-	local variables = wml.get_child(unit_cfg, "variables") or {}
-	local robot_string = variables.robot
-	if not robot_string then
-		return false
-	else
-		local robot = swr_h.deserialize(robot_string)
-		for i =1, #robot.components do
-			robot.components[i].component = component_list.list_by_name[robot.components[i].component]
-		end
-		robot_mechanics.apply_bonuses(unit_cfg, robot)
-		wesnoth.put_unit(unit_cfg)
-		return true
+function wesnoth.wml_actions.swr_update_unit(cfg)
+	local need_update = wesnoth.units.find_on_map(cfg)
+	for i,unit in ipairs(need_update) do
+		robot_mechanics.apply_bonuses(unit)
 	end
 end
 
+function robot_mechanics.apply_bonuses(unit, robot)
+	if robot == nil then
+		local robot_data_serialized = unit.variables.robot
+		if not robot_data_serialized then
+			return
+		end
+		robot = robot_mechanics.deserialize(robot_data_serialized)
+	end
 
-robot_mechanics.apply_bonuses = function(unit_cfg, robot, unit_type)
 	local sizeX = robot.size.x
 	local sizeY = robot.size.y
 	local field = {}
@@ -562,43 +574,21 @@ robot_mechanics.apply_bonuses = function(unit_cfg, robot, unit_type)
 		end
 		robot.components = found_objects
 	end
-	local effects, new_advancements = robot_mechanics.calcualte_bonuses(field, robot, unit_cfg.type)
-	robot_mechanics.replace_robot_advancements(unit_cfg, effects, new_advancements)
+	local effects, new_advancements = robot_mechanics.calcualte_bonuses(field, robot, unit.type)
+	robot_mechanics.replace_robot_advancements(unit, effects, new_advancements)
 end
 
-robot_mechanics.replace_robot_advancements = function(unit_cfg, effects, new_advancements)
-	local modifications_cfg = wml.get_child(unit_cfg, "modifications")
+robot_mechanics.replace_robot_advancements = function(unit, effects, new_advancements)
+	local modifications_cfg = wml.get_child(unit.__cfg, "modifications")
 	swr_h.remove_from_array(modifications_cfg, function(a) 
-		--remove the old new_advancements
-		if(a[2].id ~= nil and swr_h.string_starts(a[2].id, "robot_imp_")) then
-			return true
-		end
-		-- remove the robot_improvements
-		return a[2].name == "robot_improvements"
+		return a[2].swr_robot_mod == true
 	end)
 	local obj_cfg = wml_codes.get_robot_object(effects)
 	table.insert(modifications_cfg, 1, obj_cfg)
 	for k,v in pairs(new_advancements) do
 		table.insert(modifications_cfg, 2, v)
 	end
+	swr_stats.replace_modifications(unit, modifications_cfg)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 return robot_mechanics

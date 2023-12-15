@@ -2,7 +2,6 @@ local on_event = wesnoth.require("on_event")
 
 on_event("menu_item menu_edit_robot", function(event_context)
 	robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
-	swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
 	global_events.disallow_undo()
 end)
 
@@ -58,10 +57,7 @@ end)
 
 on_event("post advance", function(event_context)
 	-- This is needed to adjust the overlay for the animatiosn for the new unit type.
-	if robot_mechanics.reapply_bonuses_at_xy(event_context.x1,event_context.y1) then
-		-- only recalculate stats if this was a robot.
-		swr_stats.refresh_all_stats_xy(event_context.x1, event_context.y1)
-	end
+	wesnoth.wml_actions.swr_update_unit { x = event_context.x1, y = event_context.y1}
 end)
 
 on_event("drop_pickup", function(event_context)

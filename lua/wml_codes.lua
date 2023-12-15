@@ -158,15 +158,19 @@ wml_codes.get_change_attack_type_code = function(attack_name, attack_type, numbe
 	})
 	return effects
 end
+
 wml_codes.get_imp_advancement = function(name)
-	return { T.advancement { id = "robot_imp_" .. name } }
+	return { T.advancement { id = "robot_imp_" .. name, swr_robot_mod = true } }
 end
+
 wml_codes.get_robot_object = function(effects)
-	local obj_wml = { }
+	local obj_wml = {
+		swr_robot_mod = true,
+		name = "robot_improvements"
+	}
 	for k,v in pairs(effects) do
 		table.insert(obj_wml, v)
 	end
-	obj_wml.name = "robot_improvements"
 	-- this MUST be "advancement" instead of "object" because advance is always applied before object, and we want the advancement to overwrite this, 
 	-- if this was an object this would overwrite our advaements
 	return T.advancement (obj_wml)
