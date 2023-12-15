@@ -42,9 +42,9 @@ end)
 on_event("menu_item menu_read_book", function (event_context)
 	global_events.disallow_undo()
 	local book_manual = swr_require("book_maual")
-	local book_dialog = Gui_book.new(book_manual.pages)
+	local book_dialog = Gui_book:new(book_manual.pages)
 	--this doesn't change the game so no wesnoth.sync is needed
-	book_dialog.show_dialog()
+	book_dialog:show_dialog()
 end)
 
 -- use this to give the player a certain amount of components whenever he recruits a robot.

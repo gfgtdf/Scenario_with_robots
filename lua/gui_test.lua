@@ -5,32 +5,36 @@
 --  (note that in cpp boith is possible easily)
 -- i think i have to sacrifice the wrapping, it isn't a verybig sacrifice anyway since "pages" are already static, so going to "lines" isnt a that big difference annymore.
 -- every page has: page.text, and page.images imagaes ist a list of image inforamtion (pos, path..)
--- TODO 1.12: i could use wesnoth.set_dialog_markup (new in wesnoth 1.12, this was coded for wesnoth 1.11.2)
+
 Gui_book = {}
-Gui_book.new = function(pages)
-	local self = {}
+Gui_book.__index = Gui_book
+
+function Gui_book:new(pages)
+	local res = {}
+	setmetatable(res, self)
 	self.factor = 1
 	self.pages = pages
 	self.current_page = 1
-	self.dialog = {
+	self.dialog = nil
+	self.dialog_wml = {
 		T.tooltip { id = "tooltip_large" },
 		T.helptip { id = "tooltip_large" },
 		T.grid {
-			T.row { T.column { T.grid { T.row { 
-				-- mabe i can draw right in the panel? 
+			T.row { T.column { T.grid { T.row {
+				-- mabe i can draw right in the panel?
 				T.column { T.toggle_panel { id = "left_page_panel", T.grid { T.row { T.column { T.drawing {
 					height = 600 * self.factor,
-					width = 500 * self.factor, 
+					width = 500 * self.factor,
 					id = "left_page_drwaing",
 					-- i draw an empty text because otherwise i'd get an error, maybe  T.drawing is just not the right widget.
 					T.draw { T.text { font_size = 1 } },
-				} } } } } }, 
+				} } } } } },
 				T.column { T.toggle_panel { id = "right_page_panel", T.grid { T.row { T.column { T.drawing {
 					height = 600 * self.factor,
 					width = 500 * self.factor,
 					id = "right_page_drwaing",
 					T.draw { T.text { font_size = 1 } },
-				} } } } } }, 
+				} } } } } },
 			} } } },
 			T.row { T.column { T.grid { T.row {
 				T.column { T.button {  id = "ok" , label = "OK"  } },
@@ -39,110 +43,107 @@ Gui_book.new = function(pages)
 			} } } },
 		}
 	}
-	self.show_dialog = function()
-		local function preshow(dialog)
-			local goto_page_handler = function()
-				local p_index = tonumber(wesnoth.get_dialog_value("textbox_page"))
-				if p_index ~= nil then
-					p_index = p_index - ((p_index + 1)% 2)
-					self.set_page(p_index)
-				end
-			end
-			dialog.goto_page_btn.callback = goto_page_handler
-			dialog.left_page_panel.callback = self.turn_left
-			dialog.right_page_panel.callback = self.turn_right
-			
-			self.show_page(self.current_page)
-		end
-		local function postshow()
-		end
-		self.is_dialog_showing = true
-		local r = gui.show_dialog(self.dialog, preshow, postshow)
-		self.is_dialog_showing = false
-	end
-	self.turn_right = function()
-		self.set_page(self.current_page + 2)
-	end
-	self.turn_left = function()
-		self.set_page(self.current_page - 2)
-	end
-	-- ofc this sets both pages, the right page is set to page_number + 1
-	self.set_page = function(page_number)
-		if(page_number > #pages) then
-			return
-		end
-		if(page_number < 1) then
-			return
-		end
-		self.current_page = page_number
-		if self.is_dialog_showing then
-			self.show_page(self.current_page)
-		end
-	end
-	self.show_page = function(page_number)
-		local page1 = self.pages[page_number]
-		local page2 = self.pages[page_number + 1] or {text = ""}
-		local drawing = {
-			T.image { 
-				x = 0, 
-				y = 0, 
-				w = 500 * self.factor, 
-				h = 600 * self.factor, 
-				resize_mode = "scale",
-				name= "misc/page1.png"
-			},
-			T.text { 
-				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
-				-- -2 for the line spacing (i dont know how to change line spacing), it doesnt work very good
-				font_size = 22 * self.factor - 2,  
-				text = page1.text, 
-				color = "135,74,0,255",
-				maximum_width = (500 - 50)* self.factor,
-				text_markup = true,
-				text_wrap_mode = 0,
-			},
-		}
-		for k, v in pairs(page1.grapics or {}) do 
-			table.insert(drawing, T.image {
-				x = v.x * self.factor, 
-				y = v.y * self.factor, 
-				w = v.w * self.factor, 
-				h = v.h * self.factor, 
-				name = v.name
-			})
-		end
-		wesnoth.set_dialog_canvas(1, drawing, "left_page_drwaing")
-		local drawing = { 
-			T.image { 
-				x = 0, 
-				y = 0, 
-				w = 500 * self.factor, 
-				h = 600 * self.factor, 
-				resize_mode = "scale",
-				name= "misc/page2.png",
-			},
-			T.text { 
-				x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500, 
-				-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
-				font_size = 22 * self.factor - 2,  
-				text = page2.text, 
-				color = "135,74,0,255",
-				maximum_width = (500 - 50)* self.factor,
-				text_markup = true,
-				text_wrap_mode = 3,
-			},
-		}
-		for k, v in pairs(page2.grapics or {}) do 
-			table.insert(drawing, T.image {
-				x = v.x * self.factor, 
-				y = v.y * self.factor, 
-				w = v.w * self.factor, 
-				h = v.h * self.factor, 
-				name = v.name
-			})
-		end
-		wesnoth.set_dialog_canvas(1, drawing,"right_page_drwaing")
-	end
-	return self
+	return res
 end
+
+function Gui_book:show_dialog()
+
+	local function preshow(dialog)
+		self.dialog = dialog
+		local goto_page_handler = function()
+			local p_index = tonumber(dialog.textbox_page.label)
+			if p_index ~= nil then
+				p_index = p_index - ((p_index + 1)% 2)
+				self:set_page(p_index)
+			end
+		end
+		dialog.goto_page_btn.callback = goto_page_handler
+		dialog.left_page_panel.callback = function() self:set_page(self.current_page - 2) end
+		dialog.right_page_panel.callback = function() self:set_page(self.current_page + 2) end
+		
+		self:show_page(self.current_page)
+	end
+	local r = gui.show_dialog(self.dialog_wml, preshow)
+	self.dialog = nil
+end
+
+function Gui_book:set_page(page_number)
+	if(page_number > #self.pages) then
+		return
+	end
+	if(page_number < 1) then
+		return
+	end
+	self.current_page = page_number
+	if self.dialog then
+		self:show_page(self.current_page)
+	end
+end
+
+function Gui_book:show_page(page_number)
+	local page1 = self.pages[page_number]
+	local page2 = self.pages[page_number + 1] or {text = ""}
+	local drawing = {
+		T.image {
+			x = 0,
+			y = 0,
+			w = 500 * self.factor,
+			h = 600 * self.factor,
+			resize_mode = "scale",
+			name= "misc/page1.png"
+		},
+		T.text {
+			x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500,
+			-- -2 for the line spacing (i dont know how to change line spacing), it doesnt work very good
+			font_size = 22 * self.factor - 2,
+			text = page1.text,
+			color = "135,74,0,255",
+			maximum_width = (500 - 50)* self.factor,
+			text_markup = true,
+			text_wrap_mode = 0,
+		},
+	}
+	for k, v in pairs(page1.grapics or {}) do
+		table.insert(drawing, T.image {
+			x = v.x * self.factor,
+			y = v.y * self.factor,
+			w = v.w * self.factor,
+			h = v.h * self.factor,
+			name = v.name
+		})
+	end
+	self.dialog:find("left_page_drwaing"):set_canvas(1, drawing)
+
+	local drawing = {
+		T.image {
+			x = 0,
+			y = 0,
+			w = 500 * self.factor,
+			h = 600 * self.factor,
+			resize_mode = "scale",
+			name= "misc/page2.png",
+		},
+		T.text {
+			x = 30 * self.factor, y = 30 * self.factor, w = 500, h = 500,
+			-- -2 for the line spacing (i dont know hot to change line spacing), it doesnt work very good
+			font_size = 22 * self.factor - 2,
+			text = page2.text,
+			color = "135,74,0,255",
+			maximum_width = (500 - 50)* self.factor,
+			text_markup = true,
+			text_wrap_mode = 3,
+		},
+	}
+	for k, v in pairs(page2.grapics or {}) do
+		table.insert(drawing, T.image {
+			x = v.x * self.factor,
+			y = v.y * self.factor,
+			w = v.w * self.factor,
+			h = v.h * self.factor,
+			name = v.name
+		})
+	end
+	self.dialog:find("right_page_drwaing"):set_canvas(1, drawing)
+end
+
 return Gui_book
