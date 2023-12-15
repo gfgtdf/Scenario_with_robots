@@ -18,8 +18,6 @@ my_helper.serialize = function(o, accept_nil)
 		return "nil"
 	elseif type(o) == "number" or type(o) == "boolean" then
 		return tostring(o)
-	elseif type(o) == "function" then
-		return "loadstring(" .. string.format("%q", string.dump(o)) .. ")"
 	elseif type(o) == "userdata" and getmetatable(o) == "translatable string" then
 		return serialize(tostring(o))
 	elseif type(o) == "string" then
