@@ -1,11 +1,7 @@
 swr = {}
 
 function swr.require(script)
-	-- I use dofile instead of , require because it allows me to reload the whole lua logics (for my scenarios that means nearly all of the logic)
-	-- without having to quit the game and press F5 or close Wesnoth.
-	-- thats pretty cool feature for debugging compared to wml debugging.
-	-- maybe i'll change that for release but i don't see a good reason to do so, bause the time it needs is not really noticeable i think.
-	return wesnoth.dofile('~add-ons/Scenario_with_robots/lua/' .. script .. '.lua')
+	return wesnoth.require('~add-ons/Scenario_with_robots/lua/' .. script .. '.lua')
 end
 
 swr_h = swr.require("my_helper")
