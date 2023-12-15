@@ -242,7 +242,7 @@ end
 -- returns: 
 --   effects: the effects that shoudl be applied
 --   advances: advances that should be applied this is to make the components requirements for advances.
-function robot_mechanics.calcualte_bonuses(robot2, unit_type)
+function robot_mechanics.calcualte_bonuses(robot2)
 	local rings_count = robot2.robot.rings_count
 	local open_ends_count = math.max (1, robot2.robot.open_ends_count ) - 1
 	local aggregator = {}
@@ -292,16 +292,7 @@ function robot_mechanics.calcualte_bonuses(robot2, unit_type)
 	table.insert(all_effects, wml_codes.get_ad_movement_code(aggregator.movement)[1])
 	table.insert(all_effects, wml_codes.get_ad_movement_costs_code(aggregator.movement_costs)[1])
 	table.insert(all_effects, wml_codes.get_ad_resistances_code(aggregator.resitances_delta.arcane, aggregator.resitances_delta.cold, aggregator.resitances_delta.fire, aggregator.resitances_delta.blade, aggregator.resitances_delta.pierce, aggregator.resitances_delta.impact)[1])
-	local ipfs = { }
-	-- TODO 1.15.0: create a custom [effect] apply_to=robot_overlay that creates these images when the effect is applied.
-	local type_image_mods = (unit_types_data[unit_type] or {}).image_mods or {}
-	for k,v in pairs(aggregator.component_images) do
-		local f = type_image_mods[k]
-		if f ~= nil then
-			f(v, ipfs)
-		end
-	end
-	table.insert(all_effects, wml_codes.get_ipfs_code(ipfs)[1])
+	table.insert(all_effects, wml_codes.get_overlay_effect(aggregator.component_images)[1])
 	return all_effects, all_advances
 end
 
@@ -333,7 +324,7 @@ function robot_mechanics.apply_bonuses(robot)
 		error("removed an item during robot_mechanics.apply_bonuses")
 	end
 
-	local effects, new_advancements = robot_mechanics.calcualte_bonuses(robot, robot.unit.type)
+	local effects, new_advancements = robot_mechanics.calcualte_bonuses(robot)
 	robot_mechanics.replace_robot_advancements(robot.unit, effects, new_advancements)
 end
 

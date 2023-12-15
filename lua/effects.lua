@@ -1,3 +1,5 @@
+local wml_codes = swr.require("wml_codes")
+
 local function find_best_attack(u_cfg, a_range, a_type, a_forced_name, a_new_name)
 	local best_attack = nil
 	local best_attack_damage = 0
@@ -104,6 +106,21 @@ end
 
 function wesnoth.effects.swr_set_variable(u, cfg)
 	u.variables[cfg.name] = cfg.value
+end
+
+function wesnoth.effects.swr_robot_overlay(u, cfg)
+	local utype = u.type
+	print("u.unit_type", u.type)
+	local ipfs = {}
+	local type_image_mods = (swr.unit_types_data[utype] or {}).image_mods or {}
+	for k,v in pairs(wml.get_child(cfg, "images")) do
+		local f = type_image_mods[k]
+		if f ~= nil then
+			f(v, ipfs)
+		end
+	end
+	local object = wml_codes.get_ipfs_code(ipfs)
+	wesnoth.units.add_modification(u, "object", object, false)
 end
 
 

@@ -261,6 +261,16 @@ local get_imagemod_oversize = function(img)
 	return math.max(x1, x2, 0), math.max(y1, y2, 0)
 end
 
+
+wml_codes.get_overlay_effect = function(component_images)
+	return {
+		T.effect {
+			apply_to = "swr_robot_overlay",
+			T.images(component_images)
+		}
+	}
+end
+
 wml_codes.get_ipfs_code = function(ipfs)
 	local is_below = function(t1, t2)
 		return (t1.order or 0) < (t2.order or 0)
