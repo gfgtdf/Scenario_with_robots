@@ -69,10 +69,10 @@ Gui_book.new = function(pages)
 	-- ofc this sets both pages, the right page is set to page_number + 1
 	self.set_page = function(page_number)
 		if(page_number > #pages) then
-			error("page_number > #pages")
+			return
 		end
 		if(page_number < 1) then
-			error("page_number > #pages")
+			return
 		end
 		self.current_page = page_number
 		if self.is_dialog_showing then
