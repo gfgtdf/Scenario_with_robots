@@ -23,8 +23,7 @@ end
 
 --a workaround, using a wml event, since there is no lua equivalent to that
 global_events.disallow_undo = function()
-	-- sicne the behviour of enter_hex/exit_hex was fixed we can implenent it this way.
-	wesnoth.wml_actions.event { name = wesnoth.current.event_context.name }
+	wesnoth.allow_undo(false)
 end
 
 return global_events
