@@ -37,7 +37,7 @@ function Inventory:close()
 		if self.side_number then
 			wesnoth.set_side_variable(self.side_number, self.variable_name, inv_string)
 		else
-			wesnoth.set_variable(self.variable_name, inv_string)
+			wml.variables[self.variable_name] = inv_string
 		end
 		self.inv_set = nil
 		self.is_open = false
@@ -77,7 +77,7 @@ function Inventory:add_random_items(number)
 	if not self.is_open then
 		error("add_amount is not accessible because te inventory it is not open")
 	else
-		local inv_deltaa = wesnoth.synchronize_choice(function ()
+		local inv_deltaa = wesnoth.sync.evaluate_single(function ()
 			local inv_delta = {}
 			local c_name = ""
 			for i = 1, number do
@@ -109,7 +109,7 @@ function Inventory:add_random_items_from_comma_seperated_list(list, number)
 		error("add_amount is not accessible because te inventory it is not open")
 	else
 		for i = 1, number do
-			self:add_amount(helper.rand(list),1)
+			self:add_amount(mathx.random_choice(list),1)
 		end
 	end
 end

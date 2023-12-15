@@ -40,8 +40,8 @@ end)
 -- A possible workaround might be to check whether the robot is still alive when picking up the items.
 on_event("die", function(event_context)
 	local drop_item_on_die = wesnoth.get_variable("drop_item_on_die")
-	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
-	local variables = helper.get_child(unit_cfg, "variables")
+	local unit_cfg = wesnoth.units.get(event_context.x1, event_context.y1).__cfg
+	local variables = wml.get_child(unit_cfg, "variables")
 	local little_inventory = {}
 	if variables.robot ~= nil and drop_item_on_die then
 		local robot_string = variables.robot or "{ size = { x = " .. tostring(default_size.x) ..", y = " .. tostring(default_size.y) .." }, components = {} }"

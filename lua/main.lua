@@ -9,11 +9,10 @@ function swr_require(script)
 	return wesnoth.dofile('~add-ons/Scenario_with_robots/lua/' .. script .. '.lua')
 end
 
-helper = wesnoth.require("lua/helper.lua")
 swr_h = swr_require("my_helper")
 -- since i don't have any translations yet i use the global "wesnoth"
 _ = wesnoth.textdomain 'wesnoth'
-T = helper.set_wml_tag_metatable {}
+T = wml.tag
 globals = {}
 setmetatable(globals, {
 	["__index"] = function(t, k)

@@ -116,7 +116,7 @@ on_event("enter_hex", function(ec)
 		for k, trap in pairs(traps.traplist) do
 			-- i caould also check weather the units are allied here
 			if trap.x == ec.x1 and trap.y == ec.y1 then
-				local unit_ref = wesnoth.get_unit(trap.x,trap.y)
+				local unit_ref = wesnoth.units.get(trap.x,trap.y)
 				traps.execute_trap(trap, trap.x, trap.y, unit_ref)
 				if traptypes[trap.type].permanent ~= true then
 					table.insert(remove_traps, k)
@@ -134,11 +134,11 @@ on_event("enter_hex", function(ec)
 end)
 
 on_event("moveto", function(event_context)
-	unit = wesnoth.get_unit(event_context.x1,event_context.y1)
-	if wesnoth.unit_ability(unit, "ab_trapper") then
+	unit = wesnoth.units.get(event_context.x1,event_context.y1)
+	if unit:ability("ab_trapper") then
 		unit_cfg = unit.__cfg
 		local unit_abilities = swr_h.get_or_create_child(unit_cfg, "abilities")
-		for ab_trapper in helper.child_range(unit_abilities, "ab_trapper") do
+		for ab_trapper in wml.child_range(unit_abilities, "ab_trapper") do
 			local traptype = unit.variables["mods.swr_traptype"] or ab_trapper.traptype 
 			traps.set_trap({
 				x = event_context.x1,

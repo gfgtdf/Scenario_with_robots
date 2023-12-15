@@ -2,7 +2,7 @@ local trader = {}
 trader.lists = {}
 
 trader.buy_items = function(item_list, max_gold)
-	local buy_result_str = wesnoth.synchronize_choice(function ()
+	local buy_result_str = wesnoth.sync.evaluate_single(function ()
 		local seller = Seller:create()
 		local price = 0
 		seller:set_item_list(item_list)

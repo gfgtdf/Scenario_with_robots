@@ -13,14 +13,14 @@ on_event("prestart", function(event_context)
 		-- treat unit that were there from he beginning like units that were recruited in turn 1.
 		recruited_list[v.id] = 1
 	end
-	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
+	wml.variables["recruited_list"] = swr_h.serialize_oneline(recruited_list)
 end)
 
 on_event("recruit", function(event_context)
 	local recruited_list = swr_h.deserialize(wesnoth.get_variable("recruited_list") or "{}")
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
+	local unit = wesnoth.units.get(event_context.x1, event_context.y1)
 	recruited_list[unit.id] = wesnoth.current.turn
-	wesnoth.set_variable("recruited_list", swr_h.serialize_oneline(recruited_list))
+	wml.variables["recruited_list"] = swr_h.serialize_oneline(recruited_list)
 end)
 
 return has_just_been_recruited_not

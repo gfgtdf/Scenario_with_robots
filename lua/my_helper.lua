@@ -1,8 +1,6 @@
 -- this file adds addidional functionality to the helper object
 -- right now im not very convinced that this was the right approach
 -- it also defines the Set global function.
-
-local helper = wesnoth.require("lua/helper.lua")
 local my_helper = {}
 
 --i want this to be like an extension of lua so i want it to be abele to call without the "helper." prefix
@@ -68,7 +66,7 @@ end
 
 --unlike get_child this creates a child if it cannot find it.
 my_helper.get_or_create_child = function(cfg, name)
-	local r = helper.get_child(cfg, name)
+	local r = wml.get_child(cfg, name)
 	if r ~= nil then
 		return r
 	else

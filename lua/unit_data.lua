@@ -6,7 +6,7 @@ local load_unit_data = function(unit_id)
 	local filename = string.lower(unit_id) .. ".lua"
 	for i,dir in ipairs(search_directories) do
 		local filename_full = dir .. filename
-		if wesnoth.have_file(filename_full) then
+		if filesystem.have_file(filename_full) then
 			return wesnoth.require(filename_full)
 		end
 	end

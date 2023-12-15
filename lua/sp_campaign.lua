@@ -43,7 +43,7 @@ on_event("menu_item menu_read_book", function (event_context)
 	global_events.disallow_undo()
 	local book_manual = swr_require("book_maual")
 	local book_dialog = Gui_book.new(book_manual.pages)
-	--this doesn't change the game so no synchronize_choice is needed
+	--this doesn't change the game so no wesnoth.sync is needed
 	book_dialog.show_dialog()
 end)
 
@@ -51,7 +51,7 @@ end)
 on_event("recruit", function (event_context)
 	global_events.disallow_undo()
 	-- why is the "race" property not accessible though the proxy?
-	local unit_cfg = wesnoth.get_unit(event_context.x1, event_context.y1).__cfg
+	local unit_cfg = wesnoth.units.get(event_context.x1, event_context.y1).__cfg
 	-- without wheels robots are slow as hell, so we give the player a wheel for each recruited unit
 	if unit_cfg.race == "zt_robots" then
 		local inv = inventories[wesnoth.current.side]

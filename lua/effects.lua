@@ -2,7 +2,7 @@ local function find_best_attack(u_cfg, a_range, a_type, a_forced_name, a_new_nam
 	local best_attack = nil
 	local best_attack_damage = 0
 	local name_exists = false
-	for attack in helper.child_range(u_cfg, "attack") do
+	for attack in wml.child_range(u_cfg, "attack") do
 		if(a_new_name == attack.name) then 
 			--we already have this attack and we don't want it twice
 			name_exists = true
@@ -55,7 +55,7 @@ function wesnoth.effects.bonus_attack(u, cfg)
 		best_attack.number = 1
 	end
 	local specials = swr_h.get_or_create_child(best_attack, "specials")
-	local additional_specials = helper.get_child(cfg, "specials") or {}
+	local additional_specials = wml.get_child(cfg, "specials") or {}
 	for special_index, additional_special in pairs(additional_specials) do
 		table.insert(specials, additional_special)
 	end
@@ -68,7 +68,7 @@ function wesnoth.effects.bonus_attack(u, cfg)
 		id = "derived_from_" .. old_name
 	})
 	--important: use wesnoth.add_modification(..., false) so that the function will only execute the effects of that object and not store the object in the unit.
-	wesnoth.add_modification(u, "object", { T.effect (best_attack) }, false)
+	u:add_modification("object", { T.effect (best_attack) }, false)
 end
 
 function wesnoth.effects.alignment(u, cfg)

@@ -6,7 +6,7 @@ return {
 		for i, v in ipairs(wesnoth.sides) do
 			all_sides[i] = i
 		end
-		local results = wesnoth.synchronize_choices("version check", function()
+		local results = wesnoth.sync.evaluate_single("version check", function()
 			return { version = local_version }
 		end, nil, all_sides)
 		for k,v in pairs(results) do
@@ -15,7 +15,7 @@ return {
 				wesnoth.message("Detected different versions of Scenario With robots at scenario start: " .. v.version .. " and "  .. local_version .. " OOS are likeley")
 			end
 		end
-		wesnoth.set_variable("swr_version", local_version)
+		wml.variables["swr_version"] = local_version
 	end,
 	do_reload_version_check = function()
 		-- Note: we cannot use mp sync here becasue it runs from a preload event.

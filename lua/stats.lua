@@ -28,9 +28,9 @@ local stats = {}
 
 function stats.set_modifications(unit_cnf, mods)
 
-	local unit_status = helper.get_child(unit_cnf, "status")
-	local unit_variables = helper.get_child(unit_cnf, "variables")
-	mods = mods or helper.get_child(unit_cnf, "modifications")
+	local unit_status = wml.get_child(unit_cnf, "status")
+	local unit_variables = wml.get_child(unit_cnf, "variables")
+	mods = mods or wml.get_child(unit_cnf, "modifications")
 
 	-- todo: [event] ?
 	return {
@@ -63,7 +63,7 @@ function stats.set_modifications(unit_cnf, mods)
 end
 
 function stats.refresh_all_stats_xy(x, y)
-	local u = wesnoth.get_unit(x, y)
+	local u = wesnoth.units.get(x, y)
 	-- the following code dopes not work becasue of a bug in the wesnoth engine for image_mods.
 	--u:transform(u.type)
 	---todo: 1.15

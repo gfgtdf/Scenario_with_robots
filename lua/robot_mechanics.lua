@@ -62,11 +62,11 @@ local function create_component_image(comp)
 end
 
 robot_mechanics.edit_robot_at_xy = function(x, y)
-	local unit_cfg = wesnoth.get_unit(x, y).__cfg
-	local variables = helper.get_child(unit_cfg, "variables")
+	local unit_cfg = wesnoth.units.get(x, y).__cfg
+	local variables = wml.get_child(unit_cfg, "variables")
 	local default_size = {}
 	-- we check if the robot has gottten bigger for example by levelup.
-	for dummy in helper.child_range(helper.get_child(unit_cfg, "abilities"), "dummy") do
+	for dummy in wml.child_range(wml.get_child(unit_cfg, "abilities"), "dummy") do
 		if(dummy.id == "robot_ability") then
 			default_size.x = dummy.sizex
 			default_size.y = dummy.sizey
@@ -92,7 +92,7 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	local has_inventory_fierd = false
 	local inv = inventories[wesnoth.current.side]
 	inv:open()
-	local edit_result = wesnoth.synchronize_choice(function ()
+	local edit_result = wesnoth.sync.evaluate_single(function ()
 		local inv_delta = robot_mechanics.edit_robot(robot, inv)
 		local robot_to_seralize = {}
 		-- copy only on first level
@@ -508,8 +508,8 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 end
 
 robot_mechanics.reapply_bonuses_at_xy = function(x, y)
-	local unit_cfg = wesnoth.get_unit(x, y).__cfg
-	local variables = helper.get_child(unit_cfg, "variables") or {}
+	local unit_cfg = wesnoth.units.get(x, y).__cfg
+	local variables = wml.get_child(unit_cfg, "variables") or {}
 	local robot_string = variables.robot
 	if not robot_string then
 		return false
@@ -567,7 +567,7 @@ robot_mechanics.apply_bonuses = function(unit_cfg, robot, unit_type)
 end
 
 robot_mechanics.replace_robot_advancements = function(unit_cfg, effects, new_advancements)
-	local modifications_cfg = helper.get_child(unit_cfg, "modifications")
+	local modifications_cfg = wml.get_child(unit_cfg, "modifications")
 	swr_h.remove_from_array(modifications_cfg, function(a) 
 		--remove the old new_advancements
 		if(a[2].id ~= nil and swr_h.string_starts(a[2].id, "robot_imp_")) then

@@ -1,4 +1,4 @@
-local T = helper.set_wml_tag_metatable {}
+local T = wml.tag
 local gui_edit_robot = {}
 function gui_edit_robot.create_dialog_grid(size_x, size_y)
 	local grid = T.grid {} 

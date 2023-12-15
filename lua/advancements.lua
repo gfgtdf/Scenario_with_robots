@@ -13,7 +13,7 @@ function advancements.get_extra_advancements(type_id, res)
 end
 
 on_event("pre_advance", function(event_context)
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
+	local unit = wesnoth.units.get(event_context.x1, event_context.y1)
 	if unit.side ~= wesnoth.current.side then
 		return
 	end
@@ -26,7 +26,7 @@ on_event("pre_advance", function(event_context)
 end)
 
 on_event("post_advance", function(event_context)
-	local unit = wesnoth.get_unit(event_context.x1, event_context.y1)
+	local unit = wesnoth.units.get(event_context.x1, event_context.y1)
 	-- if the advancement did not rebuild the type do so now.
 	if unit.variables["mods.pre_advance_flag"] == true then
 		unit:transform(unit.type)
@@ -40,7 +40,7 @@ on_event("turn refresh", function(event_context)
 		-- is checking unit.side == wesnoth.current.side faster than passing a side = wesnoth.current.side filter to wesnoth.get_units() ?
 		if unit.side == wesnoth.current.side then
 			local unit_cfg = unit.__cfg
-			local modifications_cfg = helper.get_child(unit.__cfg, "modifications")
+			local modifications_cfg = wml.get_child(unit.__cfg, "modifications")
 			local count = 0
 			for advancement in wml.child_range(modifications_cfg, "advacement") do
 				if advancement.id == "Oooops" then count = count + 1 end
