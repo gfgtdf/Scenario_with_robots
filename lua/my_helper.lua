@@ -178,6 +178,7 @@ setmetatable(my_helper.ipf, {
 })
 
 local last_time = nil
+-- clock debug
 cl_b = function()
 	local stamp = wesnoth.get_time_stamp()
 	local old_time = last_time or stamp
@@ -185,6 +186,7 @@ cl_b = function()
 	wesnoth.message(tostring(stamp - old_time) .. "ticks")
 end
 
+-- log globals
 function l_g()
 	local known_names = Set { "pairs", "ipairs", "xpcall", "rawget", "print", "select", "error", "wesnoth", "_G", "tonumber", "collectgarbage", "_VERSION", "loadstring", "string", "load", "rawequal", "rawset", "assert", "debug", "getmetatable", "tostring", "next", "bit32", "os", "unpack", "coroutine", "math", "pcall", "setmetatable", "type", "rawlen", "table"
 	                        , "wml", "wesnoth", "globals" }
@@ -213,7 +215,7 @@ end
 
 
 -- workaround for `local a = obj:member; a(1)` not working.
-function members(obj)
+function my_helper.methonds(obj)
 	return setmetatable({}, {
 		__index = function(t, k)
 			return function(...)

@@ -265,7 +265,7 @@ wml_codes.get_ipfs_code = function(ipfs)
 	local is_below = function(t1, t2)
 		return (t1.order or 0) < (t2.order or 0)
 	end
-	stable_sort(ipfs, is_below)
+	swr_h.stable_sort(ipfs, is_below)
 	local ipfs_string = {}
 	local blit = swr_h.ipf.blit
 	local over_x = 0

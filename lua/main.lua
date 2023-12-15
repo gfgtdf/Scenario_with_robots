@@ -41,7 +41,6 @@ dropping = swr_require("dropping")
 unit_types_data = swr_require("unit_data")
 swr_require("has_just_been_recruited_not")
 swr_require("robot_event_handlers")
-swr_require("stable_sort")
 swr_require("wesnoth_version_check")
 
 global_events.toplevel_start()

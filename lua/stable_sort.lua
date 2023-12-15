@@ -60,7 +60,7 @@ local function merge_sort( array, workspace, low, high, goes_before )
 	end
 end
 
-function stable_sort( array, goes_before )
+local function stable_sort( array, goes_before )
 	local n = #array
 	if n < 2 then  return array  end
 	goes_before = goes_before or
@@ -71,4 +71,5 @@ function stable_sort( array, goes_before )
 	merge_sort( array, workspace, 1, n, goes_before )
 	return array
 end
+
 return stable_sort

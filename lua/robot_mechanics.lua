@@ -494,7 +494,7 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	local all_effects = {}
 	local all_advances = {}
 	--todo sheck wheterh this sots in the correct direction
-	stable_sort(used_component_types, function(c1, c2) return (c1.order_apply or 0) < (c2.order_apply or 0) end)
+	swr_h.stable_sort(used_component_types, function(c1, c2) return (c1.order_apply or 0) < (c2.order_apply or 0) end)
 	for k, v in pairs(used_component_types) do
 		if v.apply_function then
 			local new_effects, new_advances = v.apply_function(robot, aggregator)
