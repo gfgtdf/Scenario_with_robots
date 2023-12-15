@@ -6,7 +6,7 @@
 -- i think i have to sacrifice the wrapping, it isn't a verybig sacrifice anyway since "pages" are already static, so going to "lines" isnt a that big difference annymore.
 -- every page has: page.text, and page.images imagaes ist a list of image inforamtion (pos, path..)
 
-BookDialog = {}
+local BookDialog = {}
 BookDialog.__index = BookDialog
 
 function BookDialog:new(pages)

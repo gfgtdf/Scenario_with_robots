@@ -3,8 +3,7 @@
 -- it also defines the Set global function.
 local my_helper = {}
 
---i want this to be like an extension of lua so i want it to be abele to call without the "helper." prefix
-function Set (list)
+local function Set (list)
 	local set = {}
 	for _, l in ipairs(list) do set[l] = true end
 	return set
@@ -186,8 +185,8 @@ end
 
 -- log globals
 function l_g()
-	local known_names = Set { "pairs", "ipairs", "xpcall", "rawget", "print", "select", "error", "wesnoth", "_G", "tonumber", "collectgarbage", "_VERSION", "loadstring", "string", "load", "rawequal", "rawset", "assert", "debug", "getmetatable", "tostring", "next", "bit32", "os", "unpack", "coroutine", "math", "pcall", "setmetatable", "type", "rawlen", "table"
-	                        , "wml", "wesnoth", "globals" }
+	local known_names = Set { "pairs", "ipairs", "xpcall", "rawget", "print", "select", "error", "warn", "_G", "tonumber", "collectgarbage", "_VERSION", "loadstring", "string", "load", "rawequal", "rawset", "assert", "debug", "getmetatable", "tostring", "next", "bit32", "os", "unpack", "coroutine", "math", "pcall", "setmetatable", "type", "rawlen", "table"
+	                        , "wml", "wesnoth", "mathx", "stringx", "filesystem", "gui", "ilua", "std_print", "utf8" }
 	for k,v in pairs(_G) do
 		if not known_names[k] then
 			print(k)

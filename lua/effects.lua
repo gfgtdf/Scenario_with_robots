@@ -32,7 +32,7 @@ end
 
 
 function wesnoth.effects.bonus_attack(u, cfg)
-	u_cfg = u.__cfg
+	local u_cfg = u.__cfg
 	local best_attack, name_exists = find_best_attack(u_cfg, cfg.base_range, cfg.base_type, cfg.base_name, cfg.name)
 	if name_exists or best_attack == nil then
 		return
