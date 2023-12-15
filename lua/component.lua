@@ -60,7 +60,9 @@ function Component:cells()
 	local rect = self:get_used_rect()
 	for x = rect.x_min, rect.x_max do
 		for y = rect.y_min, rect.y_max do
-			table.insert(res, { x = x, y = y})
+			if self:get_cell(x, y) then
+				table.insert(res, { x = x, y = y})
+			end
 		end
 	end
 	return function()
