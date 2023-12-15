@@ -6,10 +6,10 @@
 -- i think i have to sacrifice the wrapping, it isn't a verybig sacrifice anyway since "pages" are already static, so going to "lines" isnt a that big difference annymore.
 -- every page has: page.text, and page.images imagaes ist a list of image inforamtion (pos, path..)
 
-Gui_book = {}
-Gui_book.__index = Gui_book
+BookDialog = {}
+BookDialog.__index = BookDialog
 
-function Gui_book:new(pages)
+function BookDialog:new(pages)
 	local res = {}
 	setmetatable(res, self)
 	self.factor = 1
@@ -46,7 +46,7 @@ function Gui_book:new(pages)
 	return res
 end
 
-function Gui_book:show_dialog()
+function BookDialog:show_dialog()
 
 	local function preshow(dialog)
 		self.dialog = dialog
@@ -67,7 +67,7 @@ function Gui_book:show_dialog()
 	self.dialog = nil
 end
 
-function Gui_book:set_page(page_number)
+function BookDialog:set_page(page_number)
 	if(page_number > #self.pages) then
 		return
 	end
@@ -80,7 +80,7 @@ function Gui_book:set_page(page_number)
 	end
 end
 
-function Gui_book:show_page(page_number)
+function BookDialog:show_page(page_number)
 	local page1 = self.pages[page_number]
 	local page2 = self.pages[page_number + 1] or {text = ""}
 	local drawing = {
@@ -146,4 +146,4 @@ function Gui_book:show_page(page_number)
 	self.dialog:find("right_page_drwaing"):set_canvas(1, drawing)
 end
 
-return Gui_book
+return BookDialog

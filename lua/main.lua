@@ -24,17 +24,18 @@ setmetatable(swr.globals, {
 	end,
 })
 swr.require("effects")
-swr_stats = swr.require("stats")
+swr.require("utils/units")
 swr.Inventory = swr.require("inventory")
-Edit_robot_dialog = swr.require("gui")
+
+swr.EditRobotDialog = swr.require("dialogs/edit_robot_dialog")
+swr.BookDialog = swr.require("dialogs/book_dialog")
+swr.SellerDialog = swr.require("dialogs/seller_dialog")
+
 swr.component_list = swr.require("component_list")
 robot_mechanics = swr.require("robot_mechanics")
-swr_moving_unit = swr.require("moving_unit_workaround")
 swr.require("advancements")
-Gui_book = swr.require("gui_test")
-swr_traps = swr.require("traps")
+swr.traps = swr.require("traps")
 swr_trader = swr.require("trader")
-Seller = swr.require("seller")
 
 dropping = swr.require("dropping")
 unit_types_data = swr.require("unit_data")

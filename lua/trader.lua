@@ -3,7 +3,7 @@ trader.lists = {}
 
 trader.buy_items = function(item_list, max_gold)
 	local buy_result_str = wesnoth.sync.evaluate_single(function ()
-		local seller = Seller:create()
+		local seller = swr.SellerDialog:create()
 		local price = 0
 		seller:set_item_list(item_list)
 		seller:set_max_gold(max_gold)

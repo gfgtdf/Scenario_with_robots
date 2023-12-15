@@ -1,7 +1,7 @@
 
-local gui_edit_robot = swr.require("dialogs/edit_robot")
+local gui_edit_robot = wesnoth.require("./wml/edit_robot.lua")
 
-EditRobotDialog = {}
+local EditRobotDialog = {}
 EditRobotDialog.__index = EditRobotDialog
 -- @a sizeX, sizeY the size of the robot field
 -- @a tools the toolbox content: a array of table with the following keys; icon, label, tooltip

@@ -42,7 +42,7 @@ end)
 on_event("menu_item menu_read_book", function (event_context)
 	swr_h.disallow_undo()
 	local book_manual = swr.require("book_maual")
-	local book_dialog = Gui_book:new(book_manual.pages)
+	local book_dialog = swr.BookDialog:new(book_manual.pages)
 	--this doesn't change the game so no wesnoth.sync is needed
 	book_dialog:show_dialog()
 end)

@@ -1,11 +1,11 @@
 
-local Seller = {}
-Seller.__index = Seller
+local SellerDialog = {}
+SellerDialog.__index = SellerDialog
 
-function Seller:create()
+function SellerDialog:create()
 	local res = {}
 	setmetatable(res, self)
-	res.gui = swr.require("dialogs/seller")
+	res.gui = swr.require("dialogs/wml/seller")
 	res.dialog_wml = res.gui.normal
 	res.dialog = nil
 	res.items = {}
@@ -15,7 +15,7 @@ function Seller:create()
 	return res
 end
 
-function Seller:show_dialog()
+function SellerDialog:show_dialog()
 	local order_item = function()
 		if ((self.items[self.selected_row].quantity or 9999) > (self.items_bought[self.selected_row] or 0)) then
 			self.items_bought[self.selected_row] = (self.items_bought[self.selected_row] or 0) + 1
@@ -67,15 +67,15 @@ function Seller:show_dialog()
 	end
 end
 
-function Seller:set_item_list(item_list)
+function SellerDialog:set_item_list(item_list)
 	self.items = item_list
 end
 
-function Seller:set_max_gold(max_gold)
+function SellerDialog:set_max_gold(max_gold)
 	self.max_gold = max_gold
 end
 
-function Seller:update_all_rows()
+function SellerDialog:update_all_rows()
 	for i, item in ipairs(self.items) do
 		local image = item.image
 		if true then
@@ -116,7 +116,7 @@ function Seller:update_all_rows()
 end
 
 
-function Seller:update_all_basket_rows()
+function SellerDialog:update_all_basket_rows()
 	local old_page_count = self.basket_page_count
 	local i = 1
 	for k, item_b_number in pairs(self.items_bought) do
@@ -128,7 +128,7 @@ function Seller:update_all_basket_rows()
 	end
 end
 
-function Seller:update_buy_button(initial)
+function SellerDialog:update_buy_button(initial)
 	local t_price = 0
 	for k, item_b_number in pairs(self.items_bought) do
 		t_price = t_price + self.items[k].price * item_b_number
@@ -147,5 +147,5 @@ function Seller:update_buy_button(initial)
 	self.dialog:find("total_price_label").label = text
 end
 
-return Seller
+return SellerDialog
 

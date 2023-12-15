@@ -221,7 +221,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		})
 	end
 	-- classic topdown programming here ..
-	local dialog = EditRobotDialog:create(sizeX, sizeY, tools, 6)
+	local dialog = swr.EditRobotDialog:create(sizeX, sizeY, tools, 6)
 	-- this function does no checks so it asummes it is all right.
 	local function place_component(pos, component, graphic_only)
 		graphic_only = graphic_only or false
@@ -590,7 +590,7 @@ robot_mechanics.replace_robot_advancements = function(unit, effects, new_advance
 	for k,v in pairs(new_advancements) do
 		table.insert(modifications_cfg, 2, v)
 	end
-	swr_stats.replace_modifications(unit, modifications_cfg)
+	unit:swr_replace_modifications(modifications_cfg)
 end
 
 return robot_mechanics
