@@ -1,6 +1,9 @@
 -- there musn't be more than one inventory object for each inventory variable otherwise the'd cofuse each other.
 -- if inv_set is map string -> number it is a it is a valid wml table, but im used to serialisation and itgives me more flexibility.
 local Inventory = {}
+Inventory.__index = Inventory
+Inventory.created_invs = {}
+Inventory.default_name = ""
 
 function Inventory:create(variable_name, side_num)
 	local res = {}
@@ -8,9 +11,24 @@ function Inventory:create(variable_name, side_num)
 	res.variable_name = variable_name
 	res.is_open = false
 	setmetatable(res, self)
-	self.__index = self
 	return res
 end
+
+
+function Inventory:get(side_num, variable_name)
+	local id = tostring(side_num) .. "_" .. variable_name
+	if not self.created_invs[id] then
+		self.created_invs[id] = self:create(variable_name, side_num)
+	end
+	return self.created_invs[id]
+end
+
+function Inventory:get_open(side_num, variable_name)
+	local res = self:get(side_num, variable_name)
+	res:open()
+	return res
+end
+
 
 -- opens the inventory so it can be written and read
 function Inventory:open()
@@ -81,7 +99,7 @@ function Inventory:add_random_items(number)
 			local inv_delta = {}
 			local c_name = ""
 			for i = 1, number do
-				c_name = component_list.the_list[math.random(#component_list.the_list - 1) + 1].name
+				c_name = swr.component_list.the_list[math.random(#swr.component_list.the_list - 1) + 1].name
 				inv_delta[c_name] = (inv_delta[c_name] or 0) + 1
 			end
 			return inv_delta
@@ -92,7 +110,7 @@ function Inventory:add_random_items(number)
 			local inv_delta = {}
 			local c_name = ""
 			for i = 1, number do
-				c_name = component_list.the_list[math.random(#component_list.the_list - 1) + 1].name
+				c_name = swr.component_list.the_list[math.random(#swr.component_list.the_list - 1) + 1].name
 				inv_delta[c_name] = (inv_delta[c_name] or 0) + 1
 			end
 			return inv_delta

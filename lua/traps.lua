@@ -123,7 +123,7 @@ on_event("enter_hex", function(ec)
 				end
 				-- forcing them to move on would be unfair i think
 				wesnoth.cancel_action()
-				global_events.disallow_undo()
+				swr_h.disallow_undo()
 			end
 		end
 		while #remove_traps > 0 do
@@ -148,7 +148,7 @@ on_event("moveto", function(event_context)
 				sender_side = unit.side,
 				sender_unit_id = unit.id
 			}, ab_trapper.maxtraps)
-			global_events.disallow_undo()
+			swr_h.disallow_undo()
 			break
 		end
 	end

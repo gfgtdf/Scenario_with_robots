@@ -4,7 +4,7 @@ local robot_mechanics = {}
 --local gui = swr_require("gui")
 --local component_list = swr_require("component_list")
 
-local wml_codes = swr_require("wml_codes")
+local wml_codes = swr.require("wml_codes")
 
 --local helper = swr_require("my_helper")
 max = function(a, b) return a > b and a or b end
@@ -84,7 +84,7 @@ end
 function robot_mechanics.deserialize(robot_str)
 	local res = swr_h.deserialize(robot_str)
 	for i =1, #(res.components or {}) do
-		res.components[i].component = component_list.list_by_name[res.components[i].component]
+		res.components[i].component = swr.component_list.list_by_name[res.components[i].component]
 	end
 	return res
 end
@@ -125,8 +125,8 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 	robot_mechanics.update_size(robot, unit_cfg)
 	--
 	local has_inventory_fierd = false
-	local inv = inventories[wesnoth.current.side]
-	inv:open()
+	local inv = swr.Inventory:get_open(wesnoth.current.side, "component_inventory")
+
 	local edit_result = wesnoth.sync.evaluate_single(function ()
 		local inv_delta = robot_mechanics.edit_robot(robot, inv)
 		-- Optimisation: If we did this choice locally then we can use the 'robot' variable 
@@ -151,11 +151,11 @@ end
 -- we collect all compnents from the inventory and from the robot 
 robot_mechanics.get_accesible_components = function(inventory ,robot)
 	local ac = {}
-	table.insert(ac, { component = component_list.list_by_name["core"], number = 1 })
+	table.insert(ac, { component = swr.component_list.list_by_name["core"], number = 1 })
 	for k,v in pairs(inventory.inv_set) do
 		-- note that items that were in the inventory once still have an entry there even if their number is 0
 		if v ~= 0 then
-			table.insert(ac, { component = component_list.list_by_name[k], number = v })
+			table.insert(ac, { component = swr.component_list.list_by_name[k], number = v })
 		end
 	end
 	for k,v in pairs(robot.components) do

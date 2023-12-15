@@ -41,8 +41,8 @@ my_helper.cwo = function(obj)
 end
 
 --like serialize but faster and without the \n. for storing lua in wml variables
-my_helper.serialize_oneline = swr_require("serialize")
-my_helper.stable_sort = swr_require("stable_sort")
+my_helper.serialize_oneline = swr.require("serialize")
+my_helper.stable_sort = swr.require("stable_sort")
 my_helper.deserialize = function(str)
 	return load("return " .. str, nil, "t", {})()
 end
@@ -225,6 +225,8 @@ function my_helper.methonds(obj)
 	})
 end
 
-
+function my_helper.disallow_undo()
+	wesnoth.allow_undo(false)
+end
 
 return my_helper

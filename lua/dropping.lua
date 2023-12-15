@@ -115,7 +115,7 @@ dropping.on_moveto = function(event_context)
 		if dropping.item_taken then
 			table.remove(entries, i)
 			wesnoth.remove_tile_overlay(x, y, dropping.decorate_imagename(v.image, v.id))
-			global_events.disallow_undo()
+			swr_h.disallow_undo()
 		else
 			i = i + 1
 		end

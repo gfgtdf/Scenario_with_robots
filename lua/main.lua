@@ -1,7 +1,8 @@
+swr = {}
 
 -- we want some things to be at "top" level, escecialy for the wesnoth.game_events.on_load/save in case we need them
 -- and since we have that at toplevel we can put it all here, i think everyting else wouls just make it more complicated.
-function swr_require(script)
+function swr.require(script)
 	-- I use dofile instead of , require because it allows me to reload the whole lua logics (for my scenarios that means nearly all of the logic)
 	-- without having to quit the game and press F5 or close Wesnoth.
 	-- thats pretty cool feature for debugging compared to wml debugging.
@@ -9,12 +10,12 @@ function swr_require(script)
 	return wesnoth.dofile('~add-ons/Scenario_with_robots/lua/' .. script .. '.lua')
 end
 
-swr_h = swr_require("my_helper")
+swr_h = swr.require("my_helper")
 -- since i don't have any translations yet i use the global "wesnoth"
 _ = wesnoth.textdomain 'wesnoth'
 T = wml.tag
-globals = {}
-setmetatable(globals, {
+swr.globals = {}
+setmetatable(swr.globals, {
 	["__index"] = function(t, k)
 		return rawget(_G, k)
 	end,
@@ -22,27 +23,25 @@ setmetatable(globals, {
 		_G[k] = v
 	end,
 })
-swr_require("effects")
-swr_stats = swr_require("stats")
-Inventory = swr_require("inventory")
-Edit_robot_dialog = swr_require("gui")
-component_list = swr_require("component_list")
-robot_mechanics = swr_require("robot_mechanics")
-global_events = swr_require("global_events")
-swr_moving_unit = swr_require("moving_unit_workaround")
-swr_require("advancements")
-Gui_book = swr_require("gui_test")
-swr_traps = swr_require("traps")
-swr_trader = swr_require("trader")
-Seller = swr_require("seller")
+swr.require("effects")
+swr_stats = swr.require("stats")
+swr.Inventory = swr.require("inventory")
+Edit_robot_dialog = swr.require("gui")
+swr.component_list = swr.require("component_list")
+robot_mechanics = swr.require("robot_mechanics")
+swr_moving_unit = swr.require("moving_unit_workaround")
+swr.require("advancements")
+Gui_book = swr.require("gui_test")
+swr_traps = swr.require("traps")
+swr_trader = swr.require("trader")
+Seller = swr.require("seller")
 
-dropping = swr_require("dropping")
-unit_types_data = swr_require("unit_data")
-swr_require("has_just_been_recruited_not")
-swr_require("robot_event_handlers")
-swr_require("wesnoth_version_check")
+dropping = swr.require("dropping")
+unit_types_data = swr.require("unit_data")
+swr.require("has_just_been_recruited_not")
+swr.require("robot_event_handlers")
+swr.require("wesnoth_version_check")
 
-global_events.toplevel_start()
 
 -- there are some other global variables:
 --   serialize, serialize_oneline, deserialize, Set, cwo, - importent global functions exported by my_helper

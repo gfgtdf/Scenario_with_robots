@@ -1,5 +1,5 @@
 -- if they have the file "version_check.lua" than they also have the file "version.lua"
-local local_version = swr_require("version")
+local local_version = swr.require("version")
 return {
 	do_initial_version_check = function()
 		local all_sides = {}

@@ -1,9 +1,9 @@
 local on_event = wesnoth.require("on_event")
 
-local trader_list_mp = swr_require("trader_list_mp")
+local trader_list_mp = swr.require("trader_list_mp")
 
 on_event("start", function (event_context)
-	swr_require("version_check").do_initial_version_check()
+	swr.require("version_check").do_initial_version_check()
 	wesnoth.wml_actions.set_menu_item {
 		description = "Buy components",
 		id = "robot_trader_mp",
@@ -11,15 +11,15 @@ on_event("start", function (event_context)
 end)
 
 on_event("preload", function (event_context)
-	swr_require("version_check").do_reload_version_check()
+	swr.require("version_check").do_reload_version_check()
 end)
 
 on_event("menu_item robot_trader_mp", function (event_context)
-	global_events.disallow_undo()
+	swr_h.disallow_undo()
 	local side = wesnoth.sides[wesnoth.current.side] 
 	local bought_items, price = swr_trader.buy_items(trader_list_mp, side.gold)
-	local inv = inventories[wesnoth.current.side]
-	inv:open()
+	local inv = swr.Inventory:get_open(wesnoth.current.side, "component_inventory")
+
 	for k, v in pairs(bought_items) do
 		for i = 1, v do
 			trader_list_mp[k].apply_func(inv)
@@ -40,7 +40,7 @@ on_event("start", function (event_context)
 end)
 
 on_event("recruit", function (event_context)
-	global_events.disallow_undo()
+	swr_h.disallow_undo()
 	local unit = wesnoth.units.get(event_context.x1, event_context.y1)
 	if unit.race == "zt_robots" then
 		unit.variables.robot = "{  [\"rings_count\"] = 0,  [\"size\"] = {  [\"x\"] = 3,  [\"y\"] = 4, } ,  [\"open_ends_count\"] = 3,  [\"components\"] = {  [1] = {  [\"distance\"] = 0,  [\"component\"] = \"core\",  [\"pos\"] = {  [\"x\"] = 2,  [\"y\"] = 3, } , } ,  [2] = {  [\"distance\"] = 1,  [\"component\"] = \"simplewheel\",  [\"pos\"] = {  [\"x\"] = 2,  [\"y\"] = 4, } , } , } , } "

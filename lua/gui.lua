@@ -1,5 +1,5 @@
 
-local gui_edit_robot = swr_require("dialogs/edit_robot")
+local gui_edit_robot = swr.require("dialogs/edit_robot")
 
 EditRobotDialog = {}
 EditRobotDialog.__index = EditRobotDialog

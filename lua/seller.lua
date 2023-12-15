@@ -5,7 +5,7 @@ Seller.__index = Seller
 function Seller:create()
 	local res = {}
 	setmetatable(res, self)
-	res.gui = swr_require("dialogs/seller")
+	res.gui = swr.require("dialogs/seller")
 	res.dialog_wml = res.gui.normal
 	res.dialog = nil
 	res.items = {}

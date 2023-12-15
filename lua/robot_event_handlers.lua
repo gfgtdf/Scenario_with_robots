@@ -2,7 +2,7 @@ local on_event = wesnoth.require("on_event")
 
 on_event("menu_item menu_edit_robot", function(event_context)
 	robot_mechanics.edit_robot_at_xy(event_context.x1,event_context.y1)
-	global_events.disallow_undo()
+	swr_h.disallow_undo()
 end)
 
 on_event("start", function(event_context)
@@ -69,8 +69,7 @@ on_event("drop_pickup", function(event_context)
 		-- robot components can only be picked up from sides that own robots.
 		return
 	end
-	local inventory = inventories[wesnoth.current.side]
-	inventory:open()
+	local inventory = swr.Inventory:get_open(wesnoth.current.side, "component_inventory")
 	for k,v in pairs(dropped_items) do
 		inventory:add_amount(k,v)
 	end
