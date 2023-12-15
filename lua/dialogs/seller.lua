@@ -5,7 +5,6 @@ local buttons = {
 	abort = 2
 }
 
-
 local item_list = T.listbox {
 	id = "trader_list",
 	vertical_scrollbar_mode = "always",

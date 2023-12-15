@@ -40,7 +40,7 @@ Gui_book.new = function(pages)
 		}
 	}
 	self.show_dialog = function()
-		local function preshow()
+		local function preshow(dialog)
 			local goto_page_handler = function()
 				local p_index = tonumber(wesnoth.get_dialog_value("textbox_page"))
 				if p_index ~= nil then
@@ -48,15 +48,16 @@ Gui_book.new = function(pages)
 					self.set_page(p_index)
 				end
 			end
-			wesnoth.set_dialog_callback(goto_page_handler, "goto_page_btn")
-			wesnoth.set_dialog_callback(self.turn_left, "left_page_panel")
-			wesnoth.set_dialog_callback(self.turn_right, "right_page_panel")
+			dialog.goto_page_btn.callback = goto_page_handler
+			dialog.left_page_panel.callback = self.turn_left
+			dialog.right_page_panel.callback = self.turn_right
+			
 			self.show_page(self.current_page)
 		end
 		local function postshow()
 		end
 		self.is_dialog_showing = true
-		local r = wesnoth.show_dialog(self.dialog, preshow, postshow)
+		local r = gui.show_dialog(self.dialog, preshow, postshow)
 		self.is_dialog_showing = false
 	end
 	self.turn_right = function()

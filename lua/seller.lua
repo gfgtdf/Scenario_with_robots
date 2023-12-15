@@ -6,7 +6,8 @@ function Seller:create()
 	local res = {}
 	setmetatable(res, self)
 	res.gui = swr_require("dialogs/seller")
-	res.dialog = res.gui.normal
+	res.dialog_wml = res.gui.normal
+	res.dialog = nil
 	res.items = {}
 	res.total_price = 0
 	res.items_bought = {}
@@ -32,27 +33,33 @@ function Seller:show_dialog()
 		end
 	end
 	local function select_from_trader_list()
-		local i = wesnoth.get_dialog_value("trader_list")
-			if i > self.page_count or self.page_count == 0 then
+		local i = self.dialog:find("trader_list").selected_index
+		if i > self.page_count or self.page_count == 0 then
 			error("invalid trader_list row number")
 		end
 
 		self.selected_row = i
-		wesnoth.set_dialog_value(i, "details_pages")
+		self.dialog:find("details_pages").selected_index = i
 	end
-	local function preshow()
-		wesnoth.set_dialog_callback(select_from_trader_list, "trader_list")
-		wesnoth.set_dialog_callback(order_item, "order_button")
-		wesnoth.set_dialog_callback(remove_item, "remove_button")
-		wesnoth.set_dialog_markup(true, "total_price_label")
+	local function preshow(dialog)
+		self.dialog = dialog
+		self.selected_row = 1
+
+		self.dialog:find("trader_list").callback = select_from_trader_list
+		self.dialog:find("order_button").callback = order_item
+		self.dialog:find("remove_button").callback = remove_item
+		self.dialog:find("total_price_label").use_markup = true
+		
 
 		self:update_all_rows()
 		self:update_buy_button(true)
-		wesnoth.set_dialog_value(1, "trader_list")
+		self.dialog:find("trader_list").selected_index = 1
+
 		select_from_trader_list()
 	end
-	self.selected_row = 1
-	local r_val = wesnoth.show_dialog(self.dialog, preshow)
+	local r_val = gui.show_dialog(self.dialog_wml, preshow)
+
+	self.dialog = nil
 	if r_val == self.gui.buttons.abort then
 		return {}
 	else
@@ -77,7 +84,11 @@ function Seller:update_all_rows()
 		if item.quantity ~= nil and ((self.items_bought[i] or 0) >= item.quantity) then
 			image = image .. "~BLIT(misc/cross1.png,0,0)"
 		end
-		wesnoth.set_dialog_value(image, "trader_list", i, "list_image")
+
+		local list_item = self.dialog:find("trader_list", i)
+		local details_page = self.dialog:find("details_pages", i)
+
+		list_item.list_image.label = image
 			
 		local quantity = item.quantity == nil and "" or (item.quantity - (self.items_bought[i] or 0))
 		local price_string = string.format("Price: %sg", tostring(item.price))
@@ -86,26 +97,30 @@ function Seller:update_all_rows()
 			basket_string = basket_string .. "    "
 		end
 		local quant_string = item.quantity == nil and "         " or string.format("available: %s", item.quantity)
-		wesnoth.set_dialog_value(item.name, "trader_list", i, "list_name")
-		wesnoth.set_dialog_value(item.quantity or "       ", "trader_list", i, "list_quantity")
-		wesnoth.set_dialog_value((self.items_bought[i] or "      "), "trader_list", i, "list_basket")
-		wesnoth.set_dialog_value((tostring(item.price) .. "g"), "trader_list", i, "list_price")
-			
-		wesnoth.set_dialog_value(item.name, "details_pages", i, "details_name")
-		wesnoth.set_dialog_value(item.description, "details_pages", i, "details_description")
-		wesnoth.set_dialog_value(quant_string, "details_pages", i, "details_quantity")
-		wesnoth.set_dialog_value(basket_string, "details_pages", i, "details_basket_count")
-		wesnoth.set_dialog_value(price_string, "details_pages", i, "details_price")
+
+		list_item.list_name.label = item.name
+		list_item.list_quantity.label = item.quantity or "       "
+		list_item.list_basket.label = self.items_bought[i] or "      "
+		list_item.list_price.label = tostring(item.price) .. "g"
+
+
+		details_page.details_name.label = item.name
+		details_page.details_description.label = item.description
+		details_page.details_quantity.label = quant_string
+		details_page.details_basket_count.label = basket_string
+		details_page.details_price.label = price_string
 
 		self.page_count = i
 	end
-	wesnoth.set_dialog_value("\n1\n2\n3\n4\n5", "details_pages", self.page_count + 1, "details_description")
+	self.dialog:find("details_pages", self.page_count + 1, "details_description").label = "\n1\n2\n3\n4\n5"
 end
+
 
 function Seller:update_all_basket_rows()
 	local old_page_count = self.basket_page_count
 	local i = 1
 	for k, item_b_number in pairs(self.items_bought) do
+
 		wesnoth.set_dialog_value(self.items[k].image, "basket_list", i, "list_b_image")
 		wesnoth.set_dialog_value(item_b_number, "basket_list", i, "list_b_number")
 		self.basket_page_count = i
@@ -121,15 +136,15 @@ function Seller:update_buy_button(initial)
 	local text = string.format("Total: %dg", t_price)
 	if self.max_gold and self.max_gold < t_price then
 		text = "<span foreground='red'>" .. text .. "</span>"
-		wesnoth.set_dialog_active(false, "use_button")
+		self.dialog:find("use_button").enabled = false
 	else
-		wesnoth.set_dialog_active(true, "use_button")
+		self.dialog:find("use_button").enabled = true
 	end
 	if initial then
 		-- Add some invisible text to give it more space during layout phase.
 		text = text .. "       "
 	end
-	wesnoth.set_dialog_value(text, "total_price_label")
+	self.dialog:find("total_price_label").label = text
 end
 
 return Seller
