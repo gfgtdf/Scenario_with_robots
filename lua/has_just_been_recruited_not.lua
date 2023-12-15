@@ -9,7 +9,7 @@ end
 
 on_event("prestart", function(event_context)
 	local recruited_list = {}
-	for k, v in pairs(wesnoth.get_units()) do
+	for k, v in pairs(wesnoth.units.find_on_map()) do
 		-- treat unit that were there from he beginning like units that were recruited in turn 1.
 		recruited_list[v.id] = 1
 	end

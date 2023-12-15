@@ -30,7 +30,7 @@ on_event("menu_item robot_trader_mp", function (event_context)
 end)
 
 on_event("start", function (event_context)
-	for k,v in pairs(wesnoth.get_units { type = "Robot_Medium" } ) do
+	for k,v in pairs(wesnoth.units.find_on_map { type = "Robot_Medium" } ) do
 		if v.variables.robot == nil then
 			v.variables.robot = "{  [\"open_ends_count\"] = 0,  [\"rings_count\"] = 0,  [\"components\"] = {  [1] = {  [\"component\"] = \"core\",  [\"distance\"] = 0,  [\"pos\"] = {  [\"y\"] = 4,  [\"x\"] = 3, } , } ,  [2] = {  [\"component\"] = \"simplepike\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 4,  [\"x\"] = 2, } , } ,  [3] = {  [\"component\"] = \"pipe_nw\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 4,  [\"x\"] = 4, } , } ,  [4] = {  [\"component\"] = \"pipe_ns\",  [\"distance\"] = 2,  [\"pos\"] = {  [\"y\"] = 3,  [\"x\"] = 4, } , } ,  [5] = {  [\"component\"] = \"propeller\",  [\"distance\"] = 3,  [\"pos\"] = {  [\"y\"] = 2,  [\"x\"] = 4, } , } ,  [6] = {  [\"component\"] = \"simplewheel\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 5,  [\"x\"] = 3, } , } ,  [7] = {  [\"component\"] = \"pipe_sw\",  [\"distance\"] = 1,  [\"pos\"] = {  [\"y\"] = 3,  [\"x\"] = 3, } , } ,  [8] = {  [\"component\"] = \"simplepike\",  [\"distance\"] = 2,  [\"pos\"] = {  [\"y\"] = 3,  [\"x\"] = 2, } , } , } ,  [\"size\"] = {  [\"y\"] = 5,  [\"x\"] = 5, } , }"
 		end
