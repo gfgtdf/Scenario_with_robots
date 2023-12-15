@@ -17,7 +17,7 @@ end)
 on_event("menu_item robot_trader_mp", function (event_context)
 	swr_h.disallow_undo()
 	local side = wesnoth.sides[wesnoth.current.side] 
-	local bought_items, price = swr_trader.buy_items(trader_list_mp, side.gold)
+	local bought_items, price = swr.trader.buy_items(trader_list_mp, side.gold)
 	local inv = swr.Inventory:get_open(wesnoth.current.side, "component_inventory")
 
 	for k, v in pairs(bought_items) do

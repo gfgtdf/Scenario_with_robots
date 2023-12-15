@@ -35,7 +35,7 @@ swr.component_list = swr.require("component_list")
 robot_mechanics = swr.require("robot_mechanics")
 swr.require("advancements")
 swr.traps = swr.require("traps")
-swr_trader = swr.require("trader")
+swr.trader = swr.require("trader")
 
 dropping = swr.require("dropping")
 unit_types_data = swr.require("unit_data")
