@@ -1,8 +1,6 @@
 -- this file gives the "edit_robot_at_xy" function with allows to change a robot by a cutom dialog defined in gui.lua
 -- and the "reapply_bonuses_at_xy" that should be called if the robots variable was changed without this dialog
 local robot_mechanics = {}
---local gui = swr_require("gui")
---local component_list = swr_require("component_list")
 
 local wml_codes = swr.require("wml_codes")
 
@@ -330,6 +328,7 @@ end
 
 function robot_mechanics.replace_robot_advancements(unit, effects, new_advancements)
 	local modifications_cfg = wml.get_child(unit.__cfg, "modifications")
+	-- NOTE: in 1.16 this only works with [advancement]
 	swr_h.remove_from_array(modifications_cfg, function(a) 
 		return a[2].swr_robot_mod == true
 	end)

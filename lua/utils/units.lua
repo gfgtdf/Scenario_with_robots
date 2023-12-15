@@ -3,6 +3,7 @@ function wesnoth.units.swr_replace_modifications(unit, mods, tag)
 	-- remove all modifications.
 	local hitpoints = unit.hitpoints
 	local moves = unit.moves
+	-- TODO 1.18: use {"advancement", "trait", "object"}
 	unit:remove_modifications({},"advancement")
 	for i,v in ipairs(mods) do
 		-- reapply modifications
