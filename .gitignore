@@ -1,0 +1,10 @@
+# IDE cruft
+*.kate-swp
+.vscode/
+.vstags
+
+
+# pbl output
+_server.pbl
+
+
