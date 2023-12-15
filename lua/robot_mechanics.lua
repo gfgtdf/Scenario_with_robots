@@ -6,82 +6,25 @@ local robot_mechanics = {}
 
 local wml_codes = swr.require("wml_codes")
 
---local helper = swr_require("my_helper")
-max = function(a, b) return a > b and a or b end
-min = function(a, b) return a < b and a or b end
-
-
-function robot_mechanics.serialize(robot_data)
-	local robot_to_seralize = {}
-	-- copy only on first level attributes
-	for k,v in pairs(robot_data) do
-		robot_to_seralize[k] = v
-	end
-	robot_to_seralize.components = {}
-	for i, comp in ipairs(robot_data.components) do
-		local new_comp = {}
-		robot_to_seralize.components[i] = new_comp
-		for k,v in pairs(comp) do
-			new_comp[k] = v
-		end
-		new_comp.component = comp.component.name
-	end
-	return swr_h.serialize_oneline(robot_to_seralize)
-end
-
-function robot_mechanics.deserialize(robot_str)
-	local res = swr_h.deserialize(robot_str)
-	for i =1, #(res.components or {}) do
-		res.components[i].component = swr.component_list.list_by_name[res.components[i].component]
-	end
-	return res
-end
-
-function robot_mechanics.update_size(robot, unit_cfg)
-	local size = {}
-	-- we check if the robot has gottten bigger for example by levelup.
-	for dummy in wml.child_range(wml.get_child(unit_cfg, "abilities"), "dummy") do
-		if(dummy.id == "robot_ability") then
-			size.x = dummy.sizex
-			size.y = dummy.sizey
-		end
-	end
-	robot_mechanics.update_size_to(robot, size.x, size.y)
-end
-
-function robot_mechanics.update_size_to(robot, x_new, y_new)
-	robot.size = robot.size or { x= 2, y = 2}
-	x_new = x_new or robot.size.x
-	robot.size.x = math.max(x_new , robot.size.x)
-	y_new = y_new or robot.size.y
-	robot.size.y = math.max(y_new , robot.size.y)
-	local size_x_delta = math.max(x_new - robot.size.x, 0)
-	local size_y_delta = math.max(y_new - robot.size.y, 0)
-	for i, comp in ipairs(robot.components) do
-		-- in case the field grows i want to grow it to above not at down
-		comp.pos.y = comp.pos.y + size_y_delta
-	end
-end
-
 robot_mechanics.edit_robot_at_xy = function(x, y)
 	local unit = wesnoth.units.get(x, y)
-	local unit_cfg = unit.__cfg
-	local variables = wml.get_child(unit_cfg, "variables")
-	-- here we load the "robot" variable from the units variablres
-	local robot_string = variables.robot or "{ components = {} }"
-	local robot = robot_mechanics.deserialize(robot_string)
-	robot_mechanics.update_size(robot, unit_cfg)
+	robot_mechanics.edit_robot(unit)
+end
+
+robot_mechanics.edit_robot = function(unit)
+	local robot = swr.RobotEditor:create_from_unit(unit)
+	robot:update_size()
 	--
-	local has_inventory_fierd = false
+	local is_local_choice = false
 	local inv = swr.Inventory:get_open(wesnoth.current.side, "component_inventory")
 
 	local edit_result = wesnoth.sync.evaluate_single(function ()
-		local inv_delta = robot_mechanics.edit_robot(robot, inv)
+		robot:init_cells()
+		local inv_delta = robot_mechanics.edit_robot_dialog(robot, inv)
 		-- Optimisation: If we did this choice locally then we can use the 'robot' variable 
 		-- (instead of using robotstring) which saves us one deserialize call.
-		has_inventory_fierd = true
-		local robotstring = robot_mechanics.serialize(robot)
-		return { robotstring = robotstring, T.inv_delta (inv_delta)}
+		is_local_choice = true
+		return { robotstring = robot:get_data_str(), T.inv_delta (inv_delta)}
 	end,
 	function()
 		error("edit robot called by ai.")
@@ -90,79 +33,23 @@ robot_mechanics.edit_robot_at_xy = function(x, y)
 		inv:add_amount(k, v)
 	end
 	inv:close()
-	if not has_inventory_fierd then
-		robot = robot_mechanics.deserialize(edit_result.robotstring)
+	if not is_local_choice then
+		robot:set_data_str(edit_result.robotstring)
+		robot:init_cells()
 	end
-	variables.robot = edit_result.robotstring
+	robot:save_to_robot()
 	robot_mechanics.apply_bonuses(unit, robot)
 end
--- we collect all compnents from the inventory and from the robot 
-robot_mechanics.get_accesible_components = function(inventory ,robot)
-	local ac = {}
-	table.insert(ac, { component = swr.component_list.list_by_name["core"], number = 1 })
-	for k,v in pairs(inventory.inv_set) do
-		-- note that items that were in the inventory once still have an entry there even if their number is 0
-		if v ~= 0 then
-			table.insert(ac, { component = swr.component_list.list_by_name[k], number = v })
-		end
-	end
-	for k,v in pairs(robot.components) do
-		local has_this_component_already = false
-		for k2, v2 in pairs(ac) do
-			if v2.component.name == v.component.name then
-				has_this_component_already = true
-			end
-		end
-		if v.component.name == "core" then
-			ac[1].number = 0
-		end
-		if not has_this_component_already then
-			table.insert(ac, { component = v.component, number = 0 })
-		end
-	end
-	local sorter = function(comp1, comp2)
-		comp1 = comp1.component
-		comp2 = comp2.component
-		local order_1 = comp1.toolbox_order or 0
-		local order_2 = comp2.toolbox_order or 0
-		if order_1 == order_2 then
-			return comp1.name < comp2.name
-		else
-			return order_1 < order_2
-		end
-	end
-	table.sort(ac, sorter)
-	return ac
-end
 
--- shows the robot edit dialog and writes the changes into the robot variable
--- this function changes the robot variable, and returns which items are taken from the inventory (can contain negative numbers, if components were removed from the robot.)
--- this function assumes that the inventory is open but doesn't change it(because this is called in a sync_context).
-robot_mechanics.edit_robot = function(robot, inv)
-	local invenory_delta = {}
-	local sizeX = robot.size.x
-	local sizeY = robot.size.y
+function robot_mechanics.create_tools_list(available_components)
 	local tools = {}
-	local field = {}
-	-- im still note sure weather i need this.
-	local components_reference_field = {}
-	-- later the won't be all components accessible.
-	-- saving the max number of alowed comonents of 1 type in this list seems also useful to me.
-	local accessible_components = robot_mechanics.get_accesible_components(inv ,robot)
-	for ix = 1, sizeX do 
-		field [ix] = {} 
-		components_reference_field[ix] = {} 
-		for iy = 1, sizeY do 
-			field [ix][iy] = "empty"
-		end
-	end
 	table.insert(tools, {
 		icon = "c/empty.png",
 		label = "del",
 		tooltip = "removes a component",
 		preview = "misc/tpixel.png~SCALE(120,120)"
 	})
-	for k,v in pairs(accessible_components) do
+	for k,v in pairs(available_components) do
 		table.insert(tools, {
 			icon = v.component.image,
 			label = tostring(v.number),
@@ -170,107 +57,92 @@ robot_mechanics.edit_robot = function(robot, inv)
 			preview = v.component:get_full_image()
 		})
 	end
-	-- classic topdown programming here ..
+	return tools
+end
+
+-- shows the robot edit dialog and writes the changes into the robot variable
+-- this function changes the robot variable, and returns which items are taken from the inventory (can contain negative numbers, if components were removed from the robot.)
+-- this function assumes that the inventory is open but doesn't change it(because this is called in a sync_context).
+function robot_mechanics.edit_robot_dialog(robot2, inv)
+	local invenory_delta = {}
+	local sizeX = robot2:size().x
+	local sizeY = robot2:size().y
+	local tools = {}
+	-- later the won't be all components accessible.
+	-- saving the max number of alowed comonents of 1 type in this list seems also useful to me.
+	local accessible_components = robot2:available_components(inv)
+	local tools = robot_mechanics.create_tools_list(accessible_components)
 	local dialog = swr.EditRobotDialog:create(sizeX, sizeY, tools, 6)
-	-- this function does no checks so it asummes it is all right.
-	local function place_component(pos, comp, graphic_only)
-		graphic_only = graphic_only or false
-		for p_cell in comp:cells() do
-			local p_cell_r = comp:relative_pos(p_cell)
-			local pos_target = {
-				x = pos.x + p_cell_r.x,
-				y = pos.y + p_cell_r.y,
-			}
-			--print("placeing cell from", p_cell.x, p_cell.y, " to " , pos_target.x, pos_target.y, "(" .. comp.name.. ")")
-			dialog:set_image(pos_target.x, pos_target.y, comp:get_image(p_cell))
-			field[pos_target.x][pos_target.y] = comp:get_cell(p_cell)
-		end
 
-		components_reference_field[pos.x][pos.y] = comp
-		if not graphic_only then
-			table.insert(robot.components, { pos = pos, component = comp })
-		end
-	end
-	-- this function does no checks so it asummes it is all right.
-	local function remove_component(pos, comp, graphic_only)
-		graphic_only = graphic_only or false
-		for p_cell in comp:cells() do
-			local p_cell_r = comp:relative_pos(p_cell)
-			local pos_target = {
-				x = pos.x + p_cell_r.x,
-				y = pos.y + p_cell_r.y,
-			}
-			dialog:set_image(pos_target.x, pos_target.y, tools[1].icon)
-			field[pos_target.x][pos_target.y] = "empty"
-		end
-
-		components_reference_field[pos.x][pos.y] = nil
-		if not graphic_only then
-			swr_h.remove_from_array(robot.components, function(rcomp) return rcomp.pos.x == pos.x and rcomp.pos.y == pos.y end)
-		end
-	end
-	for k,v in pairs(robot.components) do
-		place_component(v.pos, v.component, true)
-	end
-	local function on_field_clicked(pos, imageid)
-		-- the imageid is also the coresponding comonent index in that array
-		if imageid == 1 then
-			if robot_mechanics.can_remove_that_there(components_reference_field, pos, robot) then
-				local old_name = components_reference_field[pos.x][pos.y].name
-				remove_component(pos, components_reference_field[pos.x][pos.y])
-				-- add the component in the accessible_components list
-				for k, v in pairs(accessible_components) do
-					if old_name == v.component.name then
-						v.number = v.number + 1
-						if old_name ~= "core" then
-							invenory_delta[old_name] = (invenory_delta[old_name] or 0) + 1
-						end
-						dialog:set_tool_label(k + 1, tostring(v.number))
-					end
-				end
+	local function draw_component(item, pos, remove)
+		print("draw_component item", item)
+		robot2:cells_foreach_impl(pos, item, function(item, p_cell, pos_target)
+			local image = "c/empty.png"
+			if not remove then
+				image = item.component:get_image(p_cell)
 			end
-		elseif imageid ~= 1 then
-			-- -1 because we have the empy at first place
-			if robot_mechanics.can_put_that_there(field, accessible_components[imageid - 1].component, pos) and accessible_components[imageid - 1].number > 0 then
-				place_component(pos, accessible_components[imageid - 1].component)
-				accessible_components[imageid - 1].number = accessible_components[imageid - 1].number - 1
-				dialog:set_tool_label(imageid, tostring(accessible_components[imageid - 1].number))
-				--cores cannot be put in inventory
-				if(imageid ~= 2) then
-					local compname = accessible_components[imageid - 1].component.name
-					invenory_delta[compname] = (invenory_delta[compname] or 0) - 1
-				end
+			dialog:set_image(pos_target.x, pos_target.y, image)
+		end)
+	end
+
+	local function comp_tool_number(comp_name)
+		for k, v in ipairs(accessible_components) do
+			if comp_name == v.component.name then
+				return k
 			end
 		end
 	end
-	--initilize the image
-	dialog.on_field_clicked = on_field_clicked
+
+	local function add_to_inv(comp_num, amount)
+		local ac = accessible_components[comp_num]
+		local comp_name =  ac.component.name
+
+		ac.number = ac.number + amount
+		invenory_delta[comp_name] = (invenory_delta[comp_name] or 0) + amount
+		dialog:set_tool_label(comp_num + 1, tostring(ac.number))
+	end
+
+
+	for k,v in pairs(robot2.robot.components) do
+		draw_component(v, v.pos, false)
+	end
+
+	function dialog.on_field_clicked(pos, imageid)
+		local comp_info = accessible_components[imageid - 1] or {}
+		local remove = imageid == 1
+		if remove then
+			local item, pos2 = robot2:remove_item(pos)
+			if item then
+				draw_component(item, pos2, true)
+				local comp_num = comp_tool_number(item.component.name)
+				add_to_inv(comp_num, 1)
+			end
+		else
+			local item = { component = comp_info.component }
+			if robot2:can_place_item(pos, item) then
+				robot2:place_item(pos, item)
+				draw_component(item, pos, false)
+				add_to_inv(imageid - 1, -1)
+			end
+		end
+	end
+
 	dialog:show_dialog()
 	--it's still not over
 	local pos_of_core = nil
-	for k,v in pairs(robot.components) do
-		if v.component.name == "core" then 
+	for k,v in pairs(robot2.robot.components) do
+		if v.component.name == "core" then
 			pos_of_core = v.pos
 		end
 	end
+	print("pos_of_core", pos_of_core.x, pos_of_core.y)
 	--does this work when no core is found? (pos_of_core = nil).
-	local connected_comonents = robot_mechanics.find_connected_items(field, robot, pos_of_core)
-	for k1,v1 in pairs(robot.components) do
-		local is_connected = false
-		for k2, v2 in pairs(connected_comonents) do
-			if(v1.pos.x == v2.pos.x and v1.pos.y == v2.pos.y) then
-				is_connected = true
-			end
-		end
-		if not is_connected then
-			--we dont want to loose our comonents.
-			if(v1.component.name == "core") then
-				error("a core is not connected to the core :S")
-			end
-			invenory_delta[v1.component.name] = (invenory_delta[v1.component.name] or 0) + 1
-		end
+	local removed_comonents = robot_mechanics.find_connected_items(robot2, pos_of_core)
+	print("items not eonnected:", #removed_comonents)
+	for i,v in ipairs(removed_comonents) do
+		invenory_delta[v.component.name] = (invenory_delta[v.component.name] or 0) + 1
 	end
-	robot.components = connected_comonents
+	invenory_delta["core"] = nil
 	--TODO:  change stats acording to the robot structure, i thought about
 	--       adding an "object" or "advance" to the robot that contains all
 	--       the efects and might be quite long.
@@ -287,117 +159,92 @@ robot_mechanics.edit_robot = function(robot, inv)
 	return invenory_delta
 end
 
-robot_mechanics.can_put_that_there = function(robot_field, item, position)
-	for ix = 1 , 5 do
-		for iy = 1,5 do
-			if ((item.field[ix] or {})[iy] ~= nil 
-				and ( robot_field[ix + position.x - 3] 
-					or {})[iy + position.y - 3] ~= "empty") then
-				return false
-			end
-		end
-	end
-	return true
-end
--- i added this functionto support fixed comonents that cannot be removed by the player.
-robot_mechanics.can_remove_that_there = function(components_reference_field, position, robot)
-	if components_reference_field[position.x][position.y] == nil then
-		return false
-	end
-	for k,v in pairs(robot.components) do
-		if (v.pos.x == position.x and v.pos.y == position.y ) then
-			if v.fixed ~= true then
-				return true
-			else
-				return false
-			end
-		end
-	end
-	error("error in can_remove_that_there")
-end
-
-robot_mechanics.find_connected_items = function(field, robot, startpos)
-	local found_objects = {}
+function robot_mechanics.find_connected_items(robot, startpos)
+	local removed_objects = {}
 	local pos_todo = {}
 	local pos_done = {}
-	local sizeY = robot.size.y
-	local sizeX = robot.size.x
+	local sizeY = robot:size().y
+	local sizeX = robot:size().x
 	local distance = 0
 	local open_ends_count = 0
 	local rings_count = 0
+
+	local function set_done(pos, val)
+		pos_done[pos.x * sizeY + pos.y] = val
+	end
+
+	local function get_done(pos)
+		return pos_done[pos.x * sizeY + pos.y]
+	end
+
+	local opp = {
+		n = "s",
+		s = "n",
+		e = "w",
+		w = "e",
+	}
+	local offset = {
+		n = { x =  0, y = -1 },
+		s = { x =  0, y =  1 },
+		e = { x =  1, y =  0 },
+		w = { x = -1, y =  0 },
+	}
+
+	for x = 1, robot:size().x do
+		for y = 1, robot:size().y do
+			robot:get_cell(x, y).distance = nil
+		end
+	end
+
 	if startpos ~= nil then
 		pos_todo[1] = { x = startpos.x, y = startpos.y, distance = 0 }
-		pos_done[startpos.x * sizeY + startpos.y] = true
+		set_done(startpos, "sighted")
 	end
+
 	while #pos_todo > 0 do
-		--removing the last element is the fastest, at least i think so.
-		--using the first element has the benefit of also giving us the "distance" to the startpos.
-		local posnow = table.remove(pos_todo, #pos_todo) 
-		for k,v in pairs(robot.components) do
-			if(v.pos.x == posnow.x and v.pos.y == posnow.y) then
-				v.distance = posnow.distance
-				table.insert(found_objects, v)
+		local pos_now = table.remove(pos_todo, 1)
+		local cell_now = robot:get_component_cell(pos_now)
+		for i, dir in ipairs({"n", "e", "s", "w"}) do
+			if cell_now[dir] == true then
+				local off = offset[dir]
+				local pos_adj = { x = pos_now.x + off.x, y = pos_now.y + off.y , distance = pos_now.distance + 1 }
+				local cell_adj = robot:get_component_cell(pos_adj) or {}
+				if cell_adj[opp[dir]] ~= true then
+					open_ends_count = open_ends_count + 1
+				elseif get_done(pos_adj) == nil then
+					set_done(pos_adj, "sighted")
+					table.insert(pos_todo, pos_adj)
+				elseif get_done(pos_adj) == "sighted" then
+					rings_count = rings_count + 1
+				end
 			end
 		end
-		--TODO: im not sure weather the nullpoint is in the upper or the downer corner.
-		if field[posnow.x][posnow.y]["n"] == true then
-			if ((field[posnow.x] or {})[posnow.y - 1] or {})["s"] == true and (pos_done[posnow.x * sizeY + posnow.y - 1] == nil) then
-				--this means we have found a new connected comonent
-				pos_done[posnow.x * sizeY + posnow.y - 1] = "sighted"
-				table.insert(pos_todo, { x = posnow.x, y = posnow.y - 1, distance = posnow.distance  + 1 })
-			elseif ((field[posnow.x] or {})[posnow.y - 1] or {})["s"] == true and (pos_done[posnow.x * sizeY + posnow.y - 1] == "sighted") then
-				--we have found a connected component that was already known but not processed yet.
-				--rings infrease the units def.
-				rings_count = rings_count + 1
-			elseif not (((field[posnow.x] or {})[posnow.y - 1] or {})["s"] == true) then
-				--we have found an open end
-				--too much open endpoints lower the units def.
-				open_ends_count = open_ends_count + 1
-			end
-		end
-		if field[posnow.x][posnow.y]["s"] == true then
-			if ((field[posnow.x] or {})[posnow.y + 1] or {})["n"] == true and (pos_done[posnow.x * sizeY + posnow.y + 1] == nil) then
-				pos_done[posnow.x * sizeY + posnow.y + 1] = "sighted"
-				table.insert(pos_todo, { x = posnow.x, y = posnow.y + 1, distance = posnow.distance  + 1  })
-			elseif ((field[posnow.x] or {})[posnow.y + 1] or {})["n"] == true and (pos_done[posnow.x * sizeY + posnow.y + 1] == "sighted") then
-				rings_count = rings_count + 1
-			elseif not (((field[posnow.x] or {})[posnow.y + 1] or {})["n"] == true) then
-				open_ends_count = open_ends_count + 1
-			end
-		end
-		if field[posnow.x][posnow.y]["e"] == true then
-			if ((field[posnow.x + 1] or {})[posnow.y] or {})["w"] == true and (pos_done[(posnow.x + 1) * sizeY + posnow.y] == nil) then
-				pos_done[(posnow.x + 1) * sizeY + posnow.y] = "sighted"
-				table.insert(pos_todo, { x = posnow.x + 1, y = posnow.y, distance = posnow.distance  + 1 })
-			elseif ((field[posnow.x + 1] or {})[posnow.y] or {})["w"] == true and (pos_done[(posnow.x + 1) * sizeY + posnow.y] == "sighted") then
-				rings_count = rings_count + 1
-			elseif not (((field[posnow.x + 1] or {})[posnow.y] or {})["w"] == true) then
-				open_ends_count = open_ends_count + 1
-			end
-		end
-		if field[posnow.x][posnow.y]["w"] == true then
-			if	((field[posnow.x - 1] or {})[posnow.y] or {})["e"] == true and (pos_done[(posnow.x - 1) * sizeY + posnow.y] == nil) then
-				pos_done[(posnow.x - 1) * sizeY + posnow.y] = "sighted"
-				table.insert(pos_todo, { x = posnow.x - 1, y = posnow.y, distance = posnow.distance  + 1 })
-			elseif ((field[posnow.x - 1] or {})[posnow.y] or {})["e"] == true and (pos_done[(posnow.x - 1) * sizeY + posnow.y] == "sighted") then
-				rings_count = rings_count + 1
-			elseif not (((field[posnow.x - 1] or {})[posnow.y] or {})["e"] == true) then
-				open_ends_count = open_ends_count + 1
-			end
-		end
-		pos_done[(posnow.x ) * sizeY + posnow.y] = "done"
+		robot:get_cell(pos_now).distance = pos_now.distance
+		set_done(pos_now, "done")
 	end
-	robot.open_ends_count = open_ends_count
-	robot.rings_count = rings_count
-	return found_objects
+	robot.robot.open_ends_count = open_ends_count
+	robot.robot.rings_count = rings_count
+
+
+	for i = #robot.robot.components, 1, -1 do
+		local item = robot.robot.components[i]
+		item.distance = robot:get_cell(item.pos).distance
+		if item.distance == nil then
+			robot:remove_item(item.pos)
+			table.insert(removed_objects, item)
+		end
+	end
+
+	return removed_objects
 end
+
 -- this function applys the bonusses
 -- returns: 
 --   effects: the effects that shoudl be applied
 --   advances: advances that should be applied this is to make the components requirements for advances.
-robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
-	local rings_count = robot.rings_count
-	local open_ends_count = max (1, robot.open_ends_count ) - 1
+function robot_mechanics.calcualte_bonuses(robot2, unit_type)
+	local rings_count = robot2.robot.rings_count
+	local open_ends_count = math.max (1, robot2.robot.open_ends_count ) - 1
 	local aggregator = {}
 	local used_component_types = {}
 	local used_component_types_set = {}
@@ -415,10 +262,11 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	aggregator.resitances_delta.blade = (open_ends_count - rings_count) * 4
 	aggregator.resitances_delta.pierce = (open_ends_count - rings_count) * 4
 	aggregator.resitances_delta.impact = (open_ends_count - rings_count) * 4
-	for k, v in pairs(robot.components) do
-		if v.component.check_function(field, robot, v.pos) then
+	for k, v in pairs(robot2.robot.components) do
+		local check = v.component.check_function
+		if check == nil or check(robot2, v.pos) then
 			if v.component.aggregate_function ~= nil then
-				v.component.aggregate_function(robot, v, aggregator)
+				v.component.aggregate_function(robot2, v, aggregator)
 			end
 			if not apply_functions_set[v.component] then
 				table.insert(used_component_types, v.component)
@@ -428,11 +276,11 @@ robot_mechanics.calcualte_bonuses = function(field, robot, unit_type)
 	end
 	local all_effects = {}
 	local all_advances = {}
-	--todo sheck wheterh this sots in the correct direction
+	--todo check whether this sorts in the correct direction
 	swr_h.stable_sort(used_component_types, function(c1, c2) return (c1.order_apply or 0) < (c2.order_apply or 0) end)
 	for k, v in pairs(used_component_types) do
 		if v.apply_function then
-			local new_effects, new_advances = v.apply_function(robot, aggregator)
+			local new_effects, new_advances = v.apply_function(robot2, aggregator)
 			for k2, v2 in pairs(new_effects or {}) do
 				table.insert(all_effects, v2)
 			end
@@ -464,56 +312,32 @@ function wesnoth.wml_actions.swr_update_unit(cfg)
 	end
 end
 
-function robot_mechanics.apply_bonuses(unit, robot)
-	if robot == nil then
-		local robot_data_serialized = unit.variables.robot
-		if not robot_data_serialized then
+function robot_mechanics.apply_bonuses(robot)
+	if type(robot) == 'userdata' and getmetatable(robot) == 'unit' then
+		if not robot.variables.robot then
 			return
 		end
-		robot = robot_mechanics.deserialize(robot_data_serialized)
+		robot = swr.RobotEditor:create_from_unit(robot)
+	end
+	robot:init_cells()
+
+	local pos_of_core = nil
+	for k,v in pairs(robot.robot.components) do
+		if v.component.name == "core" then
+			pos_of_core = v.pos
+		end
 	end
 
-	local sizeX = robot.size.x
-	local sizeY = robot.size.y
-	local field = {}
-	local startpos = {}
-	for ix = 1, sizeX do 
-		field [ix] = {} 
-		for iy = 1, sizeY do 
-			field [ix][iy] = "empty"
-		end
+	local removed_objects = robot_mechanics.find_connected_items(robot, pos_of_core)
+	if #removed_objects ~= 0 then
+		error("removed an item during robot_mechanics.apply_bonuses")
 	end
-	local function place_component_on_field(pos, component)
-		local ix_start = max(1, 4 - pos.x)
-		local ix_end = min(5, sizeX - pos.x + 3)
-		local iy_start = max(1, 4 - pos.y)
-		local iy_end = min(5, sizeY - pos.y + 3)
-		for ix = ix_start, ix_end do 
-			for iy = iy_start, iy_end do
-				if (component.field[ix] or {}) [iy] ~= nil then
-					field[pos.x + ix - 3][pos.y + iy - 3] = component.field[ix][iy]
-				end
-			end
-		end
-	end
-	for k,v in pairs(robot.components) do
-		place_component_on_field(v.pos, v.component)
-		if v.component.name == "core" then
-			startpos = v.pos
-		end
-	end
-	if (robot.open_ends_count == nil or robot.rings_count == nil) then
-		local found_objects = robot_mechanics.find_connected_items(field, robot, startpos)
-		if #found_objects ~= #robot.components then
-			error("found_objects=" .. tostring(#found_objects) .. " but #robot.components=" .. tostring(#robot.components))
-		end
-		robot.components = found_objects
-	end
-	local effects, new_advancements = robot_mechanics.calcualte_bonuses(field, robot, unit.type)
-	robot_mechanics.replace_robot_advancements(unit, effects, new_advancements)
+
+	local effects, new_advancements = robot_mechanics.calcualte_bonuses(robot, robot.unit.type)
+	robot_mechanics.replace_robot_advancements(robot.unit, effects, new_advancements)
 end
 
-robot_mechanics.replace_robot_advancements = function(unit, effects, new_advancements)
+function robot_mechanics.replace_robot_advancements(unit, effects, new_advancements)
 	local modifications_cfg = wml.get_child(unit.__cfg, "modifications")
 	swr_h.remove_from_array(modifications_cfg, function(a) 
 		return a[2].swr_robot_mod == true

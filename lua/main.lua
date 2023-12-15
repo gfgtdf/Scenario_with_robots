@@ -1,7 +1,5 @@
 swr = {}
 
--- we want some things to be at "top" level, escecialy for the wesnoth.game_events.on_load/save in case we need them
--- and since we have that at toplevel we can put it all here, i think everyting else wouls just make it more complicated.
 function swr.require(script)
 	-- I use dofile instead of , require because it allows me to reload the whole lua logics (for my scenarios that means nearly all of the logic)
 	-- without having to quit the game and press F5 or close Wesnoth.
@@ -30,6 +28,7 @@ swr.Inventory = swr.require("inventory")
 swr.EditRobotDialog = swr.require("dialogs/edit_robot_dialog")
 swr.BookDialog = swr.require("dialogs/book_dialog")
 swr.SellerDialog = swr.require("dialogs/seller_dialog")
+swr.RobotEditor = swr.require("robot_editor")
 
 swr.component_list = swr.require("component_list")
 robot_mechanics = swr.require("robot_mechanics")
