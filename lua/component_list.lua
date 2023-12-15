@@ -1,12 +1,18 @@
 -- this file contains all the components, and most of their logic.
 local wml_codes = swr.require("wml_codes")
+local Component = swr.require("component")
 local component_list = {}
 local the_list = {}
+
+local function register_component(o)
+	table.insert(the_list, Component:new(o))
+end
+
 component_list.the_list = the_list
 component_list.list_by_name = {}
 
 
-table.insert(the_list, {
+register_component {
 	field = { [3] = { [3] = { n = true, s = true, w = true, e = true } } },
 	name = "core",
 	tooltip = "any component that is not connected to the core will drop away",
@@ -15,8 +21,8 @@ table.insert(the_list, {
 	image = "c/core.png",
 	toolbox_order = -100,
 	field_images = { [3] = { [3] = "c/core.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { n = true, s = true } } },
 	name = "pipe_ns",
 	tooltip = "too many open ends wil cause a serious drop in the robots defense",
@@ -24,80 +30,81 @@ table.insert(the_list, {
 	image = "c/pipe_ns.png",
 	toolbox_order = -91,
 	field_images = { [3] = { [3] = "c/pipe_ns.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { e = true, w = true } } },
 	name = "pipe_ew",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_ew.png",
 	toolbox_order = -91,
 	field_images = { [3] = { [3] = "c/pipe_ew.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { e = true, s = true } } },
 	name = "pipe_es",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_es.png",
 	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_es.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { n = true, e = true } } },
 	name = "pipe_ne",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_ne.png",
 	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_ne.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { s = true, w = true } } },
 	name = "pipe_sw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_sw.png",
 	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_sw.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { n = true, w = true } } },
 	name = "pipe_nw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_nw.png",
 	toolbox_order = -90,
 	field_images = { [3] = { [3] = "c/pipe_nw.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { n = true, e = true, s = true } } },
 	name = "pipe_nes",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_nes.png",
 	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_nes.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { e = true, s = true, w = true } } },
 	name = "pipe_esw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_esw.png",
 	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_esw.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { n = true, s = true, w = true } } },
 	name = "pipe_nsw",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_nsw.png",
 	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_nsw.png" } }
-})
-table.insert(the_list, {
+}
+register_component {
 	field = { [3] = { [3] = { n = true, e = true, w = true } } },
 	name = "pipe_new",
 	check_function = function(r_field, robot, objpos) return true end,
 	image = "c/pipe_new.png",
 	toolbox_order = -80,
 	field_images = { [3] = { [3] = "c/pipe_new.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [2] = { [3] = { e = true } }, [3] = { [3] = { e = true, w = true } } },
 	name = "simplepike",
 	tooltip  = "Pike: the Farther away from the core, the better is the effect, there shouldn't be any items left to it to work properly",
@@ -126,8 +133,9 @@ table.insert(the_list, {
 	-- not implemented yet.
 	order_apply = 1,
 	field_images = { [2] = { [3] = "c/simplespear_1.png" }, [3] = { [3] = "c/simplespear_c.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { e = true } } },
 	name = "simplelaser",
 	tooltip = "similar to simplepike but a ranged attack",
@@ -150,8 +158,9 @@ table.insert(the_list, {
 	toolbox_order = -70,
 	order_apply = 1,
 	field_images = { [3] = { [3] = "c/simplelaser.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { s = true } } },
 	name = "propeller",
 	tooltip = "can cause huge storms or make the robot fly",
@@ -198,9 +207,9 @@ table.insert(the_list, {
 	end,
 	image = "c/propeller.png",
 	field_images = { [3] = { [3] = "c/propeller.png" } }
-})
+}
 
-table.insert(the_list, {
+register_component {
 	field = { [3] = { [3] = { s = true } } },
 	name = "solar_panel",
 	tooltip = "Makes the robot stronger in daylight, must be places on top of the robot.",
@@ -226,9 +235,9 @@ table.insert(the_list, {
 	end,
 	image = "c/solar_panel.png",
 	field_images = { [3] = { [3] = "c/solar_panel.png" } },
-})
+}
 
-table.insert(the_list, {
+register_component {
 	field = { [3] = { [3] = { n = true } } },
 	name = "simplewheel",
 	tooltip = "makes the robot faster",
@@ -255,8 +264,9 @@ table.insert(the_list, {
 	image = "c/wheel.png",
 	toolbox_order = -75,
 	field_images = { [3] = { [3] = "c/wheel.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [2] = { s = true }, [3] = { n = true, s = true, e = true }, [4] = { n = true } } },
 	name = "bigbow",
 	tooltip = "gives a bow attack.",
@@ -280,8 +290,9 @@ table.insert(the_list, {
 	image = "c/bigbow_c.png",
 	toolbox_order = -70,
 	field_images = { [3] = { [2] = "c/bigbow_1.png", [3] = "c/bigbow_c.png", [4] = "c/bigbow_2.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { e = true } } },
 	name = "four_parted_healing_es_e",
 	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
@@ -309,8 +320,9 @@ table.insert(the_list, {
 	order_apply = 1,
 	image = "c/four_parted_1_es_e.png",
 	field_images = { [3] = { [3] = "c/four_parted_1_es_e.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { e = true } } },
 	name = "four_parted_healing_ne_e",
 	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
@@ -321,8 +333,9 @@ table.insert(the_list, {
 	order_apply = 1, -- 1 = no dependecies 
 	image = "c/four_parted_1_ne_e.png",
 	field_images = { [3] = { [3] = "c/four_parted_1_ne_e.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { w = true } } },
 	name = "four_parted_healing_nw_w",
 	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
@@ -333,8 +346,9 @@ table.insert(the_list, {
 	order_apply = 1, -- 1 = no dependecies 
 	image = "c/four_parted_1_nw_w.png",
 	field_images = { [3] = { [3] = "c/four_parted_1_nw_w.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { w = true } } },
 	name = "four_parted_healing_sw_w",
 	tooltip = "all 4 parts together provide a powerful healing and regenerateion ability",
@@ -345,8 +359,9 @@ table.insert(the_list, {
 	order_apply = 1, -- 1 = no dependecies 
 	image = "c/four_parted_1_sw_w.png",
 	field_images = { [3] = { [3] = "c/four_parted_1_sw_w.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { n = true, w = true } } },
 	name = "spear_fire_modier",
 	tooltip = "sets spear damage to fire, has to be placed near a spear",
@@ -381,8 +396,9 @@ table.insert(the_list, {
 	image = "c/attack_modifier_2_nw.png",
 	toolbox_order = -60,
 	field_images = { [3] = { [3] = "c/attack_modifier_2_nw.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { n = true } } },
 	name = "heating_addon",
 	tooltip = "gives resitance to cold damage, better effect if placed near the core",
@@ -402,8 +418,9 @@ table.insert(the_list, {
 	image = "c/addon_n.png",
 	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_n.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { w = true } } },
 	name = "heating_addon_right",
 	tooltip = "gives resitance to cold damage, better effect if placed near the core",
@@ -423,8 +440,9 @@ table.insert(the_list, {
 	image = "c/addon_heat_w.png",
 	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_heat_w.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { n = true } } },
 	name = "cooling_addon",
 	tooltip = "gives resitance to fire damage, better effect if placed near the core",
@@ -444,8 +462,9 @@ table.insert(the_list, {
 	image = "c/addon_2_n.png",
 	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_2_n.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { w = true } } },
 	name = "cooling_addon_right",
 	tooltip = "gives resitance to fire damage, better effect if placed near the core",
@@ -465,9 +484,9 @@ table.insert(the_list, {
 	image = "c/addon_cool_w.png",
 	toolbox_order = -50,
 	field_images = { [3] = { [3] = "c/addon_cool_w.png" } }
-})
+}
 
-table.insert(the_list, {
+register_component {
 	field = { [3] = { [3] = { w = true, s = true }, [4] = { n = true} } },
 	name = "bombdropper",
 	tooltip = "this component gives the robot the ability to drop bombs, this component will not work if there is another component below it",
@@ -490,8 +509,9 @@ table.insert(the_list, {
 	order_apply = 1, -- 1 = no dependecies 
 	image = "c/trapper_c.png",
 	field_images = { [3] = { [3] = "c/trapper_c.png", [4] = "c/trapper_1.png" } }
-})
-table.insert(the_list, {
+}
+
+register_component {
 	field = { [3] = { [3] = { n = true, e = true } } },
 	name = "trapper_modifier",
 	tooltip = "adds poison to traps",
@@ -522,9 +542,9 @@ table.insert(the_list, {
 	order_apply = 2,
 	image = "c/trapper_poison.png",
 	field_images = { [3] = { [3] = "c/trapper_poison.png" } }
-})
+}
 
-table.insert(the_list, {
+register_component {
 	field = { [3] = { [3] = { n = true, s = true },  [2] = { s = true } } },
 	name = "antenna",
 	tooltip = "Antenna, makes near robots fight better",
@@ -543,7 +563,7 @@ table.insert(the_list, {
 	end,
 	image = "c/antenne_unten.png",
 	field_images = { [3] = { [2] = "c/antenne_oben.png", [3] = "c/antenne_unten.png" } }
-})
+}
 
 -- TODO: Add new components, for example:
 --   a Soloar cell that inceased damage in light

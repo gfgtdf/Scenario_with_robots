@@ -11,58 +11,6 @@ max = function(a, b) return a > b and a or b end
 min = function(a, b) return a < b and a or b end
 
 
-local function create_component_image(comp)
-	local min_x = 2
-	local max_x = 4
-	local min_y = 2
-	local max_y = 4
-	--caclualte the size for the image but make it at lest 3x3.
-	for i_x = 1, 5 do
-		for i_y = 1, 5 do
-			if (comp.field[i_x] or {})[i_y] or (comp.field_images[i_x] or {})[i_y] then
-				min_x = min(min_x, i_x)
-				max_x = max(max_x, i_x)
-				min_y = min(min_y, i_y)
-				max_y = max(max_y, i_y)
-			end
-		end
-	end
-	local res = { "misc/tpixel.png~SCALE(" , 40 * (max_x - min_x + 1) , "," , 40 * (max_y - min_y + 1), ")" }
-	for i_x = 1, 5 do
-		for i_y = 1, 5 do
-			local is_field = (comp.field[i_x] or {})[i_y]
-			local image = (comp.field_images[i_x] or {})[i_y]
-			local pos_x = (i_x  - min_x) * 40
-			local pos_y = (i_y  - min_y) * 40
-			if is_field then
-				table.insert(res, "~BLIT(misc/twhitesqare40.png,")
-				table.insert(res, tostring(pos_x))
-				table.insert(res, ",")
-				table.insert(res, tostring(pos_y))
-				table.insert(res, ")")
-			end
-			if image then
-				table.insert(res, "~BLIT(")
-				table.insert(res, image)
-				table.insert(res, ",")
-				table.insert(res, tostring(pos_x))
-				table.insert(res, ",")
-				table.insert(res, tostring(pos_y))
-				table.insert(res, ")")
-			end
-		end
-	end
-	table.insert(res, "~BLIT(cursors/normal.png,")
-	table.insert(res, tostring(16 + 40 * (3 - min_x)))
-	table.insert(res, ",")
-	table.insert(res, tostring(16 + 40 * (3 - min_y)))
-	table.insert(res, ")")
-	if min_x ~= 2 or  max_x ~= 4 or  min_y ~= 2 or  max_x ~= 4 then
-		table.insert(res, "~SCALE(120,120)")
-	end
-	return table.concat(res)
-end
-
 function robot_mechanics.serialize(robot_data)
 	local robot_to_seralize = {}
 	-- copy only on first level attributes
@@ -223,44 +171,37 @@ robot_mechanics.edit_robot = function(robot, inv)
 	-- classic topdown programming here ..
 	local dialog = swr.EditRobotDialog:create(sizeX, sizeY, tools, 6)
 	-- this function does no checks so it asummes it is all right.
-	local function place_component(pos, component, graphic_only)
+	local function place_component(pos, comp, graphic_only)
 		graphic_only = graphic_only or false
-		local ix_start = max(1, 4 - pos.x)
-		local ix_end = min(5, sizeX - pos.x + 3)
-		local iy_start = max(1, 4 - pos.y)
-		local iy_end = min(5, sizeY - pos.y + 3)
-		for ix = ix_start, ix_end do 
-			for iy = iy_start, iy_end do
-				if (component.field_images[ix] or {}) [iy] ~= nil then
-					dialog:set_image(pos.x + ix - 3, pos.y + iy - 3, component.field_images[ix][iy])
-				end
-				if (component.field[ix] or {}) [iy] ~= nil then
-					field[pos.x + ix - 3][pos.y + iy - 3] = component.field[ix][iy]
-				end
-			end
+		for p_cell in comp:cells() do
+			local p_cell_r = comp:relative_pos(p_cell)
+			local pos_target = {
+				x = pos.x + p_cell_r.x,
+				y = pos.y + p_cell_r.y,
+			}
+			--print("placeing cell from", p_cell.x, p_cell.y, " to " , pos_target.x, pos_target.y, "(" .. comp.name.. ")")
+			dialog:set_image(pos_target.x, pos_target.y, comp:get_image(p_cell))
+			field[pos_target.x][pos_target.y] = comp:get_cell(p_cell)
 		end
-		components_reference_field[pos.x][pos.y] = component
+
+		components_reference_field[pos.x][pos.y] = comp
 		if not graphic_only then
-			table.insert(robot.components, { pos = pos, component = component })
+			table.insert(robot.components, { pos = pos, component = comp })
 		end
 	end
 	-- this function does no checks so it asummes it is all right.
-	local function remove_component(pos, component, graphic_only)
+	local function remove_component(pos, comp, graphic_only)
 		graphic_only = graphic_only or false
-		local ix_start = max(1, 4 - pos.x)
-		local ix_end = min(5, sizeX - pos.x + 3)
-		local iy_start = max(1, 4 - pos.y)
-		local iy_end = min(5, sizeY - pos.y + 3)
-		for ix = ix_start, ix_end do 
-			for iy = iy_start, iy_end do
-				if (component.field_images[ix] or {}) [iy] ~= nil then
-					dialog:set_image(pos.x + ix - 3, pos.y + iy - 3, tools[1].icon)
-				end
-				if (component.field[ix] or {}) [iy] ~= nil then
-					field[pos.x + ix - 3][pos.y + iy - 3] = "empty"
-				end
-			end
-		end 
+		for p_cell in comp:cells() do
+			local p_cell_r = comp:relative_pos(p_cell)
+			local pos_target = {
+				x = pos.x + p_cell_r.x,
+				y = pos.y + p_cell_r.y,
+			}
+			dialog:set_image(pos_target.x, pos_target.y, tools[1].icon)
+			field[pos_target.x][pos_target.y] = "empty"
+		end
+
 		components_reference_field[pos.x][pos.y] = nil
 		if not graphic_only then
 			swr_h.remove_from_array(robot.components, function(rcomp) return rcomp.pos.x == pos.x and rcomp.pos.y == pos.y end)
@@ -274,7 +215,7 @@ robot_mechanics.edit_robot = function(robot, inv)
 		if imageid == 1 then
 			dialog:set_selected_item_image("misc/tpixel.png~SCALE(120,120)")
 		else
-			dialog:set_selected_item_image(create_component_image(accessible_components[imageid - 1].component))
+			dialog:set_selected_item_image(accessible_components[imageid - 1].component:get_full_image())
 		end
 	end
 	local function on_field_clicked(pos, imageid)
