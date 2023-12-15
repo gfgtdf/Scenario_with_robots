@@ -1,6 +1,6 @@
 local on_event = wesnoth.require("on_event")
 
-local last_tested_version = "1.17.23"
+local last_tested_version = "1.17.24"
 local min_wesnoth_version = "1.14"
 
 on_event("prestart", function(event_context)
