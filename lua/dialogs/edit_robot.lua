@@ -110,7 +110,7 @@ function gui_edit_robot.create(grid_field, grid_toolbox)
 	}
 end
 
-function gui_edit_robot.create_tooltip_field(index_str, tooltip_str)
+function gui_edit_robot.create_tooltip_field(index_str)
 	return T.toggle_panel {
 		id = "down_panel" .. index_str,
 		T.grid { 
@@ -118,8 +118,7 @@ function gui_edit_robot.create_tooltip_field(index_str, tooltip_str)
 				vertical_grow = true,
 				T.column {
 					T.image {
-						id = "down_icon" .. index_str,
-						tooltip = tooltip_str
+						id = "down_icon" .. index_str
 					},
 				},
 			},
@@ -142,9 +141,6 @@ function gui_edit_robot.create_unused_tooltip_field()
 			T.column {
 				T.spacer {
 				},
-				--T.image {
-				--	label = imagename,
-				--},
 			},
 		},
 	} 
